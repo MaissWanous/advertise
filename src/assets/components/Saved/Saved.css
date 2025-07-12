@@ -1,0 +1,99 @@
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page background */
+.zx-page {
+  width: 100vw;
+  min-height: 100vh;
+  background: #fff;
+  padding: 2rem;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Header */
+.zx-header {
+  margin-bottom: 1.5rem;
+}
+.zx-header h1 {
+  font-size: 3rem;
+  color: #0d1f44;
+  margin-left: 1.5rem;
+}
+
+/* Ads list */
+.zx-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Single card */
+.zx-item {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  color: #0d1f44;
+  border-radius: 12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.4); 
+  padding: 0.3rem;
+  gap: 1rem;
+}
+
+/* Image */
+.zx-img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Info */
+.zx-content {
+  flex: 1;
+}
+.zx-title {
+  font-size: 1.7rem;
+  margin-bottom: 1.6rem;
+}
+.zx-text {
+  font-size: 1.2rem;
+  color: rgb(77, 135, 189);
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Save button at end */
+.zx-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto; /* pushes button to the far right */
+}
+.zx-btn,.zx-btn:focus,.zx-btn:active{
+  outline: none;
+}
+.zx-btn::-moz-focus-inner{
+  border: none;
+}
+.zx-icon {
+  font-size: 2.7rem;
+  transition: color 0.2s;
+}
+.zx-icon--on {
+  color: #cda0e7;
+}
+.zx-icon--off {
+  color: #fff;
+}
+.zx-btn:hover .zx-icon--off {
+  color: #d5c1ec;
+}

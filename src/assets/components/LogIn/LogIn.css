@@ -1,0 +1,126 @@
+/* LogInForm.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap');
+
+/* Section wrapper */
+.hero-section {
+  width: 100vw;
+  height: 98vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card */
+.form-container {
+  width: 360px;
+  padding: 2rem;
+  background: rgba(16, 36, 83, 0.5);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  box-shadow: 0 16px 32px rgba(53, 204, 250, 0.5);
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Title */
+.form-title {
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+/* Each field group */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Labels */
+.form-group
+.form-label {
+  display: block;
+  color:#d1d5db;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Wrapper for icon + input */
+.input-wrapper {
+  position: relative;
+}
+
+/* Icon positioned inside the wrapper */
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+/* Inputs get left padding to avoid the icon */
+ .form-group
+.input-email,
+.input-password {
+  width: 100%;
+  /* padding: 0.6rem 0.75rem 0.6rem 2.5rem;  */
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.3rem;
+  padding-left: 20rem;
+}
+
+/* Forgot link */
+.form-forgot {
+  display: block;
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  color: #38bdf8;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+  text-align: right;
+}
+.form-forgot:hover {
+  text-decoration: underline;
+}
+
+/* Submit button */
+.btn-submit {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.75rem;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(90deg, #224b8d, #047bb3);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.btn-submit:hover {
+  filter: brightness(1.1);
+}
+
+/* Footer link */
+.form-footer {
+  text-align: center;
+  margin-top: 1rem;
+}
+.form-footer a {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+}
+.form-footer a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,78 @@
+/* AdPoster.css
+/* تأكد من وضع laptop.jpg في public/images/ */
+.poster-container {
+  position:relative;
+  width: 100vw;
+  height: 95vh;
+  background-image: url('./img/im1.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  overflow: hidden;
+  /* margin-bottom: 2rem; */
+      font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+   z-index: 1; 
+    top: -90px; 
+
+}
+
+.poster-overlay {
+  position: absolute;
+  top: 25%;
+  left: 5%;
+  right: 10%;
+  color: #fff;
+  /* z-index: 1; */
+
+
+}
+
+.poster-text {
+  /* font-family: Arial, sans-serif; */
+  font-size: 2.5rem;
+  line-height: 1.2;
+  /* opacity: 0; */
+  animation: fadeInUp 7s ease-out forwards;
+  line-height: 4rem;
+    text-shadow: 4px 4px 6px rgba(255,0, 150, 0.8);
+      font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+ 
+
+}
+
+.poster-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(255, 0, 150, 0.8);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 10rem;
+  position: relative;
+  z-index: 1;
+
+  
+}
+
+.poster-button:hover {
+  /* background: rgba(255, 0, 150, 1); */
+   opacity: 0.8;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

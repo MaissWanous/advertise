@@ -1,0 +1,199 @@
+/* AboutUs.css */
+
+.aboutus-container {
+  margin: 1rem;
+  padding: 2rem;
+  background: #ffffff;
+}
+
+/* البطاقات */
+.aboutus-card {
+  margin: 1rem;
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  gap: 16px;
+}
+.aboutus-card.full {
+  margin-bottom: 16px;
+}
+
+/* صف البطاقات */
+.aboutus-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.aboutus-row .aboutus-card {
+  flex: 1;
+}
+
+/* دائرة الأيقونة */
+.icon-circle {
+  flex-shrink: 0;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background: #3593aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* صورة الأيقونة */
+.aboutus-icon-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 4rem;
+}
+
+/* محتوى البطاقات */
+.aboutus-content {
+  flex: 1;
+}
+.aboutus-title {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+  line-height: 1.2;
+  color: #0f075c;
+  font-family: 'Nunito', sans-serif;
+}
+.aboutus-text {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #2b2929;
+  line-height: 1.6rem;
+  font-family: 'abril-fatface';
+  font-weight: bold;
+}
+
+/* Footer: Report & Feedback */
+.aboutus-footer {
+  display: flex;
+  align-items: center;
+  background: #a2c7e6;
+  border-radius: 8px;
+  padding: 2rem 1.5rem;
+  gap: 16px;
+}
+.report-label {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2b2929;
+  flex: 1;
+}
+.btn-feedback {
+  background: #050c4b;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-feedback:hover {
+  background: #4f5d5e;
+}
+
+/* Contact link */
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 1.2rem;
+  color: #081372;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 11rem;
+}
+.contact-link:hover {
+  text-decoration: underline;
+}
+.phone-icon {
+  font-size: 1.6rem;
+  color: #081372;
+}
+
+/* Feedback Modal Overlay */
+.feedback-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal box */
+.feedback-modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.feedback-modal h3 {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.4rem;
+  color: #0f172a;
+}
+
+/* Textarea */
+.feedback-modal textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+/* Modal buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+}
+.btn-post {
+  background: #0f172a;
+  color: #fff;
+}
+.btn-cancel {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+.btn-post:hover {
+  background: #162b55;
+}
+.btn-cancel:hover {
+  background: #d1d5db;
+}
+
+/* Success message */
+.feedback-sent-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #0f172a;
+  font-weight: bold;
+  padding: 1rem;
+}

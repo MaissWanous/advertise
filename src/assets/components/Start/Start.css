@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
+.hero {
+  position: relative;
+  width: 100vw;
+  /* max-width: 1200px;      */
+  height: 100vh;
+  margin: 0 auto;         /* تركز أفقياً */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+
+  /* حركة خفيفة للـ background */
+  animation: bgFloat 5s ease-in-out infinite;
+}
+
+@keyframes bgFloat {
+  0%   { background-position: 50% 45%; }
+  50%  { background-position: 50% 55%; }
+  100% { background-position: 50% 45%; }
+}
+
+.hero__overlay {
+  position: relative;
+  z-index: 1;
+  margin-left: 5%;
+  color: #ffffff;
+  max-width: 40%;
+}
+
+.hero__title {
+     font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+    text-shadow: 8px 8px 12px rgba(62, 193, 233, 0.733);
+  font-size: 3rem;
+  line-height: 1.2;
+  margin: 0 0 1.5rem;
+}
+
+.hero__btn {
+  display: inline-block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(90deg, #194fa5, #0ea5e9);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+  font-weight:bold;
+}
+
+.hero__btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}

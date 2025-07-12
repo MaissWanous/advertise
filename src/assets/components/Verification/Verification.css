@@ -1,0 +1,100 @@
+/* تغطية كامل الشاشة مع خلفية كريمية */
+.verification-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f3f3f3; /* لون كريمي فاتح */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* صندوق التحقق الأبيض في المنتصف */
+.verification-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 50%;      /* مناسب لشاشة لابتوب */
+  max-width: 90%;    /* يستجيب على شاشات أصغر */
+  padding: 32px 24px;
+  box-sizing: border-box;
+}
+
+/* عنوان الصفحة */
+.verification-container h1 {
+  margin: 0 0 16px;
+  font-size:2.5rem;
+  color: #0f075c;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* النص التوضيحي */
+.verification-container p {
+  margin: 0 0 24px;
+  font-size: 1.3rem;
+  color: #383838;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+}
+
+/* حاوية حقول الإدخال */
+.code-inputs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* تنسيق كل حقل */
+.code-inputs input {
+  width: 48px;
+  height: 56px;
+  font-size: 1.5rem;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.code-inputs input:focus {
+  border-color: #15233c;
+  box-shadow: 0 0 4px rgba(255,102,0,0.4);
+}
+
+/* رابط إعادة الإرسال */
+.resend {
+  font-size: 1.3rem;
+  color: #2b2929;
+  margin-bottom: 24px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.resend a {
+  color: #050c4b;
+  text-decoration: none;
+  margin-left: 4px;
+  font-size: 1.3rem;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.resend a:hover {
+  text-decoration: underline;
+}
+
+/* زر الإرسال */
+.btn-verify {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: #113a7c;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-verify:hover {
+  background-color: #15233c;
+}

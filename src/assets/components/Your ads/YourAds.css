@@ -1,0 +1,59 @@
+.ads {
+    
+    
+     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+     font-style: oblique;
+     }
+
+.ads__header { 
+    margin: 2%;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+ }
+
+.ads__title {
+     margin-left: 1rem; 
+     font-size: 2rem; 
+     text-transform: lowercase; 
+     color: #0c0c0c;
+     }
+
+/* زرّات عامة */ 
+.adsbtn { 
+      display: inline-flex;
+      align-items: center; 
+      gap: 0.5rem;
+      padding: 0.5rem 1rem; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-size: 1.2rem;
+      background-color: #DBF68F;
+      transition: background-color 0.2s; 
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+     font-style: oblique;
+    }
+
+.adsbtn:hover { background-color: #d4ee6f; }
+
+/* زر جديد */ .adsbtn--new { font-weight: bold;  margin-right: 1.8rem;}
+
+/* زر المزيد */ .adsbtn--more { font-weight: normal; }
+
+.ads__list {
+     margin:3rem; display: flex; flex-direction: column; gap: 2rem; }
+
+.ad-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid #aaa7a7; border-radius: 12px; }
+
+.ad-item__img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; }
+
+.ad-item__text { flex: 1; margin: 0; font-size: 1.2rem; font-style: italic; color: #444; }
+
+.adsbtn--edit { background-color: #ffc107; /* لون أصفر جميل */ color: #fff; border: none; padding: 5px 10px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s ease; }
+
+.adsbtn--edit:hover { background-color: #e0a800; }
+
+.adsbtn--delete { background-color: #dc3545; /* لون أحمر للحذف */ color: #fff; border: none; padding: 5px 10px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s ease; }
+
+.adsbtn--delete:hover { background-color: #c82333; }

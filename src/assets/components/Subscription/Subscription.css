@@ -1,0 +1,85 @@
+/* Reset/base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.subscription-container {
+  background: #f9fbfc;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 4rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+  color: #2F5061;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Title */
+.subscription-title {
+  font-size: 2rem;
+  text-transform: lowercase;
+  margin-bottom: 16px;
+}
+
+/* Body */
+.subscription-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* Table */
+.subscription-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.subscription-table th,
+.subscription-table td {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 1rem;
+}
+.subscription-table thead th {
+  text-transform: lowercase;
+  border-bottom: 1px solid #d0d0d0;
+  color: #247499;
+}
+.subscription-table tbody td {
+  border-bottom: 1px solid #eee;
+}
+.subscription-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Renewal button */
+.renewal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #32677a;
+  border-radius: 8px;
+  padding: 16px 24px;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: background 0.2s;
+}
+.renewal-card:hover {
+  background: #1285af;
+}
+.renewal-text {
+  font-size: 1.5rem;
+  /* text-transform: lowercase; */
+  margin-bottom: 8px;
+  color: #eee;
+}
+.renewal-arrow {
+  font-size: 2.5rem;
+  line-height: 1;
+  color: #eee;
+}

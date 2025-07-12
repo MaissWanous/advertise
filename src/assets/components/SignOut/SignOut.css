@@ -1,0 +1,110 @@
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* الصفحة كاملة مع الخلفية فقط */
+.signup-page {
+  width: 100vw;
+  height: 98vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* كرت التسجيل */
+.signup-card {
+  background: rgba(13, 31, 68, 0.9);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  width: 90%;
+  color: #fff;
+  z-index: 1;
+  margin-right: 35rem;
+}
+
+.signup-card h1 {
+  margin-top: 0;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.signup-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signup-card label {
+  font-size: 1rem;
+}
+
+.input-wrapper {
+  position: relative;
+  margin-top: 0.25rem;
+}
+
+.input-wrapper .icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #6fbff1;
+  font-size: 1.1rem;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.input-wrapper input::placeholder {
+  color: #ccc;
+}
+
+.error {
+  color: #f55;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.signup-card button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #49c6ff, #0062e0);
+  border: none;
+  border-radius: 24px;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.signup-card button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.footer-text {
+  margin-top: 10rem;
+  text-align: center;
+  color: #6fbff1;
+  font-size: 0.95rem;
+  margin-left: 4.5rem;
+}

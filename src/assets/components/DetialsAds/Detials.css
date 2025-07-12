@@ -1,0 +1,95 @@
+/* src/components/StatsCard.css */
+
+.dashboard-wrapper {
+  /* background: #f5f7fa; */
+  padding: 2rem;
+  border-radius: 12px;
+  font-family: 'Open Sans', sans-serif;
+  /* يمتد بعرض كامل النافذة */
+  width: 100vw;
+  box-sizing: border-box;
+  margin: 0; /* يلغي الهوامش المركزية */
+}
+
+/* العنوان في المنتصف */
+.dashboard-title {
+  margin: 0 0 2rem;
+  font-size: 3rem;
+  color: #0d3b66;
+  text-align: center;
+  margin-bottom: 10rem;
+
+}
+
+/* على لابتوب: صفُّين من البطاقات */
+.dashboard-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  /* لو أردت 4 أعمدة على أجهزة أكبر:
+  @media(min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  */
+  position: relative;
+  top:-8rem;
+}
+
+/* البطاقات */
+.dashboard-tile {
+  background: #0d3b66;
+  border-radius: 10px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #ffffff;
+  transition: transform 0.2s, box-shadow 0.2s;
+  /* margin-bottom: 10rem; */
+}
+.dashboard-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* دائرة الأيقونة */
+.tile-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+/* الأيقونة */
+.tile-icon {
+  font-size: 2rem;
+}
+
+/* النص */
+.tile-info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+}
+.tile-label {
+  font-size: 1.7rem;
+  /* opacity: 0.8; */
+}
+.tile-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-top: 0.2rem;
+  opacity: 0.8;
+}
+
+/* حالة التحميل */
+.sc-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #556;
+  font-size: 1rem;
+}

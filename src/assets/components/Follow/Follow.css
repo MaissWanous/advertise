@@ -1,0 +1,17 @@
+/* Follow.css */ .fa-container { margin: 3rem; padding: 2rem; display: flex; flex-direction: column; gap: 1.2rem; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-style: oblique; }
+
+.fa-card { display: flex; align-items: center; background: #fff; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+.fa-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-right: 1rem; }
+
+.fa-info { flex: 1; }
+
+.fa-name { margin: 0; font-size: 1.5rem; color: #0f075c; text-transform: capitalize; font-family: 'Nunito', sans-serif; }
+
+.fa-desc { margin: 4px 0 0; font-size: 1.2rem; color: #2b2929; font-family: 'abril-fatface', cursive; font-weight: bold; }
+
+.fa-actions { display: flex; gap: 0.5rem; }
+
+.fa-btn-follow { background: #050c4b; color: #fff; border: none; border-radius: 20px; padding: 0.6rem 1rem; font-size: 1rem; cursor: pointer; transition: background 0.2s; } .fa-btn-follow:hover { background: #455779; }
+
+.fa-btn-unfollow { background: #fff; color: #050c4b; border: 1px solid #050c4b; border-radius: 20px; padding: 0.6rem 1rem; font-size: 1rem; cursor: pointer; transition: background 0.2s, color 0.2s; } .fa-btn-unfollow:hover { background: #f0f0f0; }

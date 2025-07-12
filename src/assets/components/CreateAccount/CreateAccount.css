@@ -1,0 +1,105 @@
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* الصفحة كاملة مع الخلفية */
+.create-account-page {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* بطاقة الإنشاء */
+.create-account-card {
+  background: rgba(13, 31, 68, 0.85);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  /* max-width: 360px; */
+  width: 40vw;
+  color: #fff;
+}
+
+.create-account-card h1 {
+  margin: 0 0 1.5rem;
+  font-size: 2rem;
+  text-align: center;
+}
+
+/* النموذج */
+.create-account-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* كل حقل */
+.create-account-card label {
+  font-size: 1rem;
+}
+
+/* حاوية الأيقونة + الحقل */
+.input-group {
+  position: relative;
+  margin-top: 0.3rem;
+}
+
+.input-group .icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #6fbff1;
+  font-size: 1.1rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.input-group input::placeholder {
+  color: #8fbff1;
+}
+
+/* خطأ */
+.error {
+  color: #f55;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* زر الإنشاء */
+.create-account-card button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #49c6ff, #0062e0);
+  border: none;
+  border-radius: 24px;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.create-account-card button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

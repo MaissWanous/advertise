@@ -1,0 +1,102 @@
+/* AdminDashboard.css */
+
+.dashboard {
+    font-family: Arial, sans-serif;
+    color: #2F5061;
+    padding: 24px;
+    background: #fafafa;
+  }
+  
+  /* البطاقات العلوية */
+  .top-cards {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .card, .btn-add {
+    border-radius: 8px;
+    padding: 16px 24px;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  
+  .card .label {
+    display: block;
+    font-size: 14px;
+    text-transform: lowercase;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+  
+  .card .value {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
+  .card.orange { background: #F29E4C; color: white; }
+  .card.blue   { background: #A6D8F3; color: white; }
+  .card.green  { background: #A6E1AF; color: white; }
+  
+  .btn-add {
+    background: #F29E4C;
+    color: #2F5061;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: lowercase;
+    transition: background 0.2s;
+  }
+  
+  .btn-add:hover {
+    background: #e5893e;
+  }
+  
+  /* شبكة الرسوم البيانية */
+  .charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  
+  /* بطاقة رسم بياني */
+  .chart-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  
+  .chart-card h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    text-transform: capitalize;
+  }
+  
+  /* الأسطورة أسفل PieChart */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+  
+  .legend-label {
+    font-size: 13px;
+    text-transform: lowercase;
+  }

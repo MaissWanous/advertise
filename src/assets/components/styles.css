@@ -1,0 +1,97 @@
+/* Reset بسيط */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body, html, #root {
+    width: 100vw;
+    height: 100vh;
+    font-family: sans-serif;
+  }
+  
+  /* Navbar */
+  .navbar {
+    width: 100vw;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+  .navbar__logo {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  .navbar__icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #e3e3e3, #ccc);
+    border-radius: 4px;
+    margin-right: 0.5rem;
+  }
+  .navbar__links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+  }
+  .navbar__links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+  .navbar__btn {
+    padding: 0.5rem 1.2rem;
+    background: #d4f57c;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Hero */
+  .hero {
+    margin-top: 64px; /* لمراعاة ارتفاع الـ navbar */
+    position: relative;
+    width: 100vw;
+    height: 80vh; /* 80% من ارتفاع الشاشة */
+    background: #f26020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 1rem;
+    color: white;
+  }
+  .hero__title {
+    font-size: 2rem;
+    line-height: 1.3;
+    max-width: 800px;
+  }
+  .hero__title strong {
+    font-weight: bold;
+  }
+  .hero__overlay {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: white;
+    /* فواصل البيض */
+    clip-path: polygon(
+      0 100%, 6.25% 0%, 12.5% 100%,
+      18.75% 0%, 25% 100%, 31.25% 0%,
+      37.5% 100%, 43.75% 0%, 50% 100%,
+      56.25% 0%, 62.5% 100%, 68.75% 0%,
+      75% 100%, 81.25% 0%, 87.5% 100%,
+      93.75% 0%, 100% 100%
+    );
+  }

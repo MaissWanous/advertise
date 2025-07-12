@@ -1,0 +1,98 @@
+/* استيراد الخطوط */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700&family=Open+Sans:wght@400&display=swap');
+
+/* القسم الرئيسي */
+.browse-categories {
+  width: 100%;
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  margin-bottom:3rem;
+}
+
+/* العنوان */
+.browse-categories__title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 2.5rem;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+/* قائمة البطاقات */
+.browse-categories__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* كل بطاقة */
+.category-card {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 260px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* الرابط يغطي البطاقة كاملة */
+.category-card__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* صورة القسم */
+.category-card__image {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+.category-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+.category-card:hover .category-card__image img {
+  transform: scale(1.05);
+}
+
+/* الجزء السفلي */
+.category-card__info {
+  background: #0f172a; /* كحلي */
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background 0.3s;
+}
+.category-card:hover .category-card__info {
+  background: #15233c;
+}
+
+/* اسم القسم */
+.category-card__name {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* الأيقونة */
+.category-card__icon {
+  font-size: 2rem;
+  color: #94a3b8; /* رمادي فاتح */
+  transition: color 0.3s;
+}
+.category-card:hover .category-card__icon {
+  color: #e2e8f0;
+}
