@@ -27,7 +27,7 @@ export default function Sidbar() {
                 ".pro-sidebar-inner": {
                     backgroundColor: "#0d1f44",
                     color: "#fff",
-                    height: "100vh",
+                    height: "100%",
                     paddingTop: "40px"
                 },
                 ".pro-inner-item": {
