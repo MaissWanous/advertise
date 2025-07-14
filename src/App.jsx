@@ -49,7 +49,8 @@ export default function App() {
         <Route path="/Section" element={<Section />} />
         <Route path="/Subscription" element={<Subscription />} />
         <Route path="/Detials" element={<Detials />} />
-        <Route path="/DashbordAdmin" element={<Dashboard />} /> 
+        <Route path="/DashbordAdmin/*" element={<Dashboard />} />
+        <Route path='/d'element={<DashboardAdmain/>}/>
       </Routes>
     </>
   );

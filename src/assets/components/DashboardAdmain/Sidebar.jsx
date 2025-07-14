@@ -2,20 +2,25 @@ import { useState } from "react"; // useState is not strictly needed for this sp
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Link, useLocation } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChartBar, faUserCog,
     faCog,
     faCreditCard
 } from '@fortawesome/free-solid-svg-icons';
-
+const Item = ({ title, to, icon, selected, setSelected }) => {
+    return (
+        <MenuItem active={selected === title} onClick={() => setSelected(title)} icon={icon}>
+            <Typography>
+                {title}
+            </Typography>
+            <Link to={to}></Link>
+        </MenuItem>
+    )
+}
 export default function Sidbar() {
-    const location = useLocation();
-
-
-    const isActive = (path) => location.pathname === path;
-
+    const [selected, setSelected] = useState("Statistics")
     return (
         <>
             <Box sx={{
@@ -23,43 +28,52 @@ export default function Sidbar() {
                     backgroundColor: "#0d1f44",
                     color: "#fff",
                     height: "100vh",
-                    paddingTop:"40px"
+                    paddingTop: "40px"
                 },
-                 ".pro-inner-item": {
+                ".pro-inner-item": {
                     padding: "25px 35px 25px 20px !important",
-                      boxShadow: "0px 9px 19px -23px !important", 
+                    boxShadow: "0px 9px 19px -23px !important",
+                },
+                ".pro-inner-item:hover": {
+                    backgroundColor: '#1a3a6b',
+                },
+                ".pro-menu-item.active": {
+                    backgroundColor: '#1a3a6b!important',
                 }
             }}>
                 <ProSidebar>
                     <Menu>
-                        <MenuItem
-                            icon={<FontAwesomeIcon icon={faChartBar} />}
-                            component={<Link to="/statistics" />}
-                            active={isActive("/statistics")}
-                        >
-                            Statistics
-                        </MenuItem>
-                        <MenuItem
+                        <Box>
+                            <Item 
+                            title="Statistics"
+                            to="/DashbordAdmin/statistics"
+                             icon={<FontAwesomeIcon icon={faChartBar} />}
+                             selected={selected}
+                             setSelected={setSelected}
+                            />
+                             <Item 
+                            title="Administrative settings"
+                            to="/DashbordAdmin/Administrative"
                             icon={<FontAwesomeIcon icon={faUserCog} />}
-                            component={<Link to="/admin-settings" />}
-                            active={isActive("/admin-settings")}
-                        >
-                            Administrative settings
-                        </MenuItem>
-                        <MenuItem
-                            icon={<FontAwesomeIcon icon={faCog} />}
-                            component={<Link to="/general-settings" />}
-                            active={isActive("/general-settings")}
-                        >
-                            General settings
-                        </MenuItem>
-                        <MenuItem
-                            icon={<FontAwesomeIcon icon={faCreditCard} />}
-                            component={<Link to="/pay-settings" />}
-                            active={isActive("/pay-settings")}
-                        >
-                            Pay settings
-                        </MenuItem>
+                             selected={selected}
+                             setSelected={setSelected}
+                            />
+                             <Item 
+                            title="General settings"
+                            to="/DashbordAdmin/General"
+                              icon={<FontAwesomeIcon icon={faCog} />}
+                             selected={selected}
+                             setSelected={setSelected}
+                            />
+                             <Item 
+                            title="Pay settings"
+                            to="/DashbordAdmin/Pay"
+                              icon={<FontAwesomeIcon icon={faCreditCard} />}
+                             selected={selected}
+                             setSelected={setSelected}
+                            />
+                        </Box>
+                   
                     </Menu>
                 </ProSidebar>
             </Box>
