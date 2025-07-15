@@ -43,18 +43,18 @@ export default function Statistics() {
         ]);
 
         setAccessData([
-            { day: 'Jan', value: 800 },
-            { day: 'Feb', value: 2200 },
-            { day: 'Mar', value: 1800 },
-            { day: 'Apr', value: 2500 },
-            { day: 'May', value: 2000 },
-            { day: 'Jun', value: 2800 },
-            { day: 'Jul', value: 3200 },
-            { day: 'Aug', value: 3000 },
-            { day: 'Sep', value: 3500 },
-            { day: 'Oct', value: 3300 },
-            { day: 'Nov', value: 3600 },
-            { day: 'Dec', value: 3400 }
+            { province: 'Damascus', value: 800 },
+            { province: 'Rif Dimashq', value: 2200 },
+            { province: 'Aleppo', value: 1800 },
+            { province: 'Homs', value: 2500 },
+            { province: 'Daraa', value: 2000 },
+            { province: 'Latakia', value: 2800 },
+            { province: 'Tartus', value: 3200 },
+            { province: 'Hama', value: 3000 },
+            { province: 'Quneitra', value: 3500 },
+            { province: 'Deir ez-Zor', value: 3300 },
+            { province: 'Raqqa', value: 3600 },
+            { province: 'Hasakah', value: 3400 }
         ]);
 
         setProfitData([
@@ -73,60 +73,57 @@ export default function Statistics() {
         ]);
     }, []);
 
-    const COLORS_SEC = ['#F29E4C', '#A6D8F3', '#A6E1AF'];
+    const COLORS_SEC = ['#f600ca', '#A6D8F3', '#345c6f'];
     const gradientId = 'accessGradient';
 
     return (
-        <Box sx={{ display: 'grid', gap:"40px", gridTemplateColumns: "1fr 1fr" }}>
+        <Box sx={{ display: 'grid', gap: "40px", gridTemplateColumns: "1fr 1fr" }}>
             <Card sx={{
                 m: 0,
                 borderRadius: 2,
-               
+
                 boxShadow: 3,
                 display: 'flex',
                 flexDirection: 'column',
                 flexShrink: 0,
             }}>
                 <CardContent sx={{ flexGrow: 1 }}>
-                    <Box sx={{ fontSize: '0.9rem' }}>
-                        <Typography variant="h6" component="div" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>Viewer:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' }}>{stats.viewers}</Typography>
+                    <Box sx={{ fontSize: '0.9rem' ,color:'#345c6f' }}>
+                        <Typography variant="body1"  sx={{ mb: 2,fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>Viewer:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' ,fontSize:"23px" }}>{stats.viewers}</Typography>
                         <Divider sx={{ mx: 2 }} />
-                        <Typography variant="h6" component="div" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>Number Ads:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' }}>{stats.advertisers}</Typography>
+                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>Number Ads:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"23px" }}>{stats.advertisers}</Typography>
                         <Divider sx={{ mx: 2 }} />
-                        <Typography variant="h6" component="div" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>Most populer:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' }}>N/A</Typography>
+                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>Most populer Ads:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"23px" }}>N/A</Typography>
                         <Divider sx={{ mx: 2 }} />
-                        <Typography variant="h6" component="div" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>More active section:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' }}>N/A</Typography>
-                        <Divider sx={{ mx: 2 }} />
-                        <Typography variant="h6" component="div" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>Resturant section:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' }}>N/A</Typography>
-                    </Box>
+                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>More active section:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"23px",color:"#f600ca" }}>Resturant</Typography>
+                         </Box>
                 </CardContent>
             </Card>
 
 
-            <Box sx={{ display: 'flex', gap:"10px", flexDirection: 'column', flexGrow: 1 }}>
+            <Box sx={{ display: 'flex', gap: "10px", flexDirection: 'column', flexGrow: 1 }}>
                 <Card sx={{ borderRadius: 2, boxShadow: 3, p: 2 }}>
                     <Typography variant="h6" component="h3" sx={{ mb: 1 }}>Access</Typography>
                     <ResponsiveContainer width="100%" height={200}>
                         <AreaChart data={accessData}>
                             <defs>
                                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#F29E4C" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#F29E4C" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#f600ca" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#f600ca" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <XAxis dataKey="day" />
+                            <XAxis dataKey="province" />
                             <YAxis />
                             <CartesianGrid strokeDasharray="3 3" />
                             <Tooltip />
                             <Area
                                 type="monotone"
                                 dataKey="value"
-                                stroke="#F29E4C"
+                                stroke="#f600ca"
                                 fill={`url(#${gradientId})`}
                             />
                         </AreaChart>
@@ -141,7 +138,7 @@ export default function Statistics() {
                             <YAxis />
                             <CartesianGrid strokeDasharray="3 3" />
                             <Tooltip />
-                            <Bar dataKey="value" fill="#A6E1AF" />
+                            <Bar dataKey="value" fill="#345c6f" />
                         </BarChart>
                     </ResponsiveContainer>
                 </Card>
