@@ -89,17 +89,17 @@ export default function Statistics() {
             }}>
                 <CardContent sx={{ flexGrow: 1 }}>
                     <Box sx={{ fontSize: '0.9rem' ,color:'#345c6f' }}>
-                        <Typography variant="body1"  sx={{ mb: 2,fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>Viewer:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' ,fontSize:"23px" }}>{stats.viewers}</Typography>
+                        <Typography variant="body1"  sx={{ mb: 2,fontSize:"21px", fontWeight: 'bold', color: '#345c6f' }}>Viewer:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' ,fontSize:"21px" }}>{stats.viewers}</Typography>
                         <Divider sx={{ mx: 2 }} />
-                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>Number Ads:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"23px" }}>{stats.advertisers}</Typography>
+                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"21px", fontWeight: 'bold', color: '#345c6f' }}>Number Ads:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"21px" }}>{stats.advertisers}</Typography>
                         <Divider sx={{ mx: 2 }} />
-                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>Most populer Ads:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"23px" }}>N/A</Typography>
+                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"21px", fontWeight: 'bold', color: '#345c6f' }}>Most populer Ads:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"21px" }}>N/A</Typography>
                         <Divider sx={{ mx: 2 }} />
-                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"23px", fontWeight: 'bold', color: '#345c6f' }}>More active section:</Typography>
-                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"23px",color:"#f600ca" }}>Resturant</Typography>
+                        <Typography variant="body1"  sx={{ mb: 2,  fontSize:"21px", fontWeight: 'bold', color: '#345c6f' }}>More active section:</Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'right' , fontSize:"21px",color:"#f600ca" }}>Resturant</Typography>
                          </Box>
                 </CardContent>
             </Card>
