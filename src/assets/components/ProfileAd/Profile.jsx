@@ -228,6 +228,7 @@ export default function Profile() {
               <button className="rq19 rq21">
                 <MdNotifications />
               </button>
+              
               <button onClick={goNewAd} className="rq22">
                 New Ad
               </button>
@@ -263,11 +264,19 @@ export default function Profile() {
                       <MdDelete />
                     </button>
                   </div>
-                  <img
-                    src={ad.img}
-                    alt={ad.title}
-                    className="rq28"
-                  />
+                  <div className="rq28-wrapper">
+  <img src={ad.img} alt={ad.title} className="rq28" />
+  <button className="rq28-add-btn" onClick={pick}>
+    <MdAdd />
+  </button>
+  <input
+    type="file"
+    ref={pickerRef}
+    accept="image/*"
+    hidden
+    onChange={onPick}
+  />
+</div>
                   <div className="rq29">
                     <div className="rq30">
                       {Array(ad.rating)

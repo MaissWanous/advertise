@@ -18,8 +18,8 @@ body {
 
 .course-ad-section
  {
-  width: 60rem;
- height: 50rem;
+  width: 65rem;
+ height: 40rem;
    margin: 0 auto; 
    padding: 3rem 1rem; 
   }
@@ -28,11 +28,13 @@ body {
   font-family:'Nunito';
   font-size:2.5rem; 
   text-align:center; 
-  color:#0f172a; margin-bottom:2rem; }
+  color:#0f172a; margin-bottom:2rem;
+margin-top: -3rem; }
 
 /* Slider */
 .slider-container {
    position: relative;
+   
    }
 .slider-viewport {
    overflow: hidden; 
@@ -81,6 +83,7 @@ body {
   /* padding:1rem 1.5rem;  */
   position:relative;
   padding: 20px;
+  height: 26rem;
 }
 
 /* Header */
@@ -142,7 +145,7 @@ body {
 
 .image-wrapper img {
    width:100%; 
-  height:100%; 
+  height:17rem; 
   object-fit:cover;
  }
 
@@ -151,6 +154,7 @@ body {
   display:flex;
    flex-direction:column; 
   gap:0.5rem;
+  margin-right: 3rem;
  }
 
 .rating { 
@@ -203,15 +207,15 @@ body {
      /* top: 23rem;
      right: 30rem; */
      padding: 0.5rem;
-     top: 22rem;
-     right: 28rem;
+     top: 20rem;
+     right: 30rem;
   }
 
 .icon-btn {
    background:transparent; 
   border:none; 
   cursor:pointer;
-  
+  /* font-size: 4rem; */
   
  }
 .icon-btn, .icon-btn:focus,
@@ -219,7 +223,7 @@ body {
   outline: none;
   box-shadow: none;
   background: transparent;
-  padding: 0.5rem;
+  padding: 0.7rem;
  
 }
 .icon-btn::-moz-focus-inner{
@@ -228,7 +232,7 @@ body {
   
 }
 .icon { 
-  font-size:1.5rem;
+  font-size:1.8rem;
    transition:transform 0.2s,
    color 0.2s; 
    
@@ -275,7 +279,7 @@ body {
     /* right: -15rem;
     top: -20rem; */
       color:#38bdf8;
-   margin-left: 15rem;
+   margin-left: 20rem;
   }
 .contact-link:hover { 
   text-decoration:underline;

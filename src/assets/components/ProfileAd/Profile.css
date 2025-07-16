@@ -46,7 +46,7 @@
   object-fit: cover;
   margin-left: 1rem;
 }
-/* Avatar + “+” button */
+/* Avatar + â€œ+â€ button */
 .rq7 {
   position: absolute;
   bottom: 0.5rem;
@@ -94,6 +94,23 @@
   margin-top: 1.5rem;
   margin-left: 3.5rem;
 }
+.rqEditBtn,.rqEditBtn:active,.rqEditBtn:focus{
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+.rqEditBtn::-moz-focus-inner{
+  border: none;
+}
+.rqDeleteBtn,.rqDeleteBtn:active,.rqDeleteBtn:focus{
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+.rqDeleteBtn::-moz-focus-inner{
+  border: none;
+}
+
 
 /* EDITING STATE: wrap into two rows */
 .rq10--editing {
@@ -379,7 +396,7 @@
   background: #16255e;
 }
 
-/* Modals (edit, delete, comment) – unchanged from original */
+/* Modals (edit, delete, comment) â€“ unchanged from original */
 .edit-modal-overlay,
 .delete-modal-overlay,
 .comment-modal-overlay {
@@ -434,4 +451,38 @@
 .modal-buttons button:last-child {
   background: #f0f0f0;
   color: #333;
+}
+.rq28-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+  height: auto;
+}
+
+.rq28-add-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 2rem;
+  color: #080255;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rq28-add-btn:hover {
+  color: #162b55;
+}
+.rq28-add-btn,.rq28-add-btn:active,.rq28-add-btn:focus{
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+.rq28-add-btn::-moz-focus-inner{
+  border: none;
 }
