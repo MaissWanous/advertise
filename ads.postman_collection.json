@@ -1,0 +1,609 @@
+{
+	"info": {
+		"_postman_id": "5e782512-aa3e-490e-9359-fa2b34574e9d",
+		"name": "ads",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29236456"
+	},
+	"item": [
+		{
+			"name": "انشاء حساب وتسجيل الدخول",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"abdelkraimalshami@gmail.com\",\r\n    \"password\":123456,\r\n    \"account_type\":\"personal\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"abdelkraimalshami@gmail.com\",\r\n    \"password\":123456\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendrestLink",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"fffsdnf@gmail.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/forgot-password",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restPassword",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"dddd@gmail.com\",\r\n  \"token\": \"3667972a8b5132d924b860dba12a95a2b16c15ce7560ae723de35a5724cd238e\",\r\n  \"password\": 123456,\r\n  \"password_confirmation\": 654321\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/reset-password",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4|n02cqFQO16pmNpdEJ5l1YRoanDQFFK4h6XmH7OQAc013685c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/logout",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "الاعلانات",
+			"item": [
+				{
+					"name": "store Ad",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2|UoCJHkduK5lp7KvlTgX7fVKqORLRJCvc9VPDmVs112466dfe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"...........\",\r\n    \"description\":123456,\r\n    \"price\":\"12500.50\",\r\n    \"status\":\"pending\",\r\n    \"video_path\":\"..\",\r\n    \"categories_id\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/storeAd",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"storeAd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "advertisements",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3|O2WY2X5U6h8XQ8ckXUgxBlKQagyxCVwxkSyGOcYycfbdc5c9",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/advertisements",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"advertisements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3|O2WY2X5U6h8XQ8ckXUgxBlKQagyxCVwxkSyGOcYycfbdc5c9",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/category",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"category"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "التعليقات والتفاعلات والمفضلة",
+			"item": [
+				{
+					"name": "AddFavorite",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2|UoCJHkduK5lp7KvlTgX7fVKqORLRJCvc9VPDmVs112466dfe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/AddFavorite/8aac036d-23e1-47fa-b75f-a47916924d0b",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"AddFavorite",
+								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favorites",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/AddFavorite/8aac036d-23e1-47fa-b75f-a47916924d0b",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"AddFavorite",
+								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createReaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2|UoCJHkduK5lp7KvlTgX7fVKqORLRJCvc9VPDmVs112466dfe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"like\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/createReaction/8aac036d-23e1-47fa-b75f-a47916924d0b",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"createReaction",
+								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3|O2WY2X5U6h8XQ8ckXUgxBlKQagyxCVwxkSyGOcYycfbdc5c9",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\":\".......\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/createComment/8aac036d-23e1-47fa-b75f-a47916924d0b",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"createComment",
+								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "storeComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|AMs87H3mTCj4TudLutoyn4nFOj8Fk069hE7cdBJef59a1bd8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\":\"llfsldfsflldl\",\r\n    \"parent_id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/storeComment/4b13de54-01cc-4874-917c-1e503d3ed9d4",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"storeComment",
+								"4b13de54-01cc-4874-917c-1e503d3ed9d4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "comments and replies",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|AMs87H3mTCj4TudLutoyn4nFOj8Fk069hE7cdBJef59a1bd8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/getCommentsWithReplies/4b13de54-01cc-4874-917c-1e503d3ed9d4",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"getCommentsWithReplies",
+								"4b13de54-01cc-4874-917c-1e503d3ed9d4"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/getCommentsWithReplies/4b13de54-01cc-4874-917c-1e503d3ed9d4",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"getCommentsWithReplies",
+										"4b13de54-01cc-4874-917c-1e503d3ed9d4"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.8"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 02 Jul 2025 20:30:34 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "56"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"uuid\": \"f799d6d7-2ed0-4bda-b8d0-80cbfea4c518\",\n            \"comment\": \"llllll\",\n            \"user_id\": 1,\n            \"ad_id\": 2,\n            \"parent_id\": null,\n            \"created_at\": \"2025-07-02T20:03:12.000000Z\",\n            \"updated_at\": \"2025-07-02T20:03:12.000000Z\",\n            \"replies\": [\n                {\n                    \"id\": 4,\n                    \"uuid\": \"a9ccd6d7-34e0-4966-998d-df053e42acb1\",\n                    \"comment\": \"llfsldfsflldl\",\n                    \"user_id\": 1,\n                    \"ad_id\": 2,\n                    \"parent_id\": 1,\n                    \"created_at\": \"2025-07-02T20:21:19.000000Z\",\n                    \"updated_at\": \"2025-07-02T20:21:19.000000Z\",\n                    \"user\": {\n                        \"id\": 1,\n                        \"uuid\": \"76f7c152-33b4-4bea-b3d1-bdaf549e1f2a\",\n                        \"name\": null,\n                        \"account_type\": \"personal\",\n                        \"email\": \"abdelkraimalshami@gmail.com\",\n                        \"email_verified_at\": null,\n                        \"phone\": null,\n                        \"created_at\": \"2025-07-02T19:50:43.000000Z\",\n                        \"updated_at\": \"2025-07-02T19:50:43.000000Z\"\n                    }\n                }\n            ],\n            \"user\": {\n                \"id\": 1,\n                \"uuid\": \"76f7c152-33b4-4bea-b3d1-bdaf549e1f2a\",\n                \"name\": null,\n                \"account_type\": \"personal\",\n                \"email\": \"abdelkraimalshami@gmail.com\",\n                \"email_verified_at\": null,\n                \"phone\": null,\n                \"created_at\": \"2025-07-02T19:50:43.000000Z\",\n                \"updated_at\": \"2025-07-02T19:50:43.000000Z\"\n            }\n        }\n    ],\n    \"status\": true,\n    \"error\": \"Comments loaded successfully.\",\n    \"statusCode\": 200\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

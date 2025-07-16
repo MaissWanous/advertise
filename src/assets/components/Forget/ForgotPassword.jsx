@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import './ForgotPassword.css';
-import { Link } from 'react-router-dom';
-
+import {  useNavigate } from 'react-router-dom';
+import api from '../../../api/index.jsx';
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+   const navigate = useNavigate();
 
   const handleChange = useCallback(e => {
     setEmail(e.target.value);
@@ -13,12 +14,17 @@ const ForgotPassword = () => {
   const handleSubmit = useCallback(async e => {
     e.preventDefault();
     try {
-      // مناداة API هنا لإرسال رابط إعادة التعيين
-      setMessage(`تم إرسال تعليمات إعادة التعيين إ ${email}`);
+       const response = await api.post('/api/reset-password', { email: email });
+       console.log(response)
+      setMessage(`Reset instruction have been sent to ${email}`);
+        navigate('/verification');
+    
       setEmail('');
     } catch (err) {
       console.error(err);
-      setMessage('حدث خطأ أثناء الإرسال. حاول مجدداً.');
+       const errorMessage = (err.response?.data?.message || 'An error occurred while sending the message, please try again.');
+      console.error("error:", err);
+      setMessage(errorMessage);
     }
   }, [email]);
 
@@ -42,11 +48,11 @@ const ForgotPassword = () => {
               required
             />
           </div>
-          <Link to="/verification">
+          
           <button type="submit" className="btn-send">
             Send Email
           </button>
-          </Link>
+         
         </form>
         {message && (
           <p className="success-message">{message}</p>

@@ -22,6 +22,7 @@ import Subscription from './assets/components/Subscription/Subscription';
 import Detials from './assets/components/DetialsAds/Detials';
 import DashboardAdmain from './assets/components/DashboardAdmain/DashboardAdmain';
 import Dashboard from './assets/components/DashboardAdmain/Dashboard';
+import ProtectedRoute from './context/protectedRoute';
 // import Dashboard from './assets/components/DashboardAdmain/Dashboard'; // Assuming this is the correct component for the dashboard
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/resetPassword" element={<ResetPassword />} />
 
         {/* Authenticated User Routes  */}
+        <Route element={<ProtectedRoute/>}>
         <Route path="/Home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/saved" element={<Saved />} />
@@ -51,6 +53,7 @@ export default function App() {
         <Route path="/Detials" element={<Detials />} />
         <Route path="/DashbordAdmin/*" element={<Dashboard />} />
         <Route path='/d'element={<DashboardAdmain/>}/>
+        </Route>
       </Routes>
     </>
   );

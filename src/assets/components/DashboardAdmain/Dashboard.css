@@ -7,3 +7,11 @@ html, body, #root {
   place-items : unset;
   overflow: hidden; /* منع ظهور أشرطة التمرير غير المرغوب فيها على مستوى الصفحة */
 }
+button,
+button:active,
+button:focus,
+.MuiIconButton-root,
+.MuiIconButton-root:active,
+.MuiIconButton-root:focus {
+  outline: none !important; 
+}
