@@ -181,7 +181,7 @@ export default function Profile() {
             </div>
 
             <div
-              className={`rq10 ${editingName ? 'rq10--editing' : ''}`}
+              className={`rq10 ${editingName ? 'rq10--editing' : ''}`} style={{minHeight:'40px'}}
             >
               {editingName ? (
                 <>
