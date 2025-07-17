@@ -60,12 +60,12 @@ export default function General() {
                             justifyContent: 'space-between',
                             mb: 2,
                             pb: 1,
-                            borderBottom: '1px solid #eee',
+                           
                         }}>
-                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+                            <Typography variant="h6" sx={{ borderBottom: '1px solid #eee', fontWeight: 'bold', color: '#333' }}>
                                 Name
                             </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+                            <Typography variant="h6" sx={{  borderBottom: '1px solid #eee',fontWeight: 'bold', color: '#333' }}>
                                 Action
                             </Typography>
                         </Box>
@@ -77,9 +77,9 @@ export default function General() {
                             py: 1,
                         }}>
                             <Typography variant="body1" sx={{ color: '#333' }}>
-                                postly
+                                Website name
                             </Typography>
-                            <IconButton onClick={() => openModal('postly')} aria-label="edit postly" sx={{ color: '#345c6f' }}>
+                            <IconButton onClick={() => openModal(' Website name')} aria-label="edit postly" sx={{ color: '#345c6f' }}>
                                 <FontAwesomeIcon icon={faEdit} />
                             </IconButton>
                         </Box>
@@ -109,14 +109,14 @@ export default function General() {
                             <Typography variant="body1" sx={{ color: '#333' }}>
                                 description to my website
                             </Typography>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <IconButton onClick={() => openModal('description')} aria-label="edit description" sx={{ color: '#345c6f' }}>
                                     <FontAwesomeIcon icon={faEdit} />
                                 </IconButton>
+                            {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <IconButton aria-label="add description" sx={{ color: '#318934ff' }}>
                                     <FontAwesomeIcon icon={faPlusCircle} />
                                 </IconButton>
-                            </Box>
+                            </Box> */}
                         </Box>
                         <Divider sx={{ my: 1 }} />
 
@@ -129,7 +129,7 @@ export default function General() {
                             <Typography variant="body1" sx={{ color: '#333' }}>
                                 contact information
                             </Typography>
-                            <IconButton aria-label="contact info" sx={{ color: '#33ac37ff' }}>
+                            <IconButton onClick={() => openModal('contact')}  aria-label="contact info" sx={{ color: '#33ac37ff' }}>
                                 <FontAwesomeIcon icon={faPhone} />
                             </IconButton>
                         </Box>
@@ -173,15 +173,26 @@ export default function General() {
                     <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold', color: '#333', mb: 2 }}>
                         Edit {modalContent.charAt(0).toUpperCase() + modalContent.slice(1)}
                     </Typography>
-
-                    <TextField
-                        label="Name"
+                    {modalContent=="contact"?
+                         <TextField
+                        label="Contact"
                         variant="outlined"
                         fullWidth
-                        name="name"
-                        placeholder="Name"
+                        type='number'
+                        name="Contact"
+                        placeholder="Contact"
+                        sx={{ mb: 2 }}
+                    />:
+                    <TextField
+                        label={modalContent=="description"?"Description":"Name"}
+                        variant="outlined"
+                        fullWidth
+                        
+                        name={modalContent=="description"?"Description":"Name"}
+                        placeholder={modalContent=="description"?"Description":"Name"}
                         sx={{ mb: 2 }}
                     />
+                    }
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, gap: 2 }}>
                         <Button variant="contained" sx={{
@@ -205,6 +216,7 @@ export default function General() {
                     </Box>
                 </Box>
             </Modal>
+
         </>
     );
 };
