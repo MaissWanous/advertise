@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
 import { MdEmail, MdLock } from 'react-icons/md';
+import { useAuth } from '../../../context/context.jsx';
+import api from '../../../api/index.jsx';
 import './SignInSignUp.css';
-import im2 from './image/im2.jpg'; // ← استبدل بمسار صورتك
-import { Link } from 'react-router-dom';
+import im2 from './image/im2.jpg';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignInSignUp() {
+  const{token ,setToken}=useAuth()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('personal');
+  const [error, setErro] = useState('');
+  const navigate = useNavigate();
 
-  const handleTypeClick = (type) => setUserType(type);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password, userType });
-    // اربط الـ API هنا
+  
+    try {
+      const response = await api.post('/api/login', { email: email, password: password });
+   console.log(response)
+      const access = response.data.data.access_token;
+      setToken(access)
+      console.log(access)
+      localStorage.setItem(`token`, access);
+
+      navigate('/Home');
+
+    } catch (err) {
+      const errorMessage = (err.response?.data?.message || 'Login failed. Please check your credentials and try again.');
+      console.error("Login error:", err);
+      setErro(errorMessage);
+      console.log(errorMessage)
+    }
   };
 
   return (
@@ -53,45 +71,13 @@ export default function SignInSignUp() {
             Forgot password?
           </a>
         </label>
+   {error && <p className="text-danger text-center">{error}</p>}
+    
 
-        <div className="login-card__types">
-          <label>
-            <input 
-              type="radio" 
-              name="type" 
-              checked={userType==='personal'} 
-              onChange={() => handleTypeClick('personal')} 
-            />
-            Personal
-          </label>
-          <label>
-            <input 
-              type="radio" 
-              name="type" 
-              checked={userType==='business'} 
-              onChange={() => handleTypeClick('business')} 
-            />
-            Business
-          </label>
-        </div>
-
-        {/* Sign in button */}
-        <Link to="/Home">
-          <button type="submit" className="login-card__submit">
-            Sign in
-          </button>
-        </Link>
-
-        {/* New Login button */}
-            <Link to="/LogIn">
-        <button 
-          type="button" 
-          className="login-card__login"
-          onClick={() => console.log('Login clicked')}
-        >
-          Log in
+        <button type="submit" className="login-card__submit">
+          Sign in
         </button>
-            </Link>
+
         <div className="login-card__footer">
           <a href="CreateAccount">Create account</a>
         </div>

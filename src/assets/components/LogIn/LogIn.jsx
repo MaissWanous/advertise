@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { MdEmail, MdLock } from 'react-icons/md';
+ import { useAuth } from '../../../context/context.jsx';
+import api from '../../../api/index.jsx';
 import './LogIn.css';
 import im1 from './image/im1.jpg'; // ← ضع هنا مسار الخلفية
 import {Link} from 'react-router-dom';
@@ -7,10 +9,27 @@ export default function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     console.log({ email, password });
-    // اربط الـ API هنا
+      try {
+            console.log(e.target.username.value)
+            const response = await api.post('/api/login', { email:email, password: password});
+            const access=response.data.access_token;
+            console.log(response)
+            localStorage.setItem(`token${email}`, access);
+          
+            // navigate(`/portfolio/${e.target.username.value}`);
+        } catch (err) {
+            const errorMessage = (err.response?.data?.message || 'Login failed. Please check your credentials and try again.');
+            console.error("Login error:", err);
+            console.log(errorMessage)
+            // setErro(() => errorMessage);
+            console.log(erro)
+        } 
+        // finally {
+        //      setLoading(false);
+        // }
   };
 
   return (
