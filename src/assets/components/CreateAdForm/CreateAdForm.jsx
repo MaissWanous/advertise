@@ -1,18 +1,29 @@
+<<<<<<< HEAD
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+=======
 import React, { useState, useRef } from 'react';
 import api from '../../../api/index.jsx';
 import { useAuth } from '../../../context/context.jsx';
+>>>>>>> bf08c1d9ffc4224586a6d923862ac6071a7b9245
 import { useNavigate, Link } from 'react-router-dom';
 import {
   FaPlayCircle,
   FaImages,
-  FaSlidersH
+  FaSlidersH,
+  FaChevronDown
 } from 'react-icons/fa';
 import './CreateAdForm.css';
 
-
 export default function CreateAdForm() {
   const navigate = useNavigate();
+<<<<<<< HEAD
+
+  const [sectionOpen, setSectionOpen] = useState(false);
+  const [section, setSection] = useState('Select Section');
+
+=======
   const{token }=useAuth()
+>>>>>>> bf08c1d9ffc4224586a6d923862ac6071a7b9245
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [videoFile, setVideoFile] = useState(null);
@@ -21,11 +32,11 @@ export default function CreateAdForm() {
   const [sliderIndex, setSliderIndex] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
 
-  const videoInputRef  = useRef();
+  const videoInputRef = useRef();
   const imagesInputRef = useRef();
   const sliderInputRef = useRef();
 
-  const handleVideoClick  = () => videoInputRef.current.click();
+  const handleVideoClick = () => videoInputRef.current.click();
   const handleImagesClick = () => imagesInputRef.current.click();
   const handleSliderClick = () => sliderInputRef.current.click();
 
@@ -89,27 +100,73 @@ export default function CreateAdForm() {
     setSliderIndex(0);
   };
 
+  // Close dropdown on outside click
+  const dropdownRef = useRef();
+  const onClickOutside = useCallback(
+    e => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setSectionOpen(false);
+      }
+    },
+    [dropdownRef]
+  );
+  useEffect(() => {
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [onClickOutside]);
+
   return (
     <div className="create-ad-page">
       {/* Back button */}
       <Link to="/Home">
-      <button className="back-button" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
+        <button className="back-button" onClick={() => navigate(-1)}>
+          ← Back
+        </button>
       </Link>
 
       <div className="create-ad-container">
         <div className="left-panel">
+          {/* Section dropdown */}
+          <div className="section-dropdown" ref={dropdownRef}>
+            <button
+              className="section-btn"
+              onClick={() => setSectionOpen(open => !open)}
+            >
+              {section} <FaChevronDown className="dd-icon" />
+            </button>
+            {sectionOpen && (
+              <ul className="section-menu">
+                {['Restaurant', 'Travel', 'Education', 'Technology'].map(opt => (
+                  <li
+                    key={opt}
+                    className="section-item"
+                    onClick={() => {
+                      setSection(opt);
+                      setSectionOpen(false);
+                    }}
+                  >
+                    {opt}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           <div className="preview-box">
             {sliderFiles.length > 0 ? (
               <>
-                <button className="nav left" onClick={showPrev}>《</button>
+                <button className="nav left" onClick={showPrev}>
+
+                《
+                </button>
                 <img
                   src={URL.createObjectURL(sliderFiles[sliderIndex])}
                   alt=""
                   className="media-preview"
                 />
-                <button className="nav right" onClick={showNext}>》</button>
+                <button className="nav right" onClick={showNext}>
+                  》
+                </button>
               </>
             ) : videoFile ? (
               <video
@@ -149,8 +206,8 @@ export default function CreateAdForm() {
                 ref={imagesInputRef}
                 hidden
                 onChange={handleImagesChange}
-                />
-              <span>single Image</span>
+              />
+              <span>Single Image</span>
             </div>
             <div className="card" onClick={handleSliderClick}>
               <FaSlidersH className="card-icon" />
@@ -188,7 +245,11 @@ export default function CreateAdForm() {
               />
             </label>
             <button onClick={handleCreateClick}>Create Ad</button>
-            <button type="button" className="cancel-button" onClick={handleCancel}>
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={handleCancel}
+            >
               Cancel
             </button>
           </form>
@@ -198,12 +259,19 @@ export default function CreateAdForm() {
       {showAlert && (
         <div className="alert-modal-overlay">
           <div className="alert-modal">
-            <p>Your ad will be deleted after 12 hours if you do not complete the payment.</p>
+            <p>
+              Your ad will be deleted after 12 hours if you do not complete the
+              payment.
+            </p>
             <div className="modal-buttons">
               <Link to="/payment">
-                <button className="btn-pay" onClick={handlePay}>Pay</button>
+                <button className="btn-pay" onClick={handlePay}>
+                  Pay
+                </button>
               </Link>
-              <button className="btn-skip" onClick={handleSkip}>Skip</button>
+              <button className="btn-skip" onClick={handleSkip}>
+                Skip
+              </button>
             </div>
           </div>
         </div>

@@ -46,7 +46,7 @@
   object-fit: cover;
   margin-left: 1rem;
 }
-/* Avatar + â€œ+â€ button */
+/* Avatar + “+” button */
 .rq7 {
   position: absolute;
   bottom: 0.5rem;
@@ -90,9 +90,10 @@
 .rq10 {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  /* gap: 0.5rem; */
   margin-top: 1.5rem;
   margin-left: 3.5rem;
+  gap: 8px;
 }
 .rqEditBtn,.rqEditBtn:active,.rqEditBtn:focus{
   background: transparent;
@@ -252,9 +253,7 @@
 }
 .rq22:hover {
   background: #162b55;
-}
-
-/* Search field */
+}/* Search field */
 .rq23 {
   padding: 0 2rem 1rem;
 }
@@ -396,7 +395,7 @@
   background: #16255e;
 }
 
-/* Modals (edit, delete, comment) â€“ unchanged from original */
+/* Modals (edit, delete, comment) – unchanged from original */
 .edit-modal-overlay,
 .delete-modal-overlay,
 .comment-modal-overlay {
