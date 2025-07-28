@@ -21,7 +21,7 @@ import {
 import './Profile.css';
 import profileImg from './image/profileImg.jpg';
 import im1 from './image/im1.jpg';
-import Navbar from '../NavBar/NavBar';
+import Navbar from '../NavBar/Navbar';
 import Footer from '../Footer/Footer';
 
 let nextCommentId = 1;
@@ -311,11 +311,11 @@ export default function Profile() {
                         </button>
                       </div>
 
-                      <Link to={`/details/${ad.id}`}>
+                      <link to="/Details">
                         <button className="rqDetailsBtn">
-                          Details
+                          
                         </button>
-                      </Link>
+                      </link>
 
                       <div className="rq38">
                         <MdPhone className="rq39" />
