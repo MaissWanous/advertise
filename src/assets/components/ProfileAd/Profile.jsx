@@ -16,7 +16,6 @@ import {
   MdComment,
   MdReply,
   MdPhone,
-<<<<<<< HEAD
   MdCalendarToday,
 } from "react-icons/md";
 import "./Profile.css";
@@ -24,15 +23,6 @@ import profileImg from "./image/profileImg.jpg";
 import im1 from "./image/im1.jpg";
 import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
-=======
-  MdCalendarToday
-} from 'react-icons/md';
-import './Profile.css';
-import profileImg from './image/profileImg.jpg';
-import im1 from './image/im1.jpg';
-import Navbar from '../NavBar/Navbar';
-import Footer from '../Footer/Footer';
->>>>>>> e7b94b2661a6036d96c22d3cb55bb1ea85329ec8
 
 let nextCommentId = 1;
 
@@ -315,17 +305,9 @@ export default function Profile() {
                         </button>
                       </div>
 
-<<<<<<< HEAD
                       <Link to="/Detials">
                         <button className="rqDetailsBtn">Details</button>
                       </Link>
-=======
-                      <link to="/Details">
-                        <button className="rqDetailsBtn">
-                          
-                        </button>
-                      </link>
->>>>>>> e7b94b2661a6036d96c22d3cb55bb1ea85329ec8
 
                       <div className="rq38">
                         <MdPhone className="rq39" />

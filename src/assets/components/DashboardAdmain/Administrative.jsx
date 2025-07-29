@@ -10,6 +10,7 @@ import {
     Switch,
     IconButton,
     Button,
+    TextField,
 } from '@mui/material';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -43,6 +44,8 @@ function ActionRow({ label, isUser, id, onClick }) {
                 <Typography variant="body1" sx={{ color: '#333' }}>{label}</Typography>
                 {isUser ? (
                     <Switch
+                        onChange={() => onClick(id)}
+                        // checked={1}
                         defaultChecked
                         sx={{
                             '& .MuiSwitch-switchBase.Mui-checked': { color: '#345c6f' },
@@ -64,6 +67,24 @@ function ActionRow({ label, isUser, id, onClick }) {
 }
 
 export default function Adminstrative() {
+
+    //add new admin
+    const [addAdminModalOpen, setAddAdminModalOpen] = useState(false);
+    const openAddAdminModal = () => setAddAdminModalOpen(true);
+    const closeAddAdminModal = () => setAddAdminModalOpen(false);
+    const [adminEmail, setAdminEmail] = useState('');
+    const [adminPassword, setAdminPassword] = useState('');
+    const submitAddAdmin = async () => {
+        try {
+            await api.post('/admins', { email: adminEmail, password: adminPassword });
+            console.log('✅ Admin added!');
+            closeAddAdminModal();
+        } catch (error) {
+            console.error('❌ Error adding admin:', error);
+        }
+    };
+
+
     const [userdata, setUserdata] = useState([
         { email: "user@gmail.com" },
         { email: "user2@gmail.com" },
@@ -103,31 +124,53 @@ export default function Adminstrative() {
         setReportMode(false);
         setModalIsOpen(false);
     };
-    // ضمن useState
-    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-    const [selectedAdToDelete, setSelectedAdToDelete] = useState(null);
 
-    // عند الضغط على زر حذف الإعلان داخل ActionRow
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selectedAdToDelete, setSelectedAdToDelete] = useState(null);
+    const [selectedUserToBlock, setSelectedUserToBlock] = useState(null);
+    const [confirmationType, setConfirmationType] = useState('');
+    //when confirm delete /block
     const handleDeleteAdClick = (ad) => {
         setSelectedAdToDelete(ad);
-        setConfirmDeleteOpen(true);
+        setConfirmationType('ad');
+        setConfirmOpen(true);
     };
+
+    const handleBlockUserClick = (user) => {
+        setSelectedUserToBlock(user);
+        setConfirmationType('user');
+        setConfirmOpen(true);
+    };
+
 
     const confirmAdDelete = async () => {
         try {
-            await api.delete(`/ads/${selectedAdToDelete.id}`); // تأكد أن لكل إعلان موجود id
+            console.log("delete ad")
+            await api.delete(`/ads/${selectedAdToDelete.id}`);
             setAds(prev => prev.filter(ad => ad.id !== selectedAdToDelete.id));
         } catch (error) {
             console.error("❌ Failed to delete ad:", error);
         } finally {
-            setConfirmDeleteOpen(false);
+            setConfirmOpen(false);
             setSelectedAdToDelete(null);
         }
     };
-
+    const confirmBlockUser = async () => {
+        try {
+            console.log("block user")
+            await api.post(`/user/${selectedUserToBlock.id}`);
+            setUser(prev => prev.filter(user => user.id !== selectedUserToBlock.id));
+        } catch (error) {
+            console.error("❌ Failed to block:", error);
+        } finally {
+            setConfirmOpen(false);
+            setSelectedAdToDelete(null);
+        }
+    };
     const cancelAdDelete = () => {
-        setConfirmDeleteOpen(false);
+        setConfirmOpen(false);
         setSelectedAdToDelete(null);
+        setSelectedUserToBlock(null)
     };
 
 
@@ -156,7 +199,7 @@ export default function Adminstrative() {
         };
 
         fetchData();
-    }, []);
+    }, [selectedAdToDelete, selectedUserToBlock]);
 
     return (
         <>
@@ -180,6 +223,7 @@ export default function Adminstrative() {
                         <Box sx={{ mb: 3 }}>
                             <Button
                                 variant="outlined"
+                                onClick={openAddAdminModal}
                                 sx={{
                                     borderColor: '#345c6f',
                                     color: '#345c6f',
@@ -192,6 +236,7 @@ export default function Adminstrative() {
                             >
                                 Add other admin +
                             </Button>
+
                         </Box>
 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, pb: 1 }}>
@@ -251,7 +296,7 @@ export default function Adminstrative() {
                     </Typography>
 
                     {user && userdata.map((item, index) => (
-                        <ActionRow key={index} label={item.email} isUser id={1} />
+                        <ActionRow key={index} label={item.email} isUser id={1} onClick={handleBlockUserClick} />
                     ))}
 
                     {adsMode && ads.map((item, index) => (
@@ -268,7 +313,7 @@ export default function Adminstrative() {
                 </Box>
             </Modal>
             <Modal
-                isOpen={confirmDeleteOpen}
+                isOpen={confirmOpen}
                 onRequestClose={cancelAdDelete}
                 style={{
                     overlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
@@ -286,24 +331,23 @@ export default function Adminstrative() {
                 }}
             >
                 <Typography variant="h6" sx={{ color: '#333', mb: 3, textAlign: 'center' }}>
-                    Are you sure you want to delete this ad?
+                    {confirmationType === 'ad'
+                        ? 'Are you sure you want to delete this ad?'
+                        : 'Are you sure you want to block this user?'}
                 </Typography>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, gap: 2 }}>
                     <Button
-                        onClick={confirmAdDelete}
+                        onClick={confirmationType === 'ad' ? confirmAdDelete : confirmBlockUser}
                         variant="contained"
                         color="error"
-                       
                     >
                         Confirm
                     </Button>
                     <Button
                         onClick={cancelAdDelete}
                         variant="outlined"
-                        color="primary"
                         sx={{
-                            ml: 1,
                             borderColor: '#e0e0e0',
                             color: '#333',
                             '&:hover': {
@@ -313,6 +357,77 @@ export default function Adminstrative() {
                     >
                         Cancel
                     </Button>
+                </Box>
+            </Modal>
+
+            <Modal
+                isOpen={addAdminModalOpen}
+                onRequestClose={closeAddAdminModal}
+                style={{
+                    overlay: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    },
+                    content: {
+                        maxHeight: "500px",
+                        position: 'relative',
+                        background: '#fff',
+                        border: 'none',
+                        borderRadius: '12px',
+                        padding: '30px',
+                        maxWidth: '500px',
+                        width: '90%',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        overflowY: "auto"
+                    }
+                }}
+            >
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold', color: '#333', mb: 2 }}>
+                        Add New Admin
+                    </Typography>
+
+                    <TextField
+                        type='email'
+                        label="Email"
+                        variant="outlined"
+                        fullWidth
+                        value={adminEmail}
+                        onChange={(e) => setAdminEmail(e.target.value)}
+                    />
+
+                    <TextField
+                        label="Password"
+                        type="password"
+                        variant="outlined"
+                        fullWidth
+                        value={adminPassword}
+                        onChange={(e) => setAdminPassword(e.target.value)}
+                    />
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                        <Button
+                            onClick={submitAddAdmin}
+                            variant="contained"
+                            sx={{ backgroundColor: '#345c6f', textTransform: 'none' }}
+                        >
+                            Add Admin
+                        </Button>
+                        <Button
+                            onClick={closeAddAdminModal}
+                            variant="outlined"
+                            sx={{
+                                borderColor: '#e0e0e0',
+                                color: '#333',
+                                '&:hover': {
+                                    borderColor: '#bdbdbd',
+                                },
+                            }}>
+                            Cancel
+                        </Button>
+                    </Box>
                 </Box>
             </Modal>
 

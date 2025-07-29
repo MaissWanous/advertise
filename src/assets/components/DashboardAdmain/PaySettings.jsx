@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     CardContent,
@@ -9,6 +9,10 @@ import {
     TextField,
 } from '@mui/material';
 import Modal from 'react-modal';
+import api from '../../../api';
+
+
+Modal.setAppElement('#root');
 
 export default function PaySettings() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -34,6 +38,24 @@ export default function PaySettings() {
         },
     ]);
 
+
+    const connectToAPI = async () => {
+        console.log("add")
+        try {
+            const { data } = await api.post('/', newGateway);
+
+            console.log('✅ Gateway added:', data);
+
+            setPaymentGateways((prev) => [...prev, newGateway]);
+            setNewGateway({ name: '', startDate: '', endDate: '', price: '' });
+            setModalIsOpen(false);
+        } catch (error) {
+            console.error('❌ Error connecting to API:', error);
+        } finally {
+            setModalIsOpen(false)
+        }
+    };
+
     const handleAddGateway = () => {
         if (
             newGateway.name.trim() &&
@@ -41,11 +63,21 @@ export default function PaySettings() {
             newGateway.endDate.trim() &&
             newGateway.price.trim()
         ) {
-            setPaymentGateways([...paymentGateways, newGateway]);
-            setNewGateway({ name: '', startDate: '', endDate: '', price: '' });
-            setModalIsOpen(false);
+            connectToAPI();
         }
     };
+    useEffect(() => {
+        const fetchGateways = async () => {
+            try {
+                const response = await api.get('/payment-gateways');
+                setPaymentGateways(response.data);
+            } catch (error) {
+                console.error('❌ Error fetching gateways:', error);
+            }
+        };
+
+        fetchGateways();
+    }, [paymentGateways]);
 
     return (
         <>
@@ -166,10 +198,6 @@ export default function PaySettings() {
                     content: {
                         maxHeight: '500px',
                         position: 'relative',
-                        top: 'auto',
-                        left: 'auto',
-                        right: 'auto',
-                        bottom: 'auto',
                         background: '#fff',
                         border: 'none',
                         borderRadius: '12px',
@@ -177,7 +205,6 @@ export default function PaySettings() {
                         maxWidth: '500px',
                         width: '90%',
                         boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                        outline: 'none',
                         overflow: 'auto',
                         overflowX: 'hidden',
                     },
@@ -208,7 +235,6 @@ export default function PaySettings() {
                             setNewGateway({ ...newGateway, startDate: e.target.value })
                         }
                     />
-
                     <TextField
                         label="End Date"
                         type="date"
@@ -229,7 +255,6 @@ export default function PaySettings() {
                             setNewGateway({ ...newGateway, price: e.target.value })
                         }
                     />
-
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, gap: 2 }}>
                         <Button variant="contained" sx={{
