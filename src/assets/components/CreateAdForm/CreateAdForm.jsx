@@ -1,9 +1,15 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
+<<<<<<< HEAD
 import api from '../../../api/index.jsx';
 import { useAuth } from '../../../context/context.jsx';
 
+=======
+
+import api from '../../../api/index.jsx';
+import { useAuth } from '../../../context/context.jsx';
+>>>>>>> e7b94b2661a6036d96c22d3cb55bb1ea85329ec8
 import { useNavigate, Link } from 'react-router-dom';
 import {
   FaPlayCircle,
@@ -15,10 +21,18 @@ import './CreateAdForm.css';
 
 export default function CreateAdForm() {
   const navigate = useNavigate();
+<<<<<<< HEAD
+=======
+
+>>>>>>> e7b94b2661a6036d96c22d3cb55bb1ea85329ec8
 
   const [sectionOpen, setSectionOpen] = useState(false);
   const [section, setSection] = useState('Select Section');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e7b94b2661a6036d96c22d3cb55bb1ea85329ec8
   const{token }=useAuth()
 
   const [title, setTitle] = useState('');
