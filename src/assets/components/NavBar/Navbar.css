@@ -37,7 +37,9 @@
   position: relative;
   padding: 0.5rem;
 }
-
+.nav-links a:hover ,.nav-links a:active {
+  color: #F00AC8;
+}
 .btn-container {
   margin-left: auto;
 }

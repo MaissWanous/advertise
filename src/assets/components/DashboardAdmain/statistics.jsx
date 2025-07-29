@@ -77,7 +77,8 @@ export default function Statistics() {
     const gradientId = 'accessGradient';
 
     return (
-        <Box sx={{ display: 'grid', gap: "40px", gridTemplateColumns: "1fr 1fr" }}>
+        <Box sx={{ display: 'grid',    transform: 'translateY(25%)',
+         gap: "40px", gridTemplateColumns: "1fr 1fr" ,alignItems:"center"}}>
             <Card sx={{
                 m: 0,
                 borderRadius: 2,
@@ -105,8 +106,10 @@ export default function Statistics() {
             </Card>
 
 
-            <Box sx={{ display: 'flex', gap: "10px", flexDirection: 'column', flexGrow: 1 }}>
-                <Card sx={{ borderRadius: 2, boxShadow: 3, p: 2 }}>
+            <Box sx={{ 
+                // display: 'flex', gap: "10px", flexDirection: 'column'
+                 flexGrow: 1 }}>
+                {/* <Card sx={{ borderRadius: 2, boxShadow: 3, p: 2 }}>
                     <Typography variant="h6" component="h3" sx={{ mb: 1 }}>Access</Typography>
                     <ResponsiveContainer width="100%" height={200}>
                         <AreaChart data={accessData}>
@@ -128,11 +131,11 @@ export default function Statistics() {
                             />
                         </AreaChart>
                     </ResponsiveContainer>
-                </Card>
+                </Card> */}
 
-                <Card sx={{ borderRadius: 2, boxShadow: 3, p: 2 }}>
+                <Card sx={{ borderRadius: 2, boxShadow: 3, p: 2 ,flexShrink:0}}>
                     <Typography variant="h6" component="h3" sx={{ mb: 1 }}>Profits</Typography>
-                    <ResponsiveContainer width="100%" height={200}>
+                    <ResponsiveContainer width="100%" height={275}>
                         <BarChart data={profitData}>
                             <XAxis dataKey="day" />
                             <YAxis />

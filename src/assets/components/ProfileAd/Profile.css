@@ -308,6 +308,7 @@
   background: none;
   cursor: pointer;
   font-size: 1.4rem;
+
 }
 .rqEditBtn { color: #0d1f44; }
 .rqDeleteBtn { color: #ef4444; }
@@ -351,12 +352,15 @@
 }
 .rq35 {
   display: flex;
-  gap: 1rem;
+  /* gap: 0.5rem; */
+  margin-top: 3rem;
+  font-size: 1.7rem;
 }
 /* Like/bookmark/comment icons */
 .rq36,
 .rq37 {
   cursor: pointer;
+
 }
 .rq36 { color: #ef4444; }      /* filled heart */
 .rq37 { color: #a78bfa; }      /* filled bookmark */
@@ -369,11 +373,13 @@
 }
 .rq39 {
   color: #0d1f44;
+  margin-top: 2rem;
 }
 .rq40 {
   font-weight: bold;
   color: #0d1f44;
   text-decoration: none;
+margin-top: 2rem;
 }
 .rq40:hover {
   text-decoration: underline;
@@ -388,8 +394,13 @@
   border-radius: 4px;
   font-size: 0.9rem;
   cursor: pointer;
-  margin: 0 1rem;
+  /* margin: 0 1rem; */
   transition: background 0.2s;
+position: relative;
+top: -2rem;
+right: 25rem;
+
+
 }
 .rqDetailsBtn:hover {
   background: #16255e;
