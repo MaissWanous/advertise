@@ -1,0 +1,53 @@
+/* Loading.css */
+.loading-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff, #e9ecef);
+  color: #212529;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 1.2s ease-in;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #212529;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, popUp 0.6s ease-in-out;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.loading-text {
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #212529;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+  animation: fadeInUp 1.4s ease-in;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popUp {
+  0% { transform: scale(0.8); opacity: 0.2; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}

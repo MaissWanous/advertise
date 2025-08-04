@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
-import api from '../api/index';
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext(null);
@@ -13,40 +12,36 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-    const [loading, setLoading] = useState(false); // Initialize loading to true
-    const [username, setUsername] = useState();
-    const [isGuest, setIsGuest] = useState(false);
-    const [token, setToken] = useState(() => localStorage.getItem(`token${username}`));
+    const [loading, setLoading] = useState(false);
+    const [token, setToken] = useState(() => localStorage.getItem("token"));
     const navigate = useNavigate();
 
+    const saveToken = (newToken) => {
+        localStorage.setItem("token", newToken);
+        setToken(newToken);
+    };
 
-    useLayoutEffect(() => {
-        setToken(localStorage.getItem(`token${username}`))
-       
-    }, [username, token, setToken]);
-
-
-
+    
+    const removeToken = () => {
+        localStorage.removeItem("token");
+        setToken(null);
+    };
 
     if (loading) {
         return (
-            <div>
-                <div className="text-center mt-5">
-                    <i className="fas fa-spinner fa-spin fa-3x"></i>
-                    <p className="mt-2">Loading ...</p>
-                </div>
+            <div className="text-center mt-5">
+                <i className="fas fa-spinner fa-spin fa-3x"></i>
+                <p className="mt-2">Loading ...</p>
             </div>
         );
     }
 
-    let contextObject = {
-        username,
+    const contextObject = {
         token,
         loading,
-        isGuest,
         setLoading,
-        setUsername,
-        setToken
+        saveToken,
+        removeToken
     };
 
     return (
