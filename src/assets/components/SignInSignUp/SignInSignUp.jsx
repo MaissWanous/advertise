@@ -9,23 +9,24 @@ import Loading from "../../loading/loading.jsx";
 
 
 export default function SignInSignUp() {
-  const { saveToken } = useAuth(); 
+  const { saveToken } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('personal')
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     try {
-      const response = await api.post('/api/login', { email, password });
+      const response = await api.post('/api/login', { email, password,account_type:userType });
       const access = response.data?.data?.access_token;
 
       if (access) {
-        saveToken(access); 
+        saveToken(access);
         navigate('/Home');
       } else {
         throw new Error('Access token not found.');
@@ -36,13 +37,13 @@ export default function SignInSignUp() {
       setError(errorMessage);
       console.error("Login error:", err);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
-  
+
   if (loading) {
-    return <Loading/> ;
+    return <Loading />;
   }
 
   return (
@@ -76,6 +77,26 @@ export default function SignInSignUp() {
           </div>
           <Link to="/forgotPassword" className="forgot-link">Forgot password?</Link>
         </label>
+        <div className="login-card__types">
+          <label>
+            <input
+              type="radio"
+              name="type"
+              checked={userType === 'personal'}
+              onChange={() => setUserType('personal')}
+            />
+            Personal
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="type"
+              checked={userType === 'business'}
+              onChange={() => setUserType('business')}
+            />
+            Business
+          </label>
+        </div>
 
         {error && <p className="text-danger text-center">{error}</p>}
 

@@ -19,7 +19,7 @@ export default function CreateAdForm() {
   const [sectionOpen, setSectionOpen] = useState(false);
   const [section, setSection] = useState('Select Section');
 
-  const{token }=useAuth()
+  const { token } = useAuth()
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -64,26 +64,26 @@ export default function CreateAdForm() {
     navigate('/payment');
   };
 
-  const  handleSkip =async () => {
+  const handleSkip = async () => {
     setShowAlert(false);
-      
+
     try {
       const response = await api.post('/api/storeAd', {
-        title:title,
-    description:description,
-    price:"",
-    "status":"pending",
-    video_path:videoFile,
-    "categories_id":"1"
-        
-        }, {
-                    headers: { authorization: 'Bearer ' + token }
-                });
-   
+        title: title,
+        description: description,
+        price: "",
+        "status": "pending",
+        video_path: videoFile,
+        "categories_id": section
+
+      }, {
+        headers: { authorization: 'Bearer ' + token }
+      });
+
     } catch (err) {
-      const errorMessage = (err.response?.data?.message );
+      const errorMessage = (err.response?.data?.message);
       console.error("Login error:", err);
-    
+
       console.log(errorMessage)
     }
   };
@@ -154,7 +154,7 @@ export default function CreateAdForm() {
               <>
                 <button className="nav left" onClick={showPrev}>
 
-                《
+                  《
                 </button>
                 <img
                   src={URL.createObjectURL(sliderFiles[sliderIndex])}

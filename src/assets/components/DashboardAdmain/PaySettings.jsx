@@ -10,12 +10,14 @@ import {
 } from '@mui/material';
 import Modal from 'react-modal';
 import api from '../../../api';
+import Loading from '../../loading/loading.jsx';
 
 
 Modal.setAppElement('#root');
 
 export default function PaySettings() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [newGateway, setNewGateway] = useState({
         name: '',
         startDate: '',
@@ -42,6 +44,7 @@ export default function PaySettings() {
     const connectToAPI = async () => {
         console.log("add")
         try {
+            setLoading(true)
             const { data } = await api.post('/', newGateway);
 
             console.log('✅ Gateway added:', data);
@@ -52,6 +55,7 @@ export default function PaySettings() {
         } catch (error) {
             console.error('❌ Error connecting to API:', error);
         } finally {
+            setLoading(false)
             setModalIsOpen(false)
         }
     };
@@ -73,11 +77,14 @@ export default function PaySettings() {
                 setPaymentGateways(response.data);
             } catch (error) {
                 console.error('❌ Error fetching gateways:', error);
+            } finally {
+                setLoading(false)
             }
         };
 
         fetchGateways();
     }, [paymentGateways]);
+    if (loading) return <Loading />;
 
     return (
         <>
@@ -246,14 +253,25 @@ export default function PaySettings() {
                             setNewGateway({ ...newGateway, endDate: e.target.value })
                         }
                     />
+
                     <TextField
                         label="Price"
                         variant="outlined"
                         fullWidth
-                        value={newGateway.price}
-                        onChange={(e) =>
-                            setNewGateway({ ...newGateway, price: e.target.value })
+
+                        inputProps={{
+                            pattern: '^\\+?\\d{9,10}$',
+                            maxLength: 2,
                         }
+                        }
+                        required
+                        value={newGateway.price}
+
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            val.replace(/[^\d+]/g, '')
+                            setNewGateway({ ...newGateway, price: val })
+                        }}
                     />
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, gap: 2 }}>

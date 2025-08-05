@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Loading from '../../loading/loading.jsx';
 import api from '../../../api/index.jsx';
 import Modal from 'react-modal';
 import {
@@ -21,7 +22,7 @@ import {
     faEdit,
     faCancel
 } from '@fortawesome/free-solid-svg-icons';
-
+import Swal from 'sweetalert2';
 function DividerSection({ label, icon, onClick, iconColor = '#345c6f' }) {
     return (
         <>
@@ -68,6 +69,8 @@ function ActionRow({ label, isUser, id, onClick }) {
 
 export default function Adminstrative() {
 
+    const [loading, setLoading] = useState(true);
+    // useEffect(()=>{console.log(loading)},[loading])
     //add new admin
     const [addAdminModalOpen, setAddAdminModalOpen] = useState(false);
     const openAddAdminModal = () => setAddAdminModalOpen(true);
@@ -76,11 +79,15 @@ export default function Adminstrative() {
     const [adminPassword, setAdminPassword] = useState('');
     const submitAddAdmin = async () => {
         try {
+            setLoading(true)
             await api.post('/admins', { email: adminEmail, password: adminPassword });
             console.log('✅ Admin added!');
             closeAddAdminModal();
         } catch (error) {
             console.error('❌ Error adding admin:', error);
+        }
+        finally {
+            setLoading(false)
         }
     };
 
@@ -122,6 +129,7 @@ export default function Adminstrative() {
         setUser(false);
         setAdsMode(false);
         setReportMode(false);
+        setEditIsOpen(false)
         setModalIsOpen(false);
     };
 
@@ -129,6 +137,30 @@ export default function Adminstrative() {
     const [selectedAdToDelete, setSelectedAdToDelete] = useState(null);
     const [selectedUserToBlock, setSelectedUserToBlock] = useState(null);
     const [confirmationType, setConfirmationType] = useState('');
+    const [editIsOpen, setEditIsOpen] = useState(false)
+    const [modalContent, setModalContent] = useState("section")
+    const[currentValue,setCurrentValue]=useState()
+  const handleSubmit = async () => {
+        try {
+            setLoading(true)
+          
+
+            await api.put('/', {currentValue}, config);
+
+             Swal.fire('Success', `Your data has been updated successfully!`, 'success');
+
+            closeModal();
+        } catch (err) {
+            console.error('Error updating info:', err);
+             Swal.fire('Error', `Failed to update your data!`, 'error');
+        } finally {
+            setLoading(false)
+        }
+    };
+    const openModal = (name='section') => {
+        setModalContent(name)
+        setEditIsOpen(true)
+    }
     //when confirm delete /block
     const handleDeleteAdClick = (ad) => {
         setSelectedAdToDelete(ad);
@@ -145,6 +177,7 @@ export default function Adminstrative() {
 
     const confirmAdDelete = async () => {
         try {
+            setLoading(true)
             console.log("delete ad")
             await api.delete(`/ads/${selectedAdToDelete.id}`);
             setAds(prev => prev.filter(ad => ad.id !== selectedAdToDelete.id));
@@ -153,10 +186,12 @@ export default function Adminstrative() {
         } finally {
             setConfirmOpen(false);
             setSelectedAdToDelete(null);
+            setLoading(false)
         }
     };
     const confirmBlockUser = async () => {
         try {
+            setLoading(true)
             console.log("block user")
             await api.post(`/user/${selectedUserToBlock.id}`);
             setUser(prev => prev.filter(user => user.id !== selectedUserToBlock.id));
@@ -164,6 +199,7 @@ export default function Adminstrative() {
             console.error("❌ Failed to block:", error);
         } finally {
             setConfirmOpen(false);
+            setLoading(false)
             setSelectedAdToDelete(null);
         }
     };
@@ -182,24 +218,32 @@ export default function Adminstrative() {
             } catch (err) {
                 console.error('❌ Error fetching users:', err);
             }
-
+            finally {
+                setLoading(false)
+            }
             try {
                 const adsRes = await api.get('/ads');
                 setAds(adsRes.data);
             } catch (err) {
                 console.error('❌ Error fetching ads:', err);
             }
-
+            finally {
+                setLoading(false)
+            }
             try {
                 const reportsRes = await api.get('/reports');
                 setReports(reportsRes.data);
             } catch (err) {
                 console.error('❌ Error fetching reports:', err);
             }
+            finally {
+                setLoading(false)
+            }
         };
 
         fetchData();
     }, [selectedAdToDelete, selectedUserToBlock]);
+    if (loading) return <Loading />;
 
     return (
         <>
@@ -251,13 +295,13 @@ export default function Adminstrative() {
                         <DividerSection label="Block users" icon={faCancel} onClick={openModalUser} />
                         <DividerSection label="Delete ad" icon={faTrash} onClick={openModalAds} iconColor="#b90303ff" />
                         <DividerSection label="Review Reports" icon={faExclamationCircle} onClick={openModalReport} iconColor="#ffc107" />
-                        <DividerSection label="Add section" icon={faPlusCircle} iconColor="#318934ff" />
+                        <DividerSection label="Add section" icon={faPlusCircle} onClick={openModal} iconColor="#318934ff" />
 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1 }}>
                             <Typography variant="body1" sx={{ color: '#333' }}>Ad duration without payment</Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold', mr: 1 }}>12 h</Typography>
-                                <IconButton aria-label="edit duration" sx={{ color: '#345c6f' }}>
+                                <IconButton aria-label="edit duration" sx={{ color: '#345c6f' }} onClick={() => openModal('duration')}>
                                     <FontAwesomeIcon icon={faEdit} />
                                 </IconButton>
                             </Box>
@@ -430,6 +474,83 @@ export default function Adminstrative() {
                     </Box>
                 </Box>
             </Modal>
+
+            <Modal
+                isOpen={editIsOpen}
+                onRequestClose={closeModal}
+                contentLabel={`Edit ${modalContent}`}
+                style={{
+                    overlay: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    },
+                    content: {
+                        maxHeight: "500px",
+                        position: 'relative',
+                        background: '#fff',
+                        border: 'none',
+                        borderRadius: '12px',
+                        padding: '30px',
+                        maxWidth: '500px',
+                        width: '90%',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        overflowY: "auto"
+                    }
+                }}
+            >
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#333' }}>
+                         {modalContent === 'duration' ? 'Edit Ad Duration (hours)' : 'Add Section'}
+                    </Typography>
+
+                    <TextField
+                        label={modalContent === 'duration' ? 'Duration in Hours' : 'Section Name'}
+                        type={modalContent === 'duration' ? 'number' : 'text'}
+                        variant="outlined"
+                        fullWidth
+                        value={currentValue}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (modalContent === 'duration') {
+                                
+                                setCurrentValue(val.replace(/[^\d]/g, ''));
+                            } else {
+                                setCurrentValue(val);
+                            }
+                        }}
+                        inputProps={modalContent === 'duration'
+                            ? {
+                                min: 1,
+                                max: 999,
+                                title: 'Please enter a valid duration in hours',
+                            }
+                            : {}}
+                        required
+                    />
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                        <Button
+                            variant="contained"
+                             onClick={handleSubmit}
+                            sx={{ backgroundColor: '#345c6f', color: '#fff' }}
+                        >
+                            Save
+                        </Button>
+                        <Button variant="outlined" onClick={closeModal} sx={{
+                            borderColor: '#e0e0e0',
+                            color: '#333',
+                            '&:hover': {
+                                borderColor: '#bdbdbd',
+                            },
+                        }}>
+                            Cancel
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
 
 
         </>

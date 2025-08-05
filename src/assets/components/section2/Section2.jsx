@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Loading from '../../loading/loading.jsx';
+import api from '../../../api/index.jsx';
 import {
   MdStar,
   MdPhone,
@@ -24,70 +26,86 @@ export default function TopAds() {
   const [ads, setAds] = useState([]);
   const [modalId, setModalId] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fallback = [
-      {
-        id: 1,
-        userName: "Rami Ali",
-        userAvatar: av5,
-        tag: "TECHNOLOGY",
-        title: "Wireless Router and Switch",
-        rating: 5,
-        description:
-          "Dual-band 802.11ac Wi-Fi router with four Gigabit Ethernet ports. Supports MU-MIMO technology.",
-        image: im1,
-        phone: "123-456-7890",
-      },
-      {
-        id: 2,
-        userName: "Tamir Hasan",
-        userAvatar: av6,
-        tag: "EDUCATION",
-        title: " Master React in 30 Days ",
-        rating: 4,
-        description:
-          "Authentic Italian cuisine in a warm, inviting atmosphere.",
-        image: im2,
-        phone: "987-654-3210",
-      },
-      {
-        id: 3,
-        userName: "Ramiz Fadi",
-        userAvatar: av7,
-        tag: "FEATURED",
-        title: "Ultra-Slim Laptop Pro",
-        rating: 5,
-        description:
-          "An intensive hands-on course covering all React fundamentals, hooks, state management and beyond.",
-        image: im3,
-        phone: "555-123-4567",
-      },
-      {
-        id: 4,
-        userName: "Mazin Yasi",   
-        userAvatar: av8,
-        tag: "Restaurant",
-        title: " Cozy Italian Restaurant ",
-        rating: 4,
-        description:
-          "High-performance ultrabook with long battery life and retina display.",
-        image: im4,
-        phone: "444-987-6543",
-      },
-    ].map((ad) => ({
-      ...ad,
-      isLiked: false,
-      isBookmarked: false,
-      isReported: false,
-      comments: [],
-    }));
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await api.get('/api/most-popular-ads');
+      const serverData = response.data;
 
-    fetch("/api/most-popular-ads")
-      .then((r) => r.json())
-      .then((data) => setAds(data.map((ad, i) => ({ ...fallback[i], ...ad }))))
-      .catch(() => setAds(fallback));
-  }, []);
+      if (serverData && Array.isArray(serverData) && serverData.length > 0) {
+        setAds(serverData);
+      } else {
+        setAds(fallback);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching data:', error);
+      setAds(fallback); 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+  const fallback = [
+    {
+      id: 1,
+      userName: "Rami Ali",
+      userAvatar: av5,
+      tag: "TECHNOLOGY",
+      title: "Wireless Router and Switch",
+      rating: 5,
+      description:
+        "Dual-band 802.11ac Wi-Fi router with four Gigabit Ethernet ports. Supports MU-MIMO technology.",
+      image: im1,
+      phone: "123-456-7890",
+    },
+    {
+      id: 2,
+      userName: "Tamir Hasan",
+      userAvatar: av6,
+      tag: "EDUCATION",
+      title: " Master React in 30 Days ",
+      rating: 4,
+      description:
+        "Authentic Italian cuisine in a warm, inviting atmosphere.",
+      image: im2,
+      phone: "987-654-3210",
+    },
+    {
+      id: 3,
+      userName: "Ramiz Fadi",
+      userAvatar: av7,
+      tag: "FEATURED",
+      title: "Ultra-Slim Laptop Pro",
+      rating: 5,
+      description:
+        "An intensive hands-on course covering all React fundamentals, hooks, state management and beyond.",
+      image: im3,
+      phone: "555-123-4567",
+    },
+    {
+      id: 4,
+      userName: "Mazin Yasi",
+      userAvatar: av8,
+      tag: "Restaurant",
+      title: " Cozy Italian Restaurant ",
+      rating: 4,
+      description:
+        "High-performance ultrabook with long battery life and retina display.",
+      image: im4,
+      phone: "444-987-6543",
+    },
+  ].map((ad) => ({
+    ...ad,
+    isLiked: false,
+    isBookmarked: false,
+    isReported: false,
+    comments: [],
+  }));
 
   const toggleLike = (id) =>
     setAds((a) =>
@@ -121,6 +139,7 @@ export default function TopAds() {
     );
     closeComment();
   };
+  if (loading) return <Loading />;
   return (
     <section className="top-ads">
       <h2 className="top-ads__heading">Most Popular Ads</h2>
@@ -161,9 +180,8 @@ export default function TopAds() {
               {Array.from({ length: 5 }).map((_, i) => (
                 <MdStar
                   key={i}
-                  className={`top-card__star ${
-                    i < ad.rating ? "top-card__star--filled" : ""
-                  }`}
+                  className={`top-card__star ${i < ad.rating ? "top-card__star--filled" : ""
+                    }`}
                 />
               ))}
             </div>

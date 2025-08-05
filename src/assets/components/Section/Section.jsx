@@ -1,5 +1,7 @@
-// src/components/Section.jsx
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import Loading from '../../loading/loading.jsx';
+import api from '../../../api/index.jsx';
 import {
   MdBookmarkBorder,
   MdBookmark,
@@ -18,15 +20,25 @@ import Navbar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
 
 export default function Section() {
+  const location = useLocation();
+  const category = location.state?.category;
+
   const [ads, setAds] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeCommentId, setActiveCommentId] = useState(null);
   const [draftComment, setDraftComment] = useState('');
 
   useEffect(() => {
-    fetch('/api/favourite-ads')
-      .then(res => res.json())
-      .then(data => setAds(data.slice(0, 2)))
-      .catch(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/ads/${category}`);
+        if (response.data?.length > 0) {
+          setAds(response.data);
+        } else {
+          throw new Error("No ads returned");
+        }
+      } catch (err) {
+        console.error('❌ Error fetching data:', err);
         setAds([
           {
             id: 1,
@@ -37,7 +49,7 @@ export default function Section() {
             desc:
               'Dual-band 802.11ac Wi-Fi router with four Gigabit Ethernet ports. Supports MU-MIMO technology.',
             phone: '123-456-7890',
-            isFollowed: false,
+            isFollowed: true,
             isBookmarked: false,
             isLiked: false
           },
@@ -47,26 +59,23 @@ export default function Section() {
             userAvatar: av6,
             img: routerImg2,
             title:
-              'Meet Your New Smart Robot Vacuum—Effortless Cleaning at the Push of a Button!',
+              'Smart Robot Vacuum—Effortless Cleaning!',
             desc:
-              'Glides silently under furniture with powerful suction and long-lasting battery life, so your floors stay spotless—no effort required.',
+              'Powerful suction and battery life, so your floors stay spotless.',
             phone: '123-456-7890',
             isFollowed: false,
             isBookmarked: false,
             isLiked: false
           }
         ]);
-      });
-  }, []);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleFollow = id =>
-    setAds(ads.map(a => (a.id === id ? { ...a, isFollowed: !a.isFollowed } : a)));
+    fetchData();
+  }, [category]);
 
-  const handleBookmark = id =>
-    setAds(ads.map(a => (a.id === id ? { ...a, isBookmarked: !a.isBookmarked } : a)));
-
-  const handleLike = id =>
-    setAds(ads.map(a => (a.id === id ? { ...a, isLiked: !a.isLiked } : a)));
 
   const handleReport = () => {
     alert('تم الإبلاغ عن هذا المحتوى');
@@ -77,28 +86,42 @@ export default function Section() {
     setDraftComment('');
   };
   const closeComment = () => setActiveCommentId(null);
+  const handleFollow = async (id) => {
+    setAds(ads.map(a => a.id === id ? { ...a, isFollowed: !a.isFollowed } : a));
+    const res=await api.post(`/api/ads/${id}/follow`);
+  };
 
-  const postComment = () => {
-    console.log('comment for', activeCommentId, draftComment);
+  const handleBookmark = async (id) => {
+    setAds(ads.map(a => a.id === id ? { ...a, isBookmarked: !a.isBookmarked } : a));
+    await api.post(`/api/ads/${id}/bookmark`);
+  };
+
+  const handleLike = async (id) => {
+    setAds(ads.map(a => a.id === id ? { ...a, isLiked: !a.isLiked } : a));
+    await api.post(`/api/ads/${id}/like`);
+  };
+
+  const postComment = async () => {
+    await api.post(`/api/ads/${activeCommentId}/comment`, { comment: draftComment });
     closeComment();
   };
+
+  if (loading) return <Loading />;
 
   return (
     <>
       <Navbar />
 
       <div className="fav-page">
-        <h1 className="fav-header">TECHNOLOGY ADS SECTION</h1>
+        <h1 className="fav-header">{category.toUpperCase()} ADS SECTION</h1>
         <div className="fav-cards">
           {ads.map(ad => (
             <div key={ad.id} className="fav-card">
-              {/* avatar + name above image */}
               <div className="fav-user-block">
                 <img src={ad.userAvatar} alt={ad.userName} className="fav-avatar" />
                 <span className="fav-username">{ad.userName}</span>
               </div>
 
-              {/* Follow tag top-right */}
               <div
                 className={
                   ad.isFollowed ? 'fav-tag fav-tag--active' : 'fav-tag fav-tag--inactive'
@@ -120,7 +143,6 @@ export default function Section() {
                 </div>
                 <p className="fav-desc">{ad.desc}</p>
                 <div className="fav-footer">
-                  {/* actions first */}
                   <div className="fav-actions">
                     <button className="fav-btn" onClick={() => handleBookmark(ad.id)}>
                       {ad.isBookmarked ? (
@@ -144,7 +166,6 @@ export default function Section() {
                     </button>
                   </div>
 
-                  {/* contact info */}
                   <div className="fav-contact">
                     <MdPhone className="fav-icon-phone" />
                     <a href={`tel:${ad.phone}`} className="fav-contact-number">
