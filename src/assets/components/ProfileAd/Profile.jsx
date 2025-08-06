@@ -1,23 +1,28 @@
 // src/components/Profile.jsx
 import React, { useState, useRef } from "react";
 import { NavLink, useNavigate, Link } from "react-router-dom";
+
 import {
-  MdSearch,
-  MdNotifications,
-  MdEdit,
-  MdDelete,
-  MdGroup,
-  MdSave,
-  MdAdd,
-  MdBookmarkBorder,
-  MdBookmark,
-  MdFavoriteBorder,
-  MdFavorite,
-  MdComment,
-  MdReply,
-  MdPhone,
-  MdCalendarToday,
-} from "react-icons/md";
+  Box,
+  Grid,
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  IconButton,
+  TextField,
+  Typography,
+  Input,
+  Stack,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+import { MdAdd, MdEdit, MdGroup, MdSave, MdCalendarToday, MdSearch, MdNotifications, MdFavorite, MdFavoriteBorder, MdBookmark, MdBookmarkBorder, MdComment, MdDelete, MdPhone } from 'react-icons/md';
+
 import "./Profile.css";
 import profileImg from "./image/profileImg.jpg";
 import im1 from "./image/im1.jpg";
@@ -28,15 +33,22 @@ let nextCommentId = 1;
 
 export default function Profile() {
   const navigate = useNavigate();
+
+  // Profile
   const [displayName, setDisplayName] = useState("Advertiser");
   const [editingName, setEditingName] = useState(false);
-  const [thumbs, setThumbs] = useState([]);
+  const nameRef = useRef();
+  const profilePickerRef = useRef();
+  const adPickerRef = useRef();
+
+  const [imageProfile, setImageProfile] = useState(profileImg)
+
+  // Ad Search
   const [showSearch, setShowSearch] = useState(false);
   const [q, setQ] = useState("");
-  const nameRef = useRef();
-  const pickerRef = useRef();
 
-  const [ad, setAd] = useState({
+  // Ad Data
+  const [ads, setAds] = useState([{
     id: 1,
     title: "Mathematics Course",
     desc: "Improve your math skills with our comprehensive course.",
@@ -46,46 +58,96 @@ export default function Profile() {
     isLiked: false,
     isBookmarked: false,
     comments: [],
-  });
+  }, {
+    id: 2,
+    title: "test2",
+    desc: "Improve your math skills with our comprehensive course.",
+    img: im1,
+    phone: "123 456 7890",
+    rating: 5,
+    isLiked: false,
+    isBookmarked: false,
+    comments: [],
+  }]);
+
+  // Commenting
   const [activeCommentId, setActiveCommentId] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
   const [commentText, setCommentText] = useState("");
+
+  // Modals
   const [showEditModal, setShowEditModal] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
+  // Profile actions
   const saveName = () => {
-    const v = nameRef.current.value.trim();
-    if (v) setDisplayName(v);
+    const value = nameRef.current.value.trim();
+    if (value) setDisplayName(value);
     setEditingName(false);
   };
-
-  const pick = () => pickerRef.current.click();
-  const onPick = (e) => {
-    const urls = Array.from(e.target.files).map((f) => URL.createObjectURL(f));
-    setThumbs(urls);
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImageProfile(url);
+    }
   };
 
-  const toggleSearchBar = () => setShowSearch((s) => !s);
+  const handleAdPicChange = (adId, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    setAds(prev =>
+      prev.map(ad =>
+        ad.id === adId ? { ...ad, img: imageUrl } : ad
+      )
+    );
+  };
+
+
+  // Toolbar actions
+  const toggleSearchBar = () => setShowSearch(prev => !prev);
+const filteredAds = q.trim()
+  ? ads.filter(ad =>
+      ad.title.toLowerCase().includes(q.toLowerCase())
+    )
+  : ads;
+
+
   const goNewAd = () => navigate("/new-ad");
 
-  const toggleLike = () => setAd((a) => ({ ...a, isLiked: !a.isLiked }));
-  const toggleBookmark = () =>
-    setAd((a) => ({ ...a, isBookmarked: !a.isBookmarked }));
 
-  const openEditModal = () => {
+  // Ad actions
+  const toggleLike = () => setAds(prev => ({ ...prev, isLiked: !prev.isLiked }));
+  const toggleBookmark = () => setAds(prev => ({ ...prev, isBookmarked: !prev.isBookmarked }));
+
+  // Edit Modal
+  const [editingAdId, setEditingAdId] = useState(null);
+  const openEditModal = (ad) => {
+    setEditingAdId(ad.id);
     setEditTitle(ad.title);
     setEditDesc(ad.desc);
     setShowEditModal(true);
   };
-  const closeEditModal = () => setShowEditModal(false);
-  const handleEditSave = () => {
-    setAd((a) => ({ ...a, title: editTitle.trim(), desc: editDesc.trim() }));
-    closeEditModal();
-  };
 
+  const closeEditModal = () => setShowEditModal(false);
+const handleEditSave = () => {
+  setAds(prev =>
+    prev.map(ad =>
+      ad.id === editingAdId
+        ? { ...ad, title: editTitle.trim(), desc: editDesc.trim() }
+        : ad
+    )
+  );
+  closeEditModal();
+};
+
+
+  // Delete Modal
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const handleDeleteConfirm = () => {
@@ -93,327 +155,391 @@ export default function Profile() {
     closeDeleteModal();
   };
 
+  // Comments
   const openComment = (commentId = null) => {
     setReplyTo(commentId);
     setCommentText("");
-    setActiveCommentId(ad.id);
+    setActiveCommentId(ads.id);
   };
   const closeComment = () => {
-    setActiveCommentId(null);
     setReplyTo(null);
     setCommentText("");
+    setActiveCommentId(null);
   };
 
   const postComment = () => {
-    if (!commentText.trim()) return;
-    setAd((a) => {
-      let updated = { ...a };
+    const text = commentText.trim();
+    if (!text) return;
+
+    setAds(prev => {
+      const updated = { ...prev };
+
       if (replyTo == null) {
-        updated.comments = [
-          ...updated.comments,
-          { id: nextCommentId++, text: commentText.trim(), replies: [] },
-        ];
+        updated.comments.push({ id: nextCommentId++, text, replies: [] });
       } else {
-        updated.comments = updated.comments.map((c) =>
+        updated.comments = updated.comments.map(c =>
           c.id === replyTo
             ? {
-                ...c,
-                replies: [
-                  ...c.replies,
-                  { id: nextCommentId++, text: commentText.trim() },
-                ],
-              }
+              ...c,
+              replies: [...c.replies, { id: nextCommentId++, text }],
+            }
             : c
         );
       }
+
       return updated;
     });
+
     closeComment();
   };
 
   const deleteComment = (cid, parentId = null) => {
-    setAd((a) => {
-      let updated = { ...a };
+    setAds(prev => {
+      const updated = { ...prev };
+
       if (parentId == null) {
-        updated.comments = updated.comments.filter((c) => c.id !== cid);
+        updated.comments = updated.comments.filter(c => c.id !== cid);
       } else {
-        updated.comments = updated.comments.map((c) =>
+        updated.comments = updated.comments.map(c =>
           c.id === parentId
-            ? { ...c, replies: c.replies.filter((r) => r.id !== cid) }
+            ? {
+              ...c,
+              replies: c.replies.filter(r => r.id !== cid),
+            }
             : c
         );
       }
+
       return updated;
     });
   };
 
-  const filtered = isDeleted
-    ? []
-    : [ad].filter((a) => a.title.toLowerCase().includes(q.toLowerCase()));
+  // const fillterd = isDeleted
+  //   ? []
+  //   : ad.filter(item =>
+  //       item.title.toLowerCase().includes(q.toLowerCase())
+  //     );
+
 
   return (
     <>
       <Navbar />
-      <div className="rq1">
-        <div className="rq2">
-          <aside className="rq3">
-            <div className="rq4">
-              <div className="rq5">
-                <img src={profileImg} alt="Profile" className="rq6" />
-                <button className="rq7" onClick={pick}>
-                  <MdAdd />
-                </button>
-                <input
-                  type="file"
-                  ref={pickerRef}
-                  accept="image/*"
-                  hidden
-                  onChange={onPick}
-                />
-              </div>
-              {thumbs.length > 0 && (
-                <div className="rq8">
-                  {thumbs.map((u, i) => (
-                    <img key={i} src={u} alt={thumb - `${i}`} className="rq9" />
-                  ))}
-                </div>
-              )}
-            </div>
 
-            <div
-              className={`rq10 ${editingName ? "rq10--editing" : ""}`}
-              style={{ minHeight: "40px" }}
-            >
+      <Grid container >
+
+        {/* Sidebar */}
+        <Grid item size={{ xs: 12, md: 3 }} p={2} bgcolor="#0d1f44" color="white">
+          <Stack spacing={3} alignItems="center">
+            {/* Profile Image + Upload */}
+            <Box position="relative">
+              <Avatar src={imageProfile} sx={{ width: 120, height: 120 }} />
+              <IconButton
+                sx={{ position: 'absolute', bottom: -5, right: -5, bgcolor: 'white' }}
+                onClick={() => profilePickerRef.current.click()}>
+                <MdAdd />
+              </IconButton>
+              <Input
+                type="file"
+                inputRef={profilePickerRef}
+                sx={{ display: 'none' }}
+                onChange={handleProfilePicChange}
+              />
+
+            </Box>
+
+
+            {/* Display Name */}
+            <Box>
               {editingName ? (
-                <>
-                  <input
-                    defaultValue={displayName}
-                    ref={nameRef}
-                    className="rq14"
-                  />
-                  <button onClick={saveName} className="rq13">
-                    Save
-                  </button>
-                </>
+                <Stack spacing={1}>
+                  <TextField defaultValue={displayName} inputRef={nameRef} size="small" />
+                  <Button variant="contained" onClick={saveName}>Save</Button>
+                </Stack>
               ) : (
-                <>
-                  <span className="rq11">{displayName}</span>
-                  <button onClick={() => setEditingName(true)} className="rq12">
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Typography variant="h6">{displayName}</Typography>
+                  <IconButton onClick={() => setEditingName(true)} color="inherit">
                     <MdEdit />
-                  </button>
-                </>
+                  </IconButton>
+                </Stack>
               )}
-            </div>
+            </Box>
 
-            <nav className="rq15">
-              <NavLink to="/follow" className="rq16">
-                <MdGroup /> Follow
-              </NavLink>
-              <NavLink to="/saved" className="rq16">
-                <MdSave /> Saved
-              </NavLink>
-              <NavLink to="/subscription" className="rq16">
-                <MdCalendarToday /> Subscription
-              </NavLink>
-            </nav>
-          </aside>
+            {/* Navigation Links */}
+            <Stack spacing={1} width="100%">
+              <Button component={NavLink} to="/follow" startIcon={<MdGroup />} fullWidth color="inherit">
+                Follow
+              </Button>
+              <Button component={NavLink} to="/saved" startIcon={<MdSave />} fullWidth color="inherit">
+                Saved
+              </Button>
+              <Button component={NavLink} to="/subscription" startIcon={<MdCalendarToday />} fullWidth color="inherit">
+                Subscription
+              </Button>
+            </Stack>
+          </Stack>
+        </Grid>
 
-          <main className="rq17">
-            <div className="rq18">
-              <button onClick={toggleSearchBar} className="rq19 rq20">
+        {/* Main Content */}
+        <Grid item size={{ xs: 12, md: 9 }} p={3} sx={{ display: 'flex', flexDirection: 'column' }}>
+
+          <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+            <Stack direction="row" spacing={1}>
+              <IconButton
+                onClick={toggleSearchBar}
+                sx={{
+                  color: '#0d1f44',
+                  fontSize: '2rem',
+                  padding: '1rem',
+                  '&:focus, &:active': {
+                    outline: 'none',
+                    boxShadow: 'none',
+                    background: 'transparent',
+                  },
+                  '&::-moz-focus-inner': {
+                    border: 'none',
+                  },
+                }}
+              >
                 <MdSearch />
-              </button>
-              <button className="rq19 rq21">
+              </IconButton>
+
+              <IconButton
+                sx={{
+                  color: '#0d1f44',
+                  fontSize: '2rem',
+                  padding: '1rem',
+                  '&:focus, &:active': {
+                    outline: 'none',
+                    boxShadow: 'none',
+                    background: 'transparent',
+                  },
+                  '&::-moz-focus-inner': {
+                    border: 'none',
+                  },
+                }}
+              >
                 <MdNotifications />
-              </button>
-              <Link to="/CreateAdForm">
-                <button onClick={goNewAd} className="rq22">
-                  New Ad
-                </button>
-              </Link>
-            </div>
+              </IconButton>
+            </Stack>
 
-            {showSearch && (
-              <div className="rq23">
-                <input
-                  className="rq24"
-                  type="text"
-                  placeholder="Search ads..."
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                />
-              </div>
-            )}
+            <Button
+              variant="contained"
+              component={Link}
+              to="/CreateAdForm"
+              onClick={goNewAd}
+              sx={{
+                marginLeft: 'auto',
+                marginRight: '2rem',
+                padding: '0.6rem 1.2rem',
+                borderRadius: '1.8rem',
+                backgroundColor: '#0d1f44',
+                fontSize: '1.2rem',
+                '&:hover': {
+                  backgroundColor: '#162b55',
+                },
+              }}
+            >
+              New Ad
+            </Button>
+          </Stack>
 
-            <h1 className="rq25">My Ads</h1>
 
-            <section className="rq26">
-              {filtered.map((ad) => (
-                <div key={ad.id} className="rq27">
-                  <div className="rqAdActions">
-                    <button className="rqEditBtn" onClick={openEditModal}>
+          {showSearch && (
+            <TextField
+              variant="outlined"
+              fullWidth
+              placeholder="Search ads..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+          )}
+
+
+          <Typography variant="h4" mb={2}>My Ads</Typography>
+
+          <Grid container spacing={3} px={3} py={2}>
+            {filteredAds.map((ad) => (
+
+              <Grid item size={{ xs: 12, md: 12 }} key={ad.id}>
+                <Card sx={{ display: 'flex', borderRadius: 3, boxShadow: 3, position: 'relative' }}>
+                  {/* Edit/Delete Actions */}
+                  <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 2, display: 'flex', gap: 1 }}>
+                    <IconButton onClick={() => openEditModal(ad)} sx={{ color: '#0d1f44' }}>
                       <MdEdit />
-                    </button>
-                    <button className="rqDeleteBtn" onClick={openDeleteModal}>
+                    </IconButton>
+
+                    <IconButton onClick={openDeleteModal} sx={{ color: '#ef4444' }}>
                       <MdDelete />
-                    </button>
-                  </div>
-                  <div className="rq28-wrapper">
-                    <img src={ad.img} alt={ad.title} className="rq28" />
-                    <button className="rq28-add-btn" onClick={pick}>
-                      <MdAdd />
-                    </button>
-                    <input
-                      type="file"
-                      ref={pickerRef}
-                      accept="image/*"
-                      hidden
-                      onChange={onPick}
+                    </IconButton>
+                  </Box>
+
+                  {/* Image section with add button */}
+                  <Box sx={{ minWidth: 250, position: 'relative' }}>
+                    <img
+                      src={ad.img}
+                      alt={ad.title}
+                      style={{ width: '250px', height: '100%', objectFit: 'cover' }}
                     />
-                  </div>
-                  <div className="rq29">
-                    <div className="rq30">
-                      {Array(ad.rating)
-                        .fill(0)
-                        .map((_, i) => (
-                          <span key={i} className="rq31">
-                            ⭐️
-                          </span>
-                        ))}
-                    </div>
-                    <h2 className="rq32">{ad.title}</h2>
-                    <p className="rq33">{ad.desc}</p>
+                    <IconButton
+                      sx={{
+                        position: 'absolute', bottom: 8,
+                        right: 8,
+                        bgcolor: 'white',
+                        boxShadow: 1,
+                      }}
+                      onClick={() => adPickerRef.current.click()}>
+                      <MdAdd />
+                    </IconButton>
+                    <Input
+                      type="file"
+                      inputRef={adPickerRef}
+                      sx={{ display: 'none' }}
+                      onChange={(e) => handleAdPicChange(ad.id, e)}
+                    />
 
-                    <div className="rq34">
-                      <div className="rq35">
-                        <button onClick={toggleLike}>
+                  </Box>
+
+                  {/* Content Section */}
+                  <CardContent sx={{ flex: 1 }}>
+                    {/* Rating */}
+                    <Box display="flex" gap={0.5}>
+                      {Array(ad.rating).fill(0).map((_, i) => (
+                        <Typography key={i} fontSize="1.2rem">⭐️</Typography>
+                      ))}
+                    </Box>
+
+                    {/* Title & Description */}
+                    <Typography variant="h6" fontWeight="bold" mt={1}>{ad.title}</Typography>
+                    <Typography variant="body2" mt={0.5}>{ad.desc}</Typography>
+
+                    {/* Action Buttons + Phone + Details */}
+                    <Stack direction="row" justifyContent="space-between" mt={2}>
+                      <Stack direction="row" spacing={2}>
+                        <IconButton onClick={toggleLike}>
                           {ad.isLiked ? (
-                            <MdFavorite className="rq36 filled" />
+                            <MdFavorite style={{ color: '#e63946' }} />
                           ) : (
-                            <MdFavoriteBorder className="rq36 outline" />
+                            <MdFavoriteBorder />
                           )}
-                        </button>
-                        <button onClick={toggleBookmark}>
+                        </IconButton>
+                        <IconButton onClick={toggleBookmark}>
                           {ad.isBookmarked ? (
-                            <MdBookmark className="rq37 filled" />
+                            <MdBookmark style={{ color: '#457b9d' }} />
                           ) : (
-                            <MdBookmarkBorder className="rq37 outline" />
+                            <MdBookmarkBorder />
                           )}
-                        </button>
-                        <button onClick={() => openComment()}>
-                          <MdComment className="rq41 outline" />
-                        </button>
-                      </div>
+                        </IconButton>
+                        <IconButton onClick={openComment}>
+                          <MdComment />
+                        </IconButton>
+                      </Stack>
 
-                      <Link to="/Detials">
-                        <button className="rqDetailsBtn">Details</button>
-                      </Link>
-
-                      <div className="rq38">
-                        <MdPhone className="rq39" />
-                        <a href={`tel:${ad.phone}`} className="rq40">
-                          {ad.phone}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </section>
-          </main>
-        </div>
-      </div>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <MdPhone />
+                          <Typography component="a" href={`tel:${ad.phone}`} fontWeight="medium">
+                            {ad.phone}
+                          </Typography>
+                        </Stack>
+                        <Button
+                          component={Link}
+                          to={`/Detials`}
+                          variant="outlined"
+                          sx={{ textTransform: 'none' }}
+                        >
+                          Details
+                        </Button>
+                      </Stack>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      </Grid>
 
       {/* Edit Modal */}
-      {showEditModal && (
-        <div className="edit-modal-overlay" onClick={closeEditModal}>
-          <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Edit Ad</h3>
-            <input
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-            />
-            <textarea
-              value={editDesc}
-              onChange={(e) => setEditDesc(e.target.value)}
-            />
-            <div className="modal-buttons">
-              <button onClick={handleEditSave}>Save</button>
-              <button onClick={closeEditModal}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog open={showEditModal} onClose={closeEditModal}>
+        <DialogTitle>Edit Ad</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Title"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Description"
+            multiline
+            rows={4}
+            value={editDesc}
+            onChange={(e) => setEditDesc(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditSave} variant="contained">Save</Button>
+          <Button onClick={closeEditModal} variant="outlined">Cancel</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Delete Confirmation */}
-      {showDeleteModal && (
-        <div className="delete-modal-overlay" onClick={closeDeleteModal}>
-          <div className="delete-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Confirm Delete</h3>
-            <p>Are you sure you want to delete this ad?</p>
-            <div className="modal-buttons">
-              <button onClick={handleDeleteConfirm}>Yes, Delete</button>
-              <button onClick={closeDeleteModal}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog open={showDeleteModal} onClose={closeDeleteModal}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this ad?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Yes, Delete
+          </Button>
+          <Button onClick={closeDeleteModal} variant="outlined">Cancel</Button>
+        </DialogActions>
+      </Dialog>
       {/* Comment Modal */}
-      {activeCommentId && (
-        <div className="comment-modal-overlay" onClick={closeComment}>
-          <div className="comment-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>
-              {replyTo == null
-                ? "Add Comment"
-                : `Reply to Comment # ${replyTo}`}
-            </h3>
-            <ul className="comment-list">
-              {ad.comments.map((c) => (
-                <li key={c.id}>
-                  <div>
-                    {c.text}
-                    <div className="comment-controls">
-                      <MdReply
-                        className="ctrl-icon"
-                        onClick={() => openComment(c.id)}
-                      />
-                      <MdDelete
-                        className="ctrl-icon"
-                        onClick={() => deleteComment(c.id)}
-                      />
-                    </div>
-                  </div>
-                  <ul className="reply-list">
-                    {c.replies.map((r) => (
-                      <li key={r.id}>
-                        {r.text}
-                        <MdDelete
-                          className="ctrl-icon"
-                          onClick={() => deleteComment(r.id, c.id)}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </li>
+      <Dialog open={Boolean(activeCommentId)} onClose={closeComment} fullWidth maxWidth="sm">
+        <DialogTitle>
+          {replyTo == null ? 'Add Comment' : `Reply to Comment #${replyTo}`}
+        </DialogTitle>
+        <DialogContent>
+          {ads.find(ad => ad.id === activeCommentId)?.comments.map((c) => (
+
+            <Box key={c.id} mb={2}>
+              <Typography>{c.text}</Typography>
+              <Stack direction="row" spacing={1} mt={0.5}>
+                <IconButton onClick={() => openComment(c.id)}><MdReply /></IconButton>
+                <IconButton onClick={() => deleteComment(c.id)}><MdDelete /></IconButton>
+              </Stack>
+
+              {c.replies?.map((r) => (
+                <Box key={r.id} pl={3} mt={1}>
+                  <Typography variant="body2">{r.text}</Typography>
+                  <IconButton onClick={() => deleteComment(r.id, c.id)}><MdDelete fontSize="small" /></IconButton>
+                </Box>
               ))}
-            </ul>
-            <textarea
-              className="comment-input"
-              placeholder={
-                replyTo == null
-                  ? "Write your comment..."
-                  : "Write your reply..."
-              }
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-            />
-            <div className="modal-buttons">
-              <button onClick={postComment}>Post</button>
-              <button onClick={closeComment}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
+            </Box>
+          ))}
+
+          <TextField
+            fullWidth
+            multiline
+            rows={3}
+            margin="normal"
+            placeholder={replyTo == null ? 'Write your comment...' : 'Write your reply...'}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={postComment} variant="contained">Post</Button>
+          <Button onClick={closeComment} variant="outlined">Cancel</Button>
+        </DialogActions>
+      </Dialog>
 
       <Footer />
     </>

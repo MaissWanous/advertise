@@ -21,6 +21,7 @@ import av5 from "./image/im5.jpg";
 import av6 from "./image/im6.jpg";
 import av7 from "./image/im7.jpg";
 import av8 from "./image/im8.jpg";
+import Swal from "sweetalert2";
 
 export default function TopAds() {
   const [ads, setAds] = useState([]);
@@ -106,39 +107,75 @@ useEffect(() => {
     isReported: false,
     comments: [],
   }));
+ const handleReport =async () => {
 
-  const toggleLike = (id) =>
-    setAds((a) =>
-      a.map((ad) => (ad.id === id ? { ...ad, isLiked: !ad.isLiked } : ad))
-    );
-  const toggleBookmark = (id) =>
-    setAds((a) =>
-      a.map((ad) =>
-        ad.id === id ? { ...ad, isBookmarked: !ad.isBookmarked } : ad
-      )
-    );
-  const toggleReport = (id) => {
-    setAds((a) =>
-      a.map((ad) => (ad.id === id ? { ...ad, isReported: !ad.isReported } : ad))
-    );
-    alert("تم الإبلاغ عن هذا المحتوى");
-  };
-  const openComment = (id) => {
+  Swal.fire({
+    title: 'Do you want to report?',
+    text: 'Your report will be sent to the administration. Are you sure?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, report',
+    cancelButtonText: 'Cancel',
+  }).then(async(result) => {
+    if (result.isConfirmed) {
+    //  await api.post("/report${id}")
+      Swal.fire('Reported!', 'Thank you for letting us know.', 'success');
+    }
+  });
+};
+
+ const openComment = (id) => {
     setModalId(id);
     setCommentText("");
   };
   const closeComment = () => setModalId(null);
-  const postComment = () => {
-    if (!commentText.trim()) return;
-    setAds((a) =>
-      a.map((ad) =>
+ const postComment = async () => {
+  if (!commentText.trim()) return;
+
+  try {
+    setLoading(true);
+    // await api.post(`/api/ads/${modalId}/comment`, { comment: commentText });
+    setAds((prevAds) =>
+      prevAds.map((ad) =>
         ad.id === modalId
-          ? { ...ad, comments: [...ad.comments, commentText.trim()] }
+          ? {
+              ...ad,
+              comments: [...ad.comments, commentText.trim()],
+            }
           : ad
       )
     );
+
+    Swal.fire("Success", "Your comment has been posted.", "success");
+  } catch (error) {
+    console.log("Error while commenting:", error);
+    Swal.fire("Error", "Comment has not been sent", "error");
+  } finally {
+    setLoading(false);
     closeComment();
+  }
+};
+
+
+
+  const handleFollow = async (id) => {
+    setAds(ads.map(a => a.id === id ? { ...a, isFollowed: !a.isFollowed } : a));
+    const res = await api.post(`/api/ads/${id}/follow`);
   };
+
+  const handleBookmark = async (id) => {
+    setAds(ads.map(a => a.id === id ? { ...a, isBookmarked: !a.isBookmarked } : a));
+    await api.post(`/api/ads/${id}/bookmark`);
+  };
+
+  const handleLike = async (id) => {
+    setAds(ads.map(a => a.id === id ? { ...a, isLiked: !a.isLiked } : a));
+    await api.post(`/api/ads/${id}/like`);
+  };
+
+
+
+ 
   if (loading) return <Loading />;
   return (
     <section className="top-ads">
@@ -163,13 +200,9 @@ useEffect(() => {
                     ? "top-cardfollow-btn following"
                     : "top-cardfollow-btn"
                 }
-                onClick={() =>
-                  setAds((a) =>
-                    a.map((x) =>
-                      x.id === ad.id ? { ...x, isFollowed: !x.isFollowed } : x
-                    )
-                  )
-                }
+               onClick={() => handleFollow(ad.id)}
+
+                
               >
                 {ad.isFollowed ? "Following" : "Follow"}
               </button>
@@ -200,7 +233,7 @@ useEffect(() => {
             <div className="top-card__footer">
               <div className="top-card__actions">
                 <button
-                  onClick={() => toggleLike(ad.id)}
+                  onClick={() => handleLike(ad.id)}
                   className="top-card__action-btn"
                 >
                   {ad.isLiked ? (
@@ -216,7 +249,7 @@ useEffect(() => {
                   <MdChatBubbleOutline className="top-cardicon top-cardicon--comment" />
                 </button>
                 <button
-                  onClick={() => toggleBookmark(ad.id)}
+                  onClick={() => handleBookmark(ad.id)}
                   className="top-card__action-btn"
                 >
                   {ad.isBookmarked ? (
@@ -226,7 +259,7 @@ useEffect(() => {
                   )}
                 </button>
                 <button
-                  onClick={() => toggleReport(ad.id)}
+                  onClick={() => handleReport(ad.id)}
                   className="top-card__action-btn"
                 >
                   <MdReport

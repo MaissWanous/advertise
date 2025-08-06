@@ -18,6 +18,7 @@ import av5 from './image/av5.jpg';
 import av6 from './image/av6.jpg';
 import Navbar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
+import Swal from 'sweetalert2';
 
 export default function Section() {
   const location = useLocation();
@@ -77,9 +78,22 @@ export default function Section() {
   }, [category]);
 
 
-  const handleReport = () => {
-    alert('تم الإبلاغ عن هذا المحتوى');
-  };
+ const handleReport =async () => {
+  Swal.fire({
+    title: 'Do you want to report?',
+    text: 'Your report will be sent to the administration. Are you sure?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, report',
+    cancelButtonText: 'Cancel',
+  }).then(async(result) => {
+    if (result.isConfirmed) {
+    //  await api.post("/report${id}")
+      Swal.fire('Reported!', 'Thank you for letting us know.', 'success');
+    }
+  });
+};
+
 
   const openComment = id => {
     setActiveCommentId(id);
@@ -88,7 +102,7 @@ export default function Section() {
   const closeComment = () => setActiveCommentId(null);
   const handleFollow = async (id) => {
     setAds(ads.map(a => a.id === id ? { ...a, isFollowed: !a.isFollowed } : a));
-    const res=await api.post(`/api/ads/${id}/follow`);
+    const res = await api.post(`/api/ads/${id}/follow`);
   };
 
   const handleBookmark = async (id) => {
@@ -102,8 +116,17 @@ export default function Section() {
   };
 
   const postComment = async () => {
-    await api.post(`/api/ads/${activeCommentId}/comment`, { comment: draftComment });
-    closeComment();
+    try {
+      setLoading(true)
+
+      await api.post(`/api/ads/${activeCommentId}/comment`, { comment: draftComment });
+    } catch (error) {
+      console.log("error while comment:", error)
+    } finally {
+      setLoading(false)
+       Swal.fire('Error', `Comment has not been sent`, 'error');
+      closeComment();
+    }
   };
 
   if (loading) return <Loading />;

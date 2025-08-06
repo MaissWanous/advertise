@@ -10,21 +10,20 @@ import Footer from '../Footer/Footer';
 
 
 const Home = () => {
-    return(
+  return (
 
-        <>
-        <Navbar/>
-           <Hero/>
-             <Section3/>
-   
-           <Section1/>
-           <TopAds/>
-                   <Footer/>
-         
+    <>
+      <Navbar />
+      <Hero />
+      <Section3 />
+      <Section1 />
+      <TopAds />
+      <Footer />
 
 
-        </>
-    );
-    
-} 
- export default Home;
+
+    </>
+  );
+
+}
+export default Home;
