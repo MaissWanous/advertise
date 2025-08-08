@@ -12,6 +12,7 @@ import {
   FaChevronDown
 } from 'react-icons/fa';
 import './CreateAdForm.css';
+import Swal from 'sweetalert2';
 
 export default function CreateAdForm() {
   const navigate = useNavigate();
@@ -64,29 +65,37 @@ export default function CreateAdForm() {
     navigate('/payment');
   };
 
-  const handleSkip = async () => {
-    setShowAlert(false);
+ const handleSkip = async () => {
+  setShowAlert(false);
 
-    try {
-      const response = await api.post('/api/storeAd', {
-        title: title,
-        description: description,
-        price: "",
-        "status": "pending",
-        video_path: videoFile,
-        "categories_id": section
+  try {
+    const response = await api.post('/api/storeAd', {
+      title: title,
+      description: description,
+      price: "",
+      status: "pending",
+      video_path: videoFile,
+      categories_id: section
+    });
+console.log(response)
+    Swal.fire({
+      icon: 'success',
+      title: 'Ad submitted!',
+      text: 'Your ad has been successfully saved.',
+    });
 
-      }, {
-        headers: { authorization: 'Bearer ' + token }
-      });
+  } catch (err) {
+    const errorMessage = err.response?.data?.message || 'Something went wrong. Please try again.';
+    console.error("Submission error:", err);
 
-    } catch (err) {
-      const errorMessage = (err.response?.data?.message);
-      console.error("Login error:", err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Submission Failed',
+      text: errorMessage,
+    });
+  }
+};
 
-      console.log(errorMessage)
-    }
-  };
 
   const handleCancel = () => {
     setTitle('');

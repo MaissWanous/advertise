@@ -22,7 +22,9 @@ export default function SignInSignUp() {
     setLoading(true);
 
     try {
-      const response = await api.post('/api/login', { email, password,account_type:userType });
+      const response = await api.post('/api/login', { email, password
+        // , account_type:userType
+       });
       const access = response.data?.data?.access_token;
 
       if (access) {
