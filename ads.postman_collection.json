@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"abdelkraimalshami@gmail.com\",\r\n    \"password\":123456,\r\n    \"account_type\":\"personal\"\r\n}",
+							"raw": "{\r\n    \"email\":\"ahmedggu@gmail.com\",\r\n    \"password\":123456,\r\n    \"account_type\":\"personal\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -39,6 +39,38 @@
 							"path": [
 								"api",
 								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerِAdmin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"ahmedgvgg@gmail.com\",\r\n    \"password\":123456\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/registerِAdmin",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"registerِAdmin"
 							]
 						}
 					},
@@ -86,7 +118,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"fffsdnf@gmail.com\"\r\n}\r\n",
+							"raw": "{\r\n  \"email\": \"ahmedgg@gmail.com\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,7 +126,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/forgot-password",
+							"raw": "http://127.0.0.1:8000/api/send-reset-code",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -105,7 +137,7 @@
 							"port": "8000",
 							"path": [
 								"api",
-								"forgot-password"
+								"send-reset-code"
 							]
 						}
 					},
@@ -121,7 +153,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"dddd@gmail.com\",\r\n  \"token\": \"3667972a8b5132d924b860dba12a95a2b16c15ce7560ae723de35a5724cd238e\",\r\n  \"password\": 123456,\r\n  \"password_confirmation\": 654321\r\n}\r\n",
+							"raw": "{\r\n  \"email\": \"ahmedgg@gmail.com\",\r\n  \"code\": \"677563\",\r\n  \"password\": 654321,\r\n  \"password_confirmation\": 654321\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -129,7 +161,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/reset-password",
+							"raw": "http://127.0.0.1:8000/api/reset-password-code",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -140,7 +172,7 @@
 							"port": "8000",
 							"path": [
 								"api",
-								"reset-password"
+								"reset-password-code"
 							]
 						}
 					},
@@ -201,7 +233,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "2|UoCJHkduK5lp7KvlTgX7fVKqORLRJCvc9VPDmVs112466dfe",
+									"value": "1|AEGkMhGuuTYTRs9OULA2nJfFpwyBQKmpFjDC1xgDd51a0ed5",
 									"type": "string"
 								}
 							]
@@ -236,6 +268,40 @@
 					"response": []
 				},
 				{
+					"name": "show ad",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|HXtl3IyI8YumErsuQMEuC71zthJMaVD9NY5IvPFI58ca891a",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/show/93704de7-e7bd-4c31-96ff-1a674037faf8",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"show",
+								"93704de7-e7bd-4c31-96ff-1a674037faf8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "advertisements",
 					"request": {
 						"auth": {
@@ -243,7 +309,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "3|O2WY2X5U6h8XQ8ckXUgxBlKQagyxCVwxkSyGOcYycfbdc5c9",
+									"value": "1|AEGkMhGuuTYTRs9OULA2nJfFpwyBQKmpFjDC1xgDd51a0ed5",
 									"type": "string"
 								}
 							]
@@ -270,19 +336,31 @@
 				},
 				{
 					"name": "Categories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "3|O2WY2X5U6h8XQ8ckXUgxBlKQagyxCVwxkSyGOcYycfbdc5c9",
+									"value": "1|HXtl3IyI8YumErsuQMEuC71zthJMaVD9NY5IvPFI58ca891a",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://127.0.0.1:8000/api/category",
 							"protocol": "http",
@@ -296,6 +374,51 @@
 							"path": [
 								"api",
 								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "storeCategory",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|HXtl3IyI8YumErsuQMEuC71zthJMaVD9NY5IvPFI58ca891a",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"aaaaa\",\r\n    \"title\":\".......\",\r\n    \"image\":\"\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/storeCategory",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"storeCategory"
 							]
 						}
 					},
@@ -314,7 +437,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "2|UoCJHkduK5lp7KvlTgX7fVKqORLRJCvc9VPDmVs112466dfe",
+									"value": "2|tM2Rn3Vk194vRAsJa00mUCA0BTjyF63Y3dSzMhKZ64b702aa",
 									"type": "string"
 								}
 							]
@@ -331,7 +454,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/AddFavorite/8aac036d-23e1-47fa-b75f-a47916924d0b",
+							"raw": "http://127.0.0.1:8000/api/AddFavorite/4b13de54-01cc-4874-917c-1e503d3ed9d4",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -343,7 +466,7 @@
 							"path": [
 								"api",
 								"AddFavorite",
-								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+								"4b13de54-01cc-4874-917c-1e503d3ed9d4"
 							]
 						}
 					},
@@ -352,22 +475,29 @@
 				{
 					"name": "favorites",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2|tM2Rn3Vk194vRAsJa00mUCA0BTjyF63Y3dSzMhKZ64b702aa",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/AddFavorite/8aac036d-23e1-47fa-b75f-a47916924d0b",
-							"protocol": "http",
+							"raw": "https://886301b02918.ngrok-free.app/api/favorites",
+							"protocol": "https",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"886301b02918",
+								"ngrok-free",
+								"app"
 							],
-							"port": "8000",
 							"path": [
 								"api",
-								"AddFavorite",
-								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+								"favorites"
 							]
 						}
 					},
@@ -424,7 +554,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "3|O2WY2X5U6h8XQ8ckXUgxBlKQagyxCVwxkSyGOcYycfbdc5c9",
+									"value": "5|vWIdpqjgMIEJcLT3yYx4dcbKBuziBfh9Bg5s5EAob70a8f78",
 									"type": "string"
 								}
 							]
@@ -441,7 +571,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/createComment/8aac036d-23e1-47fa-b75f-a47916924d0b",
+							"raw": "http://127.0.0.1:8000/api/createComment/5d3186ef-b299-499d-8d38-03d9200937c9",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -453,7 +583,7 @@
 							"path": [
 								"api",
 								"createComment",
-								"8aac036d-23e1-47fa-b75f-a47916924d0b"
+								"5d3186ef-b299-499d-8d38-03d9200937c9"
 							]
 						}
 					},
@@ -467,7 +597,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "1|AMs87H3mTCj4TudLutoyn4nFOj8Fk069hE7cdBJef59a1bd8",
+									"value": "6|quIishTTINNhf3Js2ol9F7IFjJkfuwxvM9IUiAD049f72e14",
 									"type": "string"
 								}
 							]
@@ -484,7 +614,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/storeComment/4b13de54-01cc-4874-917c-1e503d3ed9d4",
+							"raw": "http://127.0.0.1:8000/api/storeComment/5d3186ef-b299-499d-8d38-03d9200937c9",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -496,7 +626,7 @@
 							"path": [
 								"api",
 								"storeComment",
-								"4b13de54-01cc-4874-917c-1e503d3ed9d4"
+								"5d3186ef-b299-499d-8d38-03d9200937c9"
 							]
 						}
 					},
@@ -602,6 +732,349 @@
 							"body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"uuid\": \"f799d6d7-2ed0-4bda-b8d0-80cbfea4c518\",\n            \"comment\": \"llllll\",\n            \"user_id\": 1,\n            \"ad_id\": 2,\n            \"parent_id\": null,\n            \"created_at\": \"2025-07-02T20:03:12.000000Z\",\n            \"updated_at\": \"2025-07-02T20:03:12.000000Z\",\n            \"replies\": [\n                {\n                    \"id\": 4,\n                    \"uuid\": \"a9ccd6d7-34e0-4966-998d-df053e42acb1\",\n                    \"comment\": \"llfsldfsflldl\",\n                    \"user_id\": 1,\n                    \"ad_id\": 2,\n                    \"parent_id\": 1,\n                    \"created_at\": \"2025-07-02T20:21:19.000000Z\",\n                    \"updated_at\": \"2025-07-02T20:21:19.000000Z\",\n                    \"user\": {\n                        \"id\": 1,\n                        \"uuid\": \"76f7c152-33b4-4bea-b3d1-bdaf549e1f2a\",\n                        \"name\": null,\n                        \"account_type\": \"personal\",\n                        \"email\": \"abdelkraimalshami@gmail.com\",\n                        \"email_verified_at\": null,\n                        \"phone\": null,\n                        \"created_at\": \"2025-07-02T19:50:43.000000Z\",\n                        \"updated_at\": \"2025-07-02T19:50:43.000000Z\"\n                    }\n                }\n            ],\n            \"user\": {\n                \"id\": 1,\n                \"uuid\": \"76f7c152-33b4-4bea-b3d1-bdaf549e1f2a\",\n                \"name\": null,\n                \"account_type\": \"personal\",\n                \"email\": \"abdelkraimalshami@gmail.com\",\n                \"email_verified_at\": null,\n                \"phone\": null,\n                \"created_at\": \"2025-07-02T19:50:43.000000Z\",\n                \"updated_at\": \"2025-07-02T19:50:43.000000Z\"\n            }\n        }\n    ],\n    \"status\": true,\n    \"error\": \"Comments loaded successfully.\",\n    \"statusCode\": 200\n}"
 						}
 					]
+				},
+				{
+					"name": "getNotifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "5|vWIdpqjgMIEJcLT3yYx4dcbKBuziBfh9Bg5s5EAob70a8f78",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/getNotifications",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"getNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reactToAd",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|AEGkMhGuuTYTRs9OULA2nJfFpwyBQKmpFjDC1xgDd51a0ed5",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"liked\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/reactToAd/32a7cc98-8b2f-4e39-879e-7f8558c0e30a",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reactToAd",
+								"32a7cc98-8b2f-4e39-879e-7f8558c0e30a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "add admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"ahmedgvg@gmail.com\",\r\n    \"password\":123456\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/registerِAdmin",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"registerِAdmin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "الاحصائيات",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2|nG7X5Gc3WZREUu9EP7qGeUuuhvw49ivIG7yrjHnZ1c4009f7",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/admin/stats",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"admin",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "حالة الاعلان",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "5|0xZAHBIZLPiwRr1FunMFsHxbO8dYPTvW4vk3S80Q2d980b38",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\":\"paid\" //'pending', 'paid', 'rejected'\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/admin/adsStatus/35399f25-5e22-4723-8e98-d0e0d8bf8c75",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"admin",
+								"adsStatus",
+								"35399f25-5e22-4723-8e98-d0e0d8bf8c75"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "حذف اعلان",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6|HxBmLg3nqo2Yd4mDzrmawimCc4j94ZJwVVjmCyEX16975e10",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/admin/deleteAd/6fc5bd7e-1e83-4cd1-a0c5-9a980272df81",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"admin",
+								"deleteAd",
+								"6fc5bd7e-1e83-4cd1-a0c5-9a980272df81"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "block user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "1|AMs87H3mTCj4TudLutoyn4nFOj8Fk069hE7cdBJef59a1bd8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/category",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6|HxBmLg3nqo2Yd4mDzrmawimCc4j94ZJwVVjmCyEX16975e10",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/admin/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "عمليات الدفع",
+			"item": [
+				{
+					"name": "New Request",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\":09987655,\r\n    \"amount\":\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/paymentCreate",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"paymentCreate"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

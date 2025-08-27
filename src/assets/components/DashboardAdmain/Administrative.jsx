@@ -80,7 +80,7 @@ export default function Adminstrative() {
     const submitAddAdmin = async () => {
         try {
             setLoading(true)
-            await api.post('/admins', { email: adminEmail, password: adminPassword });
+            await api.post('/api/registerِAdmin', { email: adminEmail, password: adminPassword });
             console.log('✅ Admin added!');
             closeAddAdminModal();
         } catch (error) {
@@ -213,8 +213,9 @@ export default function Adminstrative() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const usersRes = await api.get('/users');
-                setUserdata(usersRes.data);
+                const usersRes = await api.get('/api/admin/users');
+
+                 setUserdata(usersRes.data.data);
             } catch (err) {
                 console.error('❌ Error fetching users:', err);
             }

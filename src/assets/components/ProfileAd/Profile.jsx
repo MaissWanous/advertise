@@ -1,7 +1,7 @@
 // src/components/Profile.jsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate, Link } from "react-router-dom";
-
+import api from '../../../api/index.jsx';
 import {
   Box,
   Grid,
@@ -21,7 +21,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import { MdAdd, MdEdit, MdGroup, MdSave, MdCalendarToday, MdSearch, MdNotifications, MdFavorite, MdFavoriteBorder, MdBookmark, MdBookmarkBorder, MdComment, MdDelete, MdPhone } from 'react-icons/md';
+import { MdAdd, MdEdit, MdGroup, MdSave, MdCalendarToday, MdSearch, MdNotifications, MdFavorite, MdFavoriteBorder, MdBookmark, MdBookmarkBorder, MdComment, MdDelete, MdPhone, MdReply } from 'react-icons/md';
 
 import "./Profile.css";
 import profileImg from "./image/profileImg.jpg";
@@ -33,7 +33,34 @@ let nextCommentId = 1;
 
 export default function Profile() {
   const navigate = useNavigate();
+// /photo_2023-03-05_18-48-02_8zSGEfY.jpg
+// useEffect(() => {
+     
+//         const fetchProfileData = async () => {
 
+//             try {
+
+//                 const response = await api.get(`/media/news/photos/photo_2023-03-05_18-48-02_8zSGEfY.jpg`);
+//               console.log(response)
+              
+//                     // if (response?.data?.img) {
+//                     //     setSelectedImage(response.data.img || profileImage);
+//                     // }
+              
+//             } catch (error) {
+//                 console.error('Error fetching profile data:', error);
+//                 if (error.response?.status === 403) {
+//                     // setToken(null);
+//                     // localStorage.removeItem(`token${username}`)
+//                     // navigate('/login');
+//                 }}
+//             // } finally {
+//             //     // setLoading(false);
+//             // }
+//         };
+
+//         fetchProfileData();
+//     },[]);
   // Profile
   const [displayName, setDisplayName] = useState("Advertiser");
   const [editingName, setEditingName] = useState(false);
@@ -45,41 +72,35 @@ export default function Profile() {
 
   // Ad Search
   const [showSearch, setShowSearch] = useState(false);
-  const [q, setQ] = useState("");
+  const [query, setQuery] = useState("");
 
   // Ad Data
-  const [ads, setAds] = useState([{
-    id: 1,
-    title: "Mathematics Course",
-    desc: "Improve your math skills with our comprehensive course.",
-    img: im1,
-    phone: "123 456 7890",
-    rating: 5,
-    isLiked: false,
-    isBookmarked: false,
-    comments: [],
-  }, {
-    id: 2,
-    title: "test2",
-    desc: "Improve your math skills with our comprehensive course.",
-    img: im1,
-    phone: "123 456 7890",
-    rating: 5,
-    isLiked: false,
-    isBookmarked: false,
-    comments: [],
-  }]);
+  const [ads, setAds] = useState([
+    {
+      id: 1,
+      title: "Mathematics Course",
+      desc: "...",
+      img: im1,
+      phone: "123 456 7890",
+      rating: 5,
+      isLiked: false,
+      isBookmarked: false,
+      comments: [],
+    },
+  ]);
 
-  // Commenting
-  const [activeCommentId, setActiveCommentId] = useState(null);
+  //commenting
+  const [activeCommentAdId, setActiveCommentAdId] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
   const [commentText, setCommentText] = useState("");
+  let nextCommentId = useRef(1);
 
   // Modals
   const [showEditModal, setShowEditModal] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
   // Profile actions
@@ -111,19 +132,30 @@ export default function Profile() {
 
   // Toolbar actions
   const toggleSearchBar = () => setShowSearch(prev => !prev);
-const filteredAds = q.trim()
-  ? ads.filter(ad =>
-      ad.title.toLowerCase().includes(q.toLowerCase())
+  const filteredAds = query.trim()
+    ? ads.filter(ad =>
+      ad.title.toLowerCase().includes(query.toLowerCase())
     )
-  : ads;
-
-
+    : ads;
   const goNewAd = () => navigate("/new-ad");
 
 
   // Ad actions
-  const toggleLike = () => setAds(prev => ({ ...prev, isLiked: !prev.isLiked }));
-  const toggleBookmark = () => setAds(prev => ({ ...prev, isBookmarked: !prev.isBookmarked }));
+  const toggleLike = (id) => {
+    setAds(prevAds =>
+      prevAds.map(ad =>
+        ad.id === id ? { ...ad, isLiked: !ad.isLiked } : ad
+      )
+    );
+  };
+
+  const toggleBookmark = (id) => {
+    setAds(prevAds =>
+      prevAds.map(ad =>
+        ad.id === id ? { ...ad, isBookmarked: !ad.isBookmarked } : ad
+      )
+    );
+  };
 
   // Edit Modal
   const [editingAdId, setEditingAdId] = useState(null);
@@ -135,16 +167,16 @@ const filteredAds = q.trim()
   };
 
   const closeEditModal = () => setShowEditModal(false);
-const handleEditSave = () => {
-  setAds(prev =>
-    prev.map(ad =>
-      ad.id === editingAdId
-        ? { ...ad, title: editTitle.trim(), desc: editDesc.trim() }
-        : ad
-    )
-  );
-  closeEditModal();
-};
+  const handleEditSave = () => {
+    setAds(prev =>
+      prev.map(ad =>
+        ad.id === editingAdId
+          ? { ...ad, title: editTitle.trim(), desc: editDesc.trim() }
+          : ad
+      )
+    );
+    closeEditModal();
+  };
 
 
   // Delete Modal
@@ -156,63 +188,60 @@ const handleEditSave = () => {
   };
 
   // Comments
-  const openComment = (commentId = null) => {
+  const openComment = (adId, commentId = null) => {
+    setActiveCommentAdId(adId);
     setReplyTo(commentId);
-    setCommentText("");
-    setActiveCommentId(ads.id);
+    setCommentText('');
   };
   const closeComment = () => {
+    setActiveCommentAdId(null);
     setReplyTo(null);
-    setCommentText("");
-    setActiveCommentId(null);
+    setCommentText('');
   };
 
   const postComment = () => {
     const text = commentText.trim();
     if (!text) return;
 
-    setAds(prev => {
-      const updated = { ...prev };
+    setAds(prevAds =>
+      prevAds.map(ad => {
+        if (ad.id !== activeCommentAdId) return ad;
 
-      if (replyTo == null) {
-        updated.comments.push({ id: nextCommentId++, text, replies: [] });
-      } else {
-        updated.comments = updated.comments.map(c =>
-          c.id === replyTo
-            ? {
-              ...c,
-              replies: [...c.replies, { id: nextCommentId++, text }],
-            }
-            : c
-        );
-      }
+        const newCommentId = nextCommentId.current++;
+        const updatedComments = replyTo == null
+          ? [...ad.comments, { id: newCommentId, text, replies: [] }]
+          : ad.comments.map(c =>
+            c.id === replyTo
+              ? { ...c, replies: [...c.replies, { id: newCommentId, text }] }
+              : c
+          );
 
-      return updated;
-    });
+        return { ...ad, comments: updatedComments };
+      })
+    );
 
     closeComment();
   };
 
   const deleteComment = (cid, parentId = null) => {
-    setAds(prev => {
-      const updated = { ...prev };
+    setAds(prevAds =>
+      prevAds.map(ad => {
+        if (ad.id !== activeCommentAdId) return ad;
 
-      if (parentId == null) {
-        updated.comments = updated.comments.filter(c => c.id !== cid);
-      } else {
-        updated.comments = updated.comments.map(c =>
-          c.id === parentId
-            ? {
-              ...c,
-              replies: c.replies.filter(r => r.id !== cid),
-            }
-            : c
-        );
-      }
+        const updatedComments = parentId == null
+          ? ad.comments.filter(c => c.id !== cid)
+          : ad.comments.map(c =>
+            c.id === parentId
+              ? { ...c, replies: c.replies.filter(r => r.id !== cid) }
+              : c
+          );
 
-      return updated;
-    });
+        return { ...ad, comments: updatedComments };
+      })
+    );
   };
+
+
 
   // const fillterd = isDeleted
   //   ? []
@@ -281,7 +310,7 @@ const handleEditSave = () => {
         </Grid>
 
         {/* Main Content */}
-        <Grid item size={{ xs: 12, md: 9 }} p={3} sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Grid item size={{ xs: 12, md: 9 }} p={3} sx={{ maxHeight: '100vh', overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
 
           <Stack direction="row" alignItems="center" spacing={2} padding={2}>
             <Stack direction="row" spacing={1}>
@@ -350,8 +379,8 @@ const handleEditSave = () => {
               variant="outlined"
               fullWidth
               placeholder="Search ads..."
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               sx={{ mb: 3 }}
             />
           )}
@@ -417,21 +446,23 @@ const handleEditSave = () => {
                     {/* Action Buttons + Phone + Details */}
                     <Stack direction="row" justifyContent="space-between" mt={2}>
                       <Stack direction="row" spacing={2}>
-                        <IconButton onClick={toggleLike}>
+                        <IconButton onClick={() => toggleLike(ad.id)}>
                           {ad.isLiked ? (
                             <MdFavorite style={{ color: '#e63946' }} />
                           ) : (
                             <MdFavoriteBorder />
                           )}
                         </IconButton>
-                        <IconButton onClick={toggleBookmark}>
+
+                        <IconButton onClick={() => toggleBookmark(ad.id)}>
                           {ad.isBookmarked ? (
                             <MdBookmark style={{ color: '#457b9d' }} />
                           ) : (
                             <MdBookmarkBorder />
                           )}
                         </IconButton>
-                        <IconButton onClick={openComment}>
+
+                        <IconButton onClick={() => openComment(ad.id)}>
                           <MdComment />
                         </IconButton>
                       </Stack>
@@ -443,6 +474,7 @@ const handleEditSave = () => {
                             {ad.phone}
                           </Typography>
                         </Stack>
+
                         <Button
                           component={Link}
                           to={`/Detials`}
@@ -453,6 +485,7 @@ const handleEditSave = () => {
                         </Button>
                       </Stack>
                     </Stack>
+
                   </CardContent>
                 </Card>
               </Grid>
@@ -502,44 +535,44 @@ const handleEditSave = () => {
         </DialogActions>
       </Dialog>
       {/* Comment Modal */}
-      <Dialog open={Boolean(activeCommentId)} onClose={closeComment} fullWidth maxWidth="sm">
-        <DialogTitle>
-          {replyTo == null ? 'Add Comment' : `Reply to Comment #${replyTo}`}
-        </DialogTitle>
-        <DialogContent>
-          {ads.find(ad => ad.id === activeCommentId)?.comments.map((c) => (
-
-            <Box key={c.id} mb={2}>
-              <Typography>{c.text}</Typography>
-              <Stack direction="row" spacing={1} mt={0.5}>
-                <IconButton onClick={() => openComment(c.id)}><MdReply /></IconButton>
-                <IconButton onClick={() => deleteComment(c.id)}><MdDelete /></IconButton>
-              </Stack>
-
-              {c.replies?.map((r) => (
-                <Box key={r.id} pl={3} mt={1}>
-                  <Typography variant="body2">{r.text}</Typography>
-                  <IconButton onClick={() => deleteComment(r.id, c.id)}><MdDelete fontSize="small" /></IconButton>
-                </Box>
+      {activeCommentAdId && (
+        <div className="comment-modal-overlay" onClick={closeComment}>
+          <div className="comment-modal" onClick={e => e.stopPropagation()}>
+            <h3>{replyTo == null ? 'Add Comment' : `Reply to Comment #${replyTo}`}</h3>
+            <ul className="comment-list">
+              {ads.find(ad => ad.id === activeCommentAdId)?.comments.map(c => (
+                <li key={c.id}>
+                  <div>
+                    {c.text}
+                    <div className="comment-controls">
+                      <MdReply className="ctrl-icon" onClick={() => openComment(activeCommentAdId, c.id)} />
+                      <MdDelete className="ctrl-icon" onClick={() => deleteComment(c.id)} />
+                    </div>
+                  </div>
+                  <ul className="reply-list">
+                    {c.replies.map(r => (
+                      <li key={r.id}>
+                        {r.text}
+                        <MdDelete className="ctrl-icon" onClick={() => deleteComment(r.id, c.id)} />
+                      </li>
+                    ))}
+                  </ul>
+                </li>
               ))}
-            </Box>
-          ))}
-
-          <TextField
-            fullWidth
-            multiline
-            rows={3}
-            margin="normal"
-            placeholder={replyTo == null ? 'Write your comment...' : 'Write your reply...'}
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={postComment} variant="contained">Post</Button>
-          <Button onClick={closeComment} variant="outlined">Cancel</Button>
-        </DialogActions>
-      </Dialog>
+            </ul>
+            <textarea
+              className="comment-input"
+              placeholder={replyTo == null ? 'Write your comment...' : 'Write your reply...'}
+              value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+            />
+            <div className="modal-buttons">
+              <button onClick={postComment}>Post</button>
+              <button onClick={closeComment}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>

@@ -1,7 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import './Verification.css';
+import Loading from '../../loading/loading';
+import api from '../../../api';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Verification = () => {
+  const location=useLocation();
+  const [loading, setLoading] = useState(false);
+  const Email=location.state.email;
+  const [message,setMessage]=useState("")
+  let codeS='';
+  const navigate = useNavigate();
   // حالة الخمس خانات
   const [code, setCode] = useState(Array(5).fill(''));
   // مراجع لكل input للتركيز التلقائي
@@ -27,14 +36,17 @@ const Verification = () => {
     }
   };
 
-  // عند إرسال النموذج
-  const handleSubmit = (e) => {
+
+
+  const handleSubmit = useCallback(async e => {
     e.preventDefault();
-    const verificationCode = code.join('');
-    console.log('Verification code entered:', verificationCode);
-    // هنا يمكنك مناداة API لتأكيد الكود
-    alert(`تم التحقق من الكود: ${verificationCode}`);
-  };
+  for (let i = 0; i < code.length; i++) {
+    codeS += code[i];
+    
+  }
+    navigate('/resetPassword',{state:{email:Email,code:codeS}});
+  }, []);
+  if (loading) return <Loading/>;
 
   // إعادة إرسال الكود
   const handleResend = (e) => {
@@ -46,6 +58,8 @@ const Verification = () => {
     setCode(Array(5).fill(''));
     inputsRef.current[0].focus();
   };
+
+  
 
   return (
     <div className="verification-page">
@@ -74,7 +88,9 @@ const Verification = () => {
             <a href="/resetPassword">Reset Now</a>
         
           </div>
-          
+           {message && (
+          <p className="success-message">{message}</p>
+        )}
           <button type="submit" className="btn-verify">
             Verify
           </button>
