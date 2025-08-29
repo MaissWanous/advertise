@@ -6,7 +6,7 @@ import {
 } from 'react-icons/fa';
 import './CreateAccount.css';
 import bgImage from './bgImage.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../../api';
 import Loading from '../../loading/loading';
 
@@ -18,7 +18,7 @@ export default function CreateAccount() {
   const [confirmPwd, setConfirmPwd] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
+const navigate = useNavigate();
   const handleSubmit = async e => {
     e.preventDefault();
     if (password !== confirmPwd) {
@@ -30,6 +30,7 @@ export default function CreateAccount() {
     try {
       const res = await api.post('/api/register', { email:Email,password:password, account_type:userType });
       console.log(res)
+      navigate("/Home")
     } catch (err) {
       setError(err.message);
     } finally {
@@ -109,11 +110,11 @@ export default function CreateAccount() {
         </div>
 
           {error && <div className="error">{error}</div>}
-          <Link to="/Home">
+          
             <button type="submit" disabled={loading}>
               {loading ? 'Please wait…' : 'Create Account'}
             </button>
-          </Link>
+
         </form>
       </div>
     </div>
