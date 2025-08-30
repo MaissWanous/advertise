@@ -42,9 +42,17 @@ export default function CreateAdForm() {
   const handleImagesChange = e => setImageFiles(Array.from(e.target.files));
   const handleSliderChange = e => {
     const files = Array.from(e.target.files);
-    setSliderFiles(files);
-    setSliderIndex(0);
+
+    setSliderFiles(prevFiles => {
+      const updatedFiles = [...prevFiles, ...files];
+      // إذا ما كان فيه صور قبل، رجع المؤشر لأول صورة
+      if (prevFiles.length === 0) {
+        setSliderIndex(0);
+      }
+      return updatedFiles;
+    });
   };
+
 
   const showPrev = () =>
     setSliderIndex(i =>
@@ -65,37 +73,65 @@ export default function CreateAdForm() {
     navigate('/payment');
   };
 
- const handleSkip = async () => {
-  setShowAlert(false);
 
-  try {
-    const response = await api.post('/api/storeAd', {
-      title: title,
-      description: description,
-      price: "",
-      status: "pending",
-      video_path: videoFile,
-      categories_id: section
-    });
-console.log(response)
-    Swal.fire({
-      icon: 'success',
-      title: 'Ad submitted!',
-      text: 'Your ad has been successfully saved.',
-    });
+  // … in your CreateAdForm component …
 
-  } catch (err) {
-    const errorMessage = err.response?.data?.message || 'Something went wrong. Please try again.';
-    console.error("Submission error:", err);
+  // 1) change handleSkip to build a FormData
+  const handleSkip = async () => {
+    setShowAlert(false);
 
-    Swal.fire({
-      icon: 'error',
-      title: 'Submission Failed',
-      text: errorMessage,
-    });
-  }
-};
+    try {
+      // build the multipart form
+      const formData = new FormData();
+      formData.append('title', title || '');
+      formData.append('description', description || '');
+      formData.append('price', 0);
+      formData.append('status', 'pending');
+      formData.append('category_name', section || '');
 
+
+      if (imageFiles.length > 0) {
+  
+        formData.append('images', imageFiles[0]);
+      }
+
+      if (videoFile) {
+ 
+        formData.append('video_path', videoFile);
+      }
+
+      // if you have multiple slider files, you can do:
+      // sliderFiles.forEach((file, idx) =>
+      //   formData.append(`slider[${idx}]`, file)
+      // );
+
+      const response = await api.post('/api/storeAd', formData, {
+        headers: {
+         
+          'Content-Type': 'multipart/form-data',
+         
+        }
+      });
+
+      console.log('✅', response.data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Ad submitted!',
+        text: 'Your ad has been successfully saved.',
+      });
+
+    } catch (err) {
+      console.error('Submission error:', err);
+      const errorMessage =
+        err.response?.data?.message ||
+        'Something went wrong. Please try again.';
+      Swal.fire({
+        icon: 'error',
+        title: 'Submission Failed',
+        text: errorMessage,
+      });
+    }
+  };
 
   const handleCancel = () => {
     setTitle('');
@@ -125,7 +161,7 @@ console.log(response)
     <div className="create-ad-page">
       {/* Back button */}
       <Link to="/Home">
-        <button className="back-button" onClick={() => navigate(-1)}>
+        <button className="back-button" >
           ← Back
         </button>
       </Link>
@@ -225,6 +261,7 @@ console.log(response)
                 hidden
                 onChange={handleSliderChange}
               />
+
               <span>Image Slider</span>
             </div>
           </div>
