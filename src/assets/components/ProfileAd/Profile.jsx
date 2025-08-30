@@ -62,6 +62,7 @@ export default function Profile() {
 //         fetchProfileData();
 //     },[]);
   // Profile
+    const [deletingAdId, setDeletingAdId] = useState(null);
   const [displayName, setDisplayName] = useState("Advertiser");
   const [editingName, setEditingName] = useState(false);
   const nameRef = useRef();
@@ -180,13 +181,28 @@ export default function Profile() {
 
 
   // Delete Modal
-  const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
-  const handleDeleteConfirm = () => {
-    setIsDeleted(true);
-    closeDeleteModal();
+  const openDeleteModal = (adId) => {
+    setDeletingAdId(adId);
+    setShowDeleteModal(true);
   };
 
+    const handleDeleteConfirm = async () => {
+    // immediate local removal
+    setAds(prev => prev.filter(ad => ad.id !== deletingAdId));
+
+    // optional: send delete request to your backend
+    // try {
+    //   await api.delete(`/ads/${deletingAdId}`);
+    // } catch(err) {
+    //   console.error('Failed to delete on server:', err);
+    //   // optionally: rollback local deletion or show error toast
+    // }
+
+    // cleanup modal state
+    setDeletingAdId(null);
+    setShowDeleteModal(false);
+    }
   // Comments
   const openComment = (adId, commentId = null) => {
     setActiveCommentAdId(adId);
@@ -399,7 +415,7 @@ export default function Profile() {
                       <MdEdit />
                     </IconButton>
 
-                    <IconButton onClick={openDeleteModal} sx={{ color: '#ef4444' }}>
+                    <IconButton onClick={() => openDeleteModal(ad.id)} sx={{ color: '#ef4444' }}>
                       <MdDelete />
                     </IconButton>
                   </Box>
