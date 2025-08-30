@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Loading from '../../loading/loading.jsx';
 import api from '../../../api/index.jsx';
 import {
@@ -10,6 +10,8 @@ import {
   MdFavorite,
   MdChatBubbleOutline,
   MdReport,
+  MdReply,
+  MdDelete,
 } from "react-icons/md";
 import "./Section2.css";
 
@@ -25,79 +27,71 @@ import Swal from "sweetalert2";
 
 export default function TopAds() {
   const [ads, setAds] = useState([]);
-  const [modalId, setModalId] = useState(null);
+  const [activeCommentAdId, setActiveCommentAdId] = useState(null); // الإعلان اللي مفتوح تعليقاته
   const [commentText, setCommentText] = useState("");
-  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await api.get('/api/most-popular-ads');
-      const serverData = response.data;
 
-      if (serverData && Array.isArray(serverData) && serverData.length > 0) {
-        setAds(serverData);
-      } else {
-        setAds(fallback);
-      }
-    } catch (error) {
-      console.error('❌ Error fetching data:', error);
-      setAds(fallback); 
-    } finally {
-      setLoading(false);
-    }
+  const handleFollow = async (uuid) => {
+    setAds(ads.map(a => a.uuid === uuid ? { ...a, isFollowed: !a.isFollowed } : a));
+    const res = await api.post(`/api/ads/${uuid}/follow`);
   };
 
-  fetchData();
-}, []);
+  const handleBookmark = async (uuid) => {
+    setAds(ads.map(a => a.uuid === uuid ? { ...a, isBookmarked: !a.isBookmarked } : a));
+    await api.post(`/api/ads/${uuid}/bookmark`);
+  };
 
+  const handleLike = async (uuid) => {
+    setAds(ads.map(a => a.uuid === uuid ? { ...a, isLiked: !a.isLiked } : a));
+    await api.post(`api/createReaction/${uuid}`);
+  };
   const fallback = [
     {
-      id: 1,
+      uuid: 1,
       userName: "Rami Ali",
       userAvatar: av5,
-      tag: "TECHNOLOGY",
+      category_name: "TECHNOLOGY",
       title: "Wireless Router and Switch",
       rating: 5,
       description:
         "Dual-band 802.11ac Wi-Fi router with four Gigabit Ethernet ports. Supports MU-MIMO technology.",
-      image: im1,
+      image_url: im1,
       phone: "123-456-7890",
     },
     {
-      id: 2,
+      uuid: 2,
       userName: "Tamir Hasan",
       userAvatar: av6,
-      tag: "EDUCATION",
+      category_name: "EDUCATION",
       title: " Master React in 30 Days ",
       rating: 4,
       description:
         "Authentic Italian cuisine in a warm, inviting atmosphere.",
-      image: im2,
+      image_url: im2,
       phone: "987-654-3210",
     },
     {
-      id: 3,
+      uuid: 3,
       userName: "Ramiz Fadi",
       userAvatar: av7,
-      tag: "FEATURED",
+      category_name: "FEATURED",
       title: "Ultra-Slim Laptop Pro",
       rating: 5,
       description:
         "An intensive hands-on course covering all React fundamentals, hooks, state management and beyond.",
-      image: im3,
+      image_url: im3,
       phone: "555-123-4567",
     },
     {
-      id: 4,
+      uuid: 4,
       userName: "Mazin Yasi",
       userAvatar: av8,
-      tag: "Restaurant",
+      category_name: "Restaurant",
       title: " Cozy Italian Restaurant ",
       rating: 4,
       description:
         "High-performance ultrabook with long battery life and retina display.",
-      image: im4,
+      image_url: im4,
       phone: "444-987-6543",
     },
   ].map((ad) => ({
@@ -107,102 +101,152 @@ useEffect(() => {
     isReported: false,
     comments: [],
   }));
- const handleReport =async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('/api/advertisements');
+        const serverData = response.data.data;
+        serverData.forEach(e => {
+          e.userName = "user name"
+          e.userAvatar = av5;
+          e.phone = "123-456-7890"
+        });
+        console.log(serverData)
+        if (serverData && Array.isArray(serverData) && serverData.length > 0) {
+          setAds(serverData);
+        } else {
+          setAds(fallback);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching data:', error);
+        setAds(fallback);
+      } finally {
 
-  Swal.fire({
-    title: 'Do you want to report?',
-    text: 'Your report will be sent to the administration. Are you sure?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, report',
-    cancelButtonText: 'Cancel',
-  }).then(async(result) => {
-    if (result.isConfirmed) {
-    //  await api.post("/report${id}")
-      Swal.fire('Reported!', 'Thank you for letting us know.', 'success');
-    }
-  });
-};
+      }
+    };
 
- const openComment = (id) => {
-    setModalId(id);
-    setCommentText("");
+    fetchData();
+  }, []);
+
+  const [replyTo, setReplyTo] = useState(null);
+  
+  const nextCommentId = useRef(1);
+
+  const openComment = (adId, commentId = null) => {
+    setActiveCommentAdId(adId);
+    setReplyTo(commentId);
+    setCommentText('');
   };
-  const closeComment = () => setModalId(null);
- const postComment = async () => {
-  if (!commentText.trim()) return;
 
-  try {
-    setLoading(true);
-    // await api.post(`/api/ads/${modalId}/comment`, { comment: commentText });
-    setAds((prevAds) =>
-      prevAds.map((ad) =>
-        ad.id === modalId
-          ? {
-              ...ad,
-              comments: [...ad.comments, commentText.trim()],
-            }
-          : ad
-      )
+  const closeComment = () => {
+    setActiveCommentAdId(null);
+    setReplyTo(null);
+    setCommentText('');
+  };
+
+  const postComment = () => {
+    const text = commentText.trim();
+    if (!text) return;
+
+    setAds(prevAds =>
+      prevAds.map(ad => {
+        if (ad.uuid !== activeCommentAdId) return ad;
+
+        const newCommentId = nextCommentId.current++;
+        const updatedComments = replyTo == null
+          ? [...ad.comments, { uuid: newCommentId, comment: text, replies: [] }]
+          : ad.comments.map(c =>
+            c.uuid === replyTo
+              ? { ...c, replies: [...c.replies, { uuid: newCommentId, comment: text }] }
+              : c
+          );
+
+        return { ...ad, comments: updatedComments };
+      })
     );
 
-    Swal.fire("Success", "Your comment has been posted.", "success");
-  } catch (error) {
-    console.log("Error while commenting:", error);
-    Swal.fire("Error", "Comment has not been sent", "error");
-  } finally {
-    setLoading(false);
     closeComment();
-  }
-};
-
-
-
-  const handleFollow = async (id) => {
-    setAds(ads.map(a => a.id === id ? { ...a, isFollowed: !a.isFollowed } : a));
-    const res = await api.post(`/api/ads/${id}/follow`);
   };
 
-  const handleBookmark = async (id) => {
-    setAds(ads.map(a => a.id === id ? { ...a, isBookmarked: !a.isBookmarked } : a));
-    await api.post(`/api/ads/${id}/bookmark`);
+  const deleteComment = (cid, parentId = null) => {
+    setAds(prevAds =>
+      prevAds.map(ad => {
+        if (ad.uuid !== activeCommentAdId) return ad;
+
+        const updatedComments = parentId == null
+          ? ad.comments.filter(c => c.uuid !== cid)
+          : ad.comments.map(c =>
+            c.uuid === parentId
+              ? { ...c, replies: c.replies.filter(r => r.uuid !== cid) }
+              : c
+          );
+
+        return { ...ad, comments: updatedComments };
+      })
+    );
   };
 
-  const handleLike = async (id) => {
-    setAds(ads.map(a => a.id === id ? { ...a, isLiked: !a.isLiked } : a));
-    await api.post(`/api/ads/${id}/like`);
-  };
 
 
 
- 
-  if (loading) return <Loading />;
+
+  // const postComment = async () => {
+  //   if (!commentText.trim()) return;
+
+  //   try {
+  //     if (replyTo) {
+  //       // إضافة رد
+  //       await api.post(`/api/createReply/${replyTo}`, { comment: commentText });
+  //       setAds(prevAds =>
+  //         prevAds.map(ad =>
+  //           ad.uuid === activeCommentAdId
+  //             ? {
+  //               ...ad,
+  //               comments: ad.comments.map(c =>
+  //                 c.uuid === replyTo
+  //                   ? { ...c, replies: [...c.replies, { uuid: Date.now(), comment: commentText, user: { name: "You" } }] }
+  //                   : c
+  //               )
+  //             }
+  //             : ad
+  //         )
+  //       );
+  //     } else {
+  //       // إضافة تعليق جديد
+  //       await api.post(`/api/createComment/${activeCommentAdId}`, { comment: commentText });
+  //       setAds(prevAds =>
+  //         prevAds.map(ad =>
+  //           ad.uuid === activeCommentAdId
+  //             ? { ...ad, comments: [...ad.comments, { uuid: Date.now(), comment: commentText, user: { name: "You" }, replies: [] }] }
+  //             : ad
+  //         )
+  //       );
+  //     }
+
+  //     setCommentText("");
+  //     setReplyTo(null);
+  //   } catch (error) {
+  //     console.error("Error while commenting:", error);
+  //   }
+  // };
+
+
   return (
     <section className="top-ads">
       <h2 className="top-ads__heading">Most Popular Ads</h2>
       <div className="top-ads__grid">
         {ads.map((ad) => (
-          <div key={ad.id} className="top-card">
+          <div key={ad.uuid} className="top-card">
             {/* HEADER */}
             <div className="top-card__header">
               <div className="top-card__userinfo">
-                <img
-                  src={ad.userAvatar}
-                  alt={ad.userName}
-                  className="top-card__avatar"
-                />
-                <span className="top-card__badge">{ad.tag}</span>
+                <img src={ad.userAvatar} alt={ad.userName} className="top-card__avatar" />
+                <span className="top-card__badge">{ad.category_name}</span>
                 <span className="top-card__username">{ad.userName}</span>
               </div>
               <button
-                className={
-                  ad.isFollowed
-                    ? "top-cardfollow-btn following"
-                    : "top-cardfollow-btn"
-                }
-               onClick={() => handleFollow(ad.id)}
-
-                
+                className={ad.isFollowed ? "top-cardfollow-btn following" : "top-cardfollow-btn"}
+                onClick={() => handleFollow(ad.uuid)}
               >
                 {ad.isFollowed ? "Following" : "Follow"}
               </button>
@@ -211,11 +255,7 @@ useEffect(() => {
             {/* RATING */}
             <div className="top-card__rating">
               {Array.from({ length: 5 }).map((_, i) => (
-                <MdStar
-                  key={i}
-                  className={`top-card__star ${i < ad.rating ? "top-card__star--filled" : ""
-                    }`}
-                />
+                <MdStar key={i} className={`top-card__star ${i < ad.rating ? "top-card__star--filled" : ""}`} />
               ))}
             </div>
 
@@ -224,83 +264,94 @@ useEffect(() => {
               <h3 className="top-card__title">{ad.title}</h3>
               <p className="top-card__desc">{ad.description}</p>
             </div>
+
             {/* IMAGE */}
             <div className="top-card__image">
-              <img src={ad.image} alt={ad.title} />
+              <img src={ad.image_url.replace("http://", "https://")} alt={ad.title} />
             </div>
 
-            {/* ACTIONS + CONTACT */}
+            {/* ACTIONS */}
             <div className="top-card__footer">
               <div className="top-card__actions">
-                <button
-                  onClick={() => handleLike(ad.id)}
-                  className="top-card__action-btn"
-                >
-                  {ad.isLiked ? (
-                    <MdFavorite className="top-cardicon top-cardicon--heart" />
-                  ) : (
-                    <MdFavoriteBorder className="top-cardicon top-cardicon--heart-outline" />
-                  )}
+                <button onClick={() => handleLike(ad.uuid)} className="top-card__action-btn">
+                  {ad.isLiked ? <MdFavorite /> : <MdFavoriteBorder />}
                 </button>
-                <button
-                  onClick={() => openComment(ad.id)}
-                  className="top-card__action-btn"
-                >
-                  <MdChatBubbleOutline className="top-cardicon top-cardicon--comment" />
+                <button onClick={() => openComment(ad.uuid)} className="top-card__action-btn">
+                  <MdChatBubbleOutline />
                 </button>
-                <button
-                  onClick={() => handleBookmark(ad.id)}
-                  className="top-card__action-btn"
-                >
-                  {ad.isBookmarked ? (
-                    <MdBookmark className="top-cardicon top-cardicon--bookmark" />
-                  ) : (
-                    <MdBookmarkBorder className="top-cardicon top-cardicon--bookmark-outline" />
-                  )}
+                <button onClick={() => handleBookmark(ad.uuid)} className="top-card__action-btn">
+                  {ad.isBookmarked ? <MdBookmark /> : <MdBookmarkBorder />}
                 </button>
-                <button
-                  onClick={() => handleReport(ad.id)}
-                  className="top-card__action-btn"
-                >
-                  <MdReport
-                    className={
-                      ad.isReported
-                        ? "top-cardicon top-cardicon--report"
-                        : "top-cardicon top-cardicon--report-outline"
-                    }
-                  />
+                <button onClick={() => handleReport(ad.uuid)} className="top-card__action-btn">
+                  <MdReport />
                 </button>
               </div>
               <div className="top-card__contact">
-                <MdPhone className="top-cardicon top-cardicon--phone" />
-                <a href={`tel:${ad.phone}`} className="top-card__phone">
-                  {ad.phone}
-                </a>
+                <MdPhone />
+                <a href={`tel:${ad.phone}`}>{ad.phone}</a>
               </div>
             </div>
           </div>
         ))}
       </div>
-      {modalId !== null && (
-        <div className="modal-overlay" onClick={closeComment}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Add Comment</h3>
+
+      {/* COMMENT MODAL */}
+
+      {activeCommentAdId && (
+        <div className="comment-modal-overlay" onClick={closeComment}>
+          <div className="comment-modal" onClick={e => e.stopPropagation()}>
+            <h3>
+              {replyTo == null ? 'Add Comment' : `Reply to Comment #${replyTo}`}
+            </h3>
+
+            <ul className="comment-list">
+              {ads.find(ad => ad.uuid === activeCommentAdId)?.comments.map(c => (
+                <li key={c.uuid}>
+                  <div>
+                    {c.comment}
+                    <div className="comment-controls">
+                      <MdReply
+                        className="ctrl-icon"
+                        onClick={() => openComment(activeCommentAdId, c.uuid)}
+                      />
+                      <MdDelete
+                        className="ctrl-icon"
+                        onClick={() => deleteComment(c.uuid)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* عرض الردود */}
+                  <ul className="reply-list">
+                    {c.replies.map(r => (
+                      <li key={r.uuid}>
+                        {r.comment}
+                        <MdDelete
+                          className="ctrl-icon"
+                          onClick={() => deleteComment(r.uuid, c.uuid)}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+
             <textarea
+              className="comment-input"
+              placeholder={replyTo == null ? 'Write your comment...' : 'Write your reply...'}
               value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Write your comment…"
+              onChange={e => setCommentText(e.target.value)}
             />
             <div className="modal-buttons">
-              <button onClick={postComment} className="btn-post">
-                Post
-              </button>
-              <button onClick={closeComment} className="btn-cancel">
-                Cancel
-              </button>
+              <button onClick={postComment}>Post</button>
+              <button onClick={closeComment}>Cancel</button>
             </div>
           </div>
         </div>
       )}
+
+
     </section>
   );
 }
