@@ -91,7 +91,7 @@ export default function TopAds() {
       rating: 4,
       description:
         "High-performance ultrabook with long battery life and retina display.",
-      image_url: im4,
+      image_url: "https://ff0b357256ca.ngrok-free.app/storage/ads/uNiAsKJ28DYFqOmxHs0hBsxfDRB33sWKYmYorrel.png",
       phone: "444-987-6543",
     },
   ].map((ad) => ({
@@ -118,7 +118,7 @@ export default function TopAds() {
           setAds(fallback);
         }
       } catch (error) {
-        console.error('❌ Error fetching data:', error);
+        console.error(' Error fetching data:', error);
         setAds(fallback);
       } finally {
 
@@ -189,46 +189,6 @@ export default function TopAds() {
 
 
 
-
-  // const postComment = async () => {
-  //   if (!commentText.trim()) return;
-
-  //   try {
-  //     if (replyTo) {
-  //       // إضافة رد
-  //       await api.post(`/api/createReply/${replyTo}`, { comment: commentText });
-  //       setAds(prevAds =>
-  //         prevAds.map(ad =>
-  //           ad.uuid === activeCommentAdId
-  //             ? {
-  //               ...ad,
-  //               comments: ad.comments.map(c =>
-  //                 c.uuid === replyTo
-  //                   ? { ...c, replies: [...c.replies, { uuid: Date.now(), comment: commentText, user: { name: "You" } }] }
-  //                   : c
-  //               )
-  //             }
-  //             : ad
-  //         )
-  //       );
-  //     } else {
-  //       // إضافة تعليق جديد
-  //       await api.post(`/api/createComment/${activeCommentAdId}`, { comment: commentText });
-  //       setAds(prevAds =>
-  //         prevAds.map(ad =>
-  //           ad.uuid === activeCommentAdId
-  //             ? { ...ad, comments: [...ad.comments, { uuid: Date.now(), comment: commentText, user: { name: "You" }, replies: [] }] }
-  //             : ad
-  //         )
-  //       );
-  //     }
-
-  //     setCommentText("");
-  //     setReplyTo(null);
-  //   } catch (error) {
-  //     console.error("Error while commenting:", error);
-  //   }
-  // };
 
 
   return (
