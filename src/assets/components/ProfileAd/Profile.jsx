@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Modal,
 } from '@mui/material';
 import { MdAdd, MdEdit, MdGroup, MdSave, MdCalendarToday, MdSearch, MdNotifications, MdFavorite, MdFavoriteBorder, MdBookmark, MdBookmarkBorder, MdComment, MdDelete, MdPhone, MdReply } from 'react-icons/md';
 
@@ -257,13 +258,26 @@ export default function Profile() {
     );
   };
 
+// اشعارات
+  const [notifications, setNotifications] = useState([]);
+  const [openNotifModal, setOpenNotifModal] = useState(false);
+ const handleOpenNotifications = async () => {
+  try {
+    const res = await api.get('/api/getNotifications');
+    console.log(res)
+    // إذا الـ backend بيرجع { status: 'success', data: [...] }
+    setNotifications(res.data?.data || []);
+
+    setOpenNotifModal(true);
+  } catch (err) {
+    console.error('Error fetching notifications:', err);
+  }
+};
 
 
-  // const fillterd = isDeleted
-  //   ? []
-  //   : ad.filter(item =>
-  //       item.title.toLowerCase().includes(q.toLowerCase())
-  //     );
+  const handleCloseNotifications = () => {
+    setOpenNotifModal(false);
+  };
 
 
   return (
@@ -350,6 +364,7 @@ export default function Profile() {
               </IconButton>
 
               <IconButton
+              onClick={handleOpenNotifications}
                 sx={{
                   color: '#0d1f44',
                   fontSize: '2rem',
@@ -589,6 +604,50 @@ export default function Profile() {
           </div>
         </div>
       )}
+      {/* مودال الإشعارات */}
+      <Modal
+        open={openNotifModal}
+        onClose={handleCloseNotifications}
+        aria-labelledby="notifications-modal-title"
+        aria-describedby="notifications-modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          borderRadius: 2,
+          boxShadow: 24,
+          p: 3
+        }}>
+          <Typography id="notifications-modal-title" variant="h6" mb={2}>
+            Notifications
+          </Typography>
+          {notifications.length > 0 ? (
+            <List>
+              {notifications.map((notif, index) => (
+                <ListItem key={index} divider>
+                  <ListItemText
+                    primary={notif.title || 'No title'}
+                    secondary={notif.message || ''}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography>No notifications found.</Typography>
+          )}
+          <Button
+            variant="contained"
+            onClick={handleCloseNotifications}
+            sx={{ mt: 2 }}
+          >
+            Close
+          </Button>
+        </Box>
+     </Modal>
 
       <Footer />
     </>

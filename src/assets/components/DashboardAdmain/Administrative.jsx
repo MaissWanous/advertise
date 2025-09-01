@@ -37,7 +37,7 @@ function DividerSection({ label, icon, onClick, iconColor = '#345c6f' }) {
     );
 }
 
-function ActionRow({ label, isUser, id, onClick }) {
+function ActionRow({ label, isUser, uuid, onClick }) {
     return (
         <>
             <Divider sx={{ my: 1 }} />
@@ -45,7 +45,7 @@ function ActionRow({ label, isUser, id, onClick }) {
                 <Typography variant="body1" sx={{ color: '#333' }}>{label}</Typography>
                 {isUser ? (
                     <Switch
-                        onChange={() => onClick(id)}
+                        onChange={() => onClick(uuid)}
                         // checked={1}
                         defaultChecked
                         sx={{
@@ -55,7 +55,7 @@ function ActionRow({ label, isUser, id, onClick }) {
                     />
                 ) : (
                     <IconButton
-                        onClick={() => onClick(id)}
+                        onClick={() => onClick(uuid)}
                         aria-label="delete"
                         sx={{ color: '#b90303ff' }}
                     >
@@ -103,8 +103,8 @@ export default function Adminstrative() {
     ]);
 
     const [reports, setReports] = useState([
-        { id: 1, description: "Spam content in Ad 1" },
-        { id: 2, description: "Inappropriate language used in Ad 2" },
+        { uuid: 1, description: "Spam content in Ad 1" },
+        { uuid: 2, description: "Inappropriate language used in Ad 2" },
     ]);
 
 
@@ -139,25 +139,24 @@ export default function Adminstrative() {
     const [confirmationType, setConfirmationType] = useState('');
     const [editIsOpen, setEditIsOpen] = useState(false)
     const [modalContent, setModalContent] = useState("section")
-    const[currentValue,setCurrentValue]=useState()
-  const handleSubmit = async () => {
+    const [currentValue, setCurrentValue] = useState()
+    const handleSubmit = async () => {
         try {
             setLoading(true)
-          
-
-            await api.put('/', {currentValue}, config);
-
-             Swal.fire('Success', `Your data has been updated successfully!`, 'success');
+            if (modalContent === "section")
+                await api.post('api/admin/storeCategory', { name: currentValue, title: "...", image: "" });
+            setCurrentValue("")
+            Swal.fire('Success', `Your data has been updated successfully!`, 'success');
 
             closeModal();
         } catch (err) {
             console.error('Error updating info:', err);
-             Swal.fire('Error', `Failed to update your data!`, 'error');
+            Swal.fire('Error', `Failed to update your data!`, 'error');
         } finally {
             setLoading(false)
         }
     };
-    const openModal = (name='section') => {
+    const openModal = (name = 'section') => {
         setModalContent(name)
         setEditIsOpen(true)
     }
@@ -179,9 +178,20 @@ export default function Adminstrative() {
         try {
             setLoading(true)
             console.log("delete ad")
-            await api.delete(`/ads/${selectedAdToDelete.id}`);
-            setAds(prev => prev.filter(ad => ad.id !== selectedAdToDelete.id));
+            await api.delete(`/api/admin/deleteAd/${selectedAdToDelete}`);
+            console.log(selectedAdToDelete)
+            setAds(prev => prev.filter(ad => ad.uuid !== selectedAdToDelete));
+            Swal.fire({
+                icon: 'success',
+                title: 'delete ad ',
+                text: 'Your ad has been successfully deleted.',
+            });
         } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'delete Failed',
+                text: error,
+            });
             console.error("❌ Failed to delete ad:", error);
         } finally {
             setConfirmOpen(false);
@@ -193,9 +203,18 @@ export default function Adminstrative() {
         try {
             setLoading(true)
             console.log("block user")
-            await api.post(`/user/${selectedUserToBlock.id}`);
-            setUser(prev => prev.filter(user => user.id !== selectedUserToBlock.id));
+            await api.post(`api/admin/usersBlock/${selectedUserToBlock}`);
+            // setUser(prev => prev.filter(user => user.uuid !== selectedUserToBlock));
+            Swal.fire({
+                icon: 'success',
+                title: 'block user '
+            });
         } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'block Failed',
+                text: error,
+            });
             console.error("❌ Failed to block:", error);
         } finally {
             setConfirmOpen(false);
@@ -213,9 +232,9 @@ export default function Adminstrative() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const usersRes = await api.get('/api/admin/users');
+                const usersRes = await api.get('/api/admin/listUsers');
 
-                 setUserdata(usersRes.data.data);
+                setUserdata(usersRes.data.data);
             } catch (err) {
                 console.error('❌ Error fetching users:', err);
             }
@@ -223,8 +242,9 @@ export default function Adminstrative() {
                 setLoading(false)
             }
             try {
-                const adsRes = await api.get('/ads');
-                setAds(adsRes.data);
+                const adsRes = await api.get('/api/advertisements');
+                console.log(adsRes)
+                setAds(adsRes.data.data);
             } catch (err) {
                 console.error('❌ Error fetching ads:', err);
             }
@@ -341,11 +361,11 @@ export default function Adminstrative() {
                     </Typography>
 
                     {user && userdata.map((item, index) => (
-                        <ActionRow key={index} label={item.email} isUser id={1} onClick={handleBlockUserClick} />
+                        <ActionRow key={index} label={item.email} isUser uuid={item.uuid} onClick={handleBlockUserClick} />
                     ))}
 
                     {adsMode && ads.map((item, index) => (
-                        <ActionRow key={index} label={item.title} isUser={false} id={1} onClick={handleDeleteAdClick} />
+                        <ActionRow key={index} label={item.title} isUser={false} uuid={item.uuid} onClick={handleDeleteAdClick} />
                     ))}
 
                     {reportMode && reports.map((report, index) => (
@@ -503,7 +523,7 @@ export default function Adminstrative() {
             >
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#333' }}>
-                         {modalContent === 'duration' ? 'Edit Ad Duration (hours)' : 'Add Section'}
+                        {modalContent === 'duration' ? 'Edit Ad Duration (hours)' : 'Add Section'}
                     </Typography>
 
                     <TextField
@@ -515,7 +535,7 @@ export default function Adminstrative() {
                         onChange={(e) => {
                             const val = e.target.value;
                             if (modalContent === 'duration') {
-                                
+
                                 setCurrentValue(val.replace(/[^\d]/g, ''));
                             } else {
                                 setCurrentValue(val);
@@ -534,7 +554,7 @@ export default function Adminstrative() {
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
                         <Button
                             variant="contained"
-                             onClick={handleSubmit}
+                            onClick={handleSubmit}
                             sx={{ backgroundColor: '#345c6f', color: '#fff' }}
                         >
                             Save

@@ -70,13 +70,23 @@ export default function CreateAdForm() {
 
   const handlePay = () => {
     setShowAlert(false);
-    navigate('/payment');
+
+    navigate('/payment', {
+      state: {
+        title,
+        description,
+        price: 300000,
+        category_name: section,
+        imageFiles,
+        videoFile
+      }
+    });
   };
 
 
-  // … in your CreateAdForm component …
 
-  // 1) change handleSkip to build a FormData
+
+  
   const handleSkip = async () => {
     setShowAlert(false);
 
@@ -86,34 +96,27 @@ export default function CreateAdForm() {
       formData.append('title', title || '');
       formData.append('description', description || '');
       formData.append('price', 0);
-      formData.append('status', 'pending');
-      formData.append('category_name', section || '');
-
-
+      formData.append('category_name', "all");
+      console.log(section)
       if (imageFiles.length > 0) {
-  
+
         formData.append('images', imageFiles[0]);
       }
 
       if (videoFile) {
- 
+
         formData.append('video_path', videoFile);
       }
 
-      // if you have multiple slider files, you can do:
-      // sliderFiles.forEach((file, idx) =>
-      //   formData.append(`slider[${idx}]`, file)
-      // );
 
       const response = await api.post('/api/storeAd', formData, {
         headers: {
-         
           'Content-Type': 'multipart/form-data',
-         
+
         }
       });
 
-      console.log('✅', response.data);
+      console.log('ok', response.data);
       Swal.fire({
         icon: 'success',
         title: 'Ad submitted!',
@@ -135,6 +138,7 @@ export default function CreateAdForm() {
 
   const handleCancel = () => {
     setTitle('');
+    setShowAlert(false)
     setDescription('');
     setVideoFile(null);
     setImageFiles([]);
@@ -307,12 +311,15 @@ export default function CreateAdForm() {
               payment.
             </p>
             <div className="modal-buttons">
-              <Link to="/payment">
+             
                 <button className="btn-pay" onClick={handlePay}>
                   Pay
                 </button>
-              </Link>
-              <button className="btn-skip" onClick={handleSkip}>
+              
+              <button className="btn-pay" onClick={handleSkip}>
+                add without pay
+              </button>
+                <button className="btn-skip" onClick={handleCancel}>
                 Skip
               </button>
             </div>
