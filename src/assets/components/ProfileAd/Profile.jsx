@@ -37,36 +37,8 @@ let nextCommentId = 1;
 
 export default function Profile() {
   const navigate = useNavigate();
-// /photo_2023-03-05_18-48-02_8zSGEfY.jpg
-// useEffect(() => {
-     
-//         const fetchProfileData = async () => {
 
-//             try {
-
-//                 const response = await api.get(`/media/news/photos/photo_2023-03-05_18-48-02_8zSGEfY.jpg`);
-//               console.log(response)
-              
-//                     // if (response?.data?.img) {
-//                     //     setSelectedImage(response.data.img || profileImage);
-//                     // }
-              
-//             } catch (error) {
-//                 console.error('Error fetching profile data:', error);
-//                 if (error.response?.status === 403) {
-//                     // setToken(null);
-//                     // localStorage.removeItem(`token${username}`)
-//                     // navigate('/login');
-//                 }}
-//             // } finally {
-//             //     // setLoading(false);
-//             // }
-//         };
-
-//         fetchProfileData();
-//     },[]);
-  // Profile
-    const [deletingAdId, setDeletingAdId] = useState(null);
+  const [deletingAdId, setDeletingAdId] = useState(null);
   const [displayName, setDisplayName] = useState("Advertiser");
   const [editingName, setEditingName] = useState(false);
   const nameRef = useRef();
@@ -80,12 +52,25 @@ export default function Profile() {
   const [query, setQuery] = useState("");
 
   // Ad Data
+  const fallback = [
+    {
+      uuid: 1,
+      title: "Mathematics Course",
+      description: "...",
+      image_url: im1,
+      phone: "123 456 7890",
+      rating: 5,
+      isLiked: false,
+      isBookmarked: false,
+      comments: [],
+    },
+  ]
   const [ads, setAds] = useState([
     {
-      id: 1,
+      uuid: 1,
       title: "Mathematics Course",
-      desc: "...",
-      img: im1,
+      description: "...",
+      image_url: im1,
       phone: "123 456 7890",
       rating: 5,
       isLiked: false,
@@ -93,6 +78,31 @@ export default function Profile() {
       comments: [],
     },
   ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('/api/advertisements');
+        const serverData = response.data.data;
+        serverData.forEach(e => {
+          e.userName = "user name"
+          e.phone = "123-456-7890"
+        });
+        console.log(serverData)
+        if (serverData && Array.isArray(serverData) && serverData.length > 0) {
+          setAds(serverData);
+        } else {
+          setAds(fallback);
+        }
+      } catch (error) {
+        console.error(' Error fetching data:', error);
+        setAds(fallback);
+      } finally {
+
+      }
+    };
+
+    fetchData();
+  }, []);
 
   //commenting
   const [activeCommentAdId, setActiveCommentAdId] = useState(null);
@@ -129,7 +139,7 @@ export default function Profile() {
     const imageUrl = URL.createObjectURL(file);
     setAds(prev =>
       prev.map(ad =>
-        ad.id === adId ? { ...ad, img: imageUrl } : ad
+        ad.uuid === adId ? { ...ad, img: imageUrl } : ad
       )
     );
   };
@@ -149,7 +159,7 @@ export default function Profile() {
   const toggleLike = (id) => {
     setAds(prevAds =>
       prevAds.map(ad =>
-        ad.id === id ? { ...ad, isLiked: !ad.isLiked } : ad
+        ad.uuid === id ? { ...ad, isLiked: !ad.isLiked } : ad
       )
     );
   };
@@ -157,7 +167,7 @@ export default function Profile() {
   const toggleBookmark = (id) => {
     setAds(prevAds =>
       prevAds.map(ad =>
-        ad.id === id ? { ...ad, isBookmarked: !ad.isBookmarked } : ad
+        ad.uuid === id ? { ...ad, isBookmarked: !ad.isBookmarked } : ad
       )
     );
   };
@@ -165,23 +175,48 @@ export default function Profile() {
   // Edit Modal
   const [editingAdId, setEditingAdId] = useState(null);
   const openEditModal = (ad) => {
-    setEditingAdId(ad.id);
+    setEditingAdId(ad.uuid);
     setEditTitle(ad.title);
-    setEditDesc(ad.desc);
+    setEditDesc(ad.description);
     setShowEditModal(true);
   };
 
   const closeEditModal = () => setShowEditModal(false);
-  const handleEditSave = () => {
-    setAds(prev =>
-      prev.map(ad =>
-        ad.id === editingAdId
-          ? { ...ad, title: editTitle.trim(), desc: editDesc.trim() }
-          : ad
-      )
-    );
-    closeEditModal();
+const handleEditSave = async () => {
+  const updatedAd = {
+    uuid: editingAdId,
+    title: editTitle.trim(),
+    description: editDesc.trim()
   };
+
+  setAds(prev =>
+    prev.map(ad =>
+      ad.uuid === editingAdId ? { ...ad, ...updatedAd } : ad
+    )
+  );
+  try {
+    const res=await api.post('/api/updateAd', updatedAd);
+    console.log(res)
+
+    // تحديث الحالة محلياً بعد نجاح التعديل
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Ad Updated',
+      text: 'Your ad has been successfully updated.'
+    });
+  } catch (error) {
+    console.error('❌ Failed to update ad:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Update Failed',
+      text: error.response?.data?.message || 'Something went wrong. Please try again.'
+    });
+  } finally {
+    closeEditModal();
+  }
+};
+
 
 
   // Delete Modal
@@ -191,9 +226,9 @@ export default function Profile() {
     setShowDeleteModal(true);
   };
 
-    const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async () => {
     // immediate local removal
-    setAds(prev => prev.filter(ad => ad.id !== deletingAdId));
+    setAds(prev => prev.filter(ad => ad.uuid !== deletingAdId));
 
     // optional: send delete request to your backend
     // try {
@@ -206,7 +241,7 @@ export default function Profile() {
     // cleanup modal state
     setDeletingAdId(null);
     setShowDeleteModal(false);
-    }
+  }
   // Comments
   const openComment = (adId, commentId = null) => {
     setActiveCommentAdId(adId);
@@ -225,7 +260,7 @@ export default function Profile() {
 
     setAds(prevAds =>
       prevAds.map(ad => {
-        if (ad.id !== activeCommentAdId) return ad;
+        if (ad.uuid !== activeCommentAdId) return ad;
 
         const newCommentId = nextCommentId.current++;
         const updatedComments = replyTo == null
@@ -246,7 +281,7 @@ export default function Profile() {
   const deleteComment = (cid, parentId = null) => {
     setAds(prevAds =>
       prevAds.map(ad => {
-        if (ad.id !== activeCommentAdId) return ad;
+        if (ad.uuid !== activeCommentAdId) return ad;
 
         const updatedComments = parentId == null
           ? ad.comments.filter(c => c.id !== cid)
@@ -261,21 +296,21 @@ export default function Profile() {
     );
   };
 
-// اشعارات
+  // اشعارات
   const [notifications, setNotifications] = useState([]);
   const [openNotifModal, setOpenNotifModal] = useState(false);
- const handleOpenNotifications = async () => {
-  try {
-    const res = await api.get('/api/getNotifications');
-    console.log(res)
-    // إذا الـ backend بيرجع { status: 'success', data: [...] }
-    setNotifications(res.data.data || []);
+  const handleOpenNotifications = async () => {
+    try {
+      const res = await api.get('/api/getNotifications');
+      console.log(res)
+      // إذا الـ backend بيرجع { status: 'success', data: [...] }
+      setNotifications(res.data.data || []);
 
-    setOpenNotifModal(true);
-  } catch (err) {
-    console.error('Error fetching notifications:', err);
-  }
-};
+      setOpenNotifModal(true);
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+    }
+  };
 
 
   const handleCloseNotifications = () => {
@@ -367,7 +402,7 @@ export default function Profile() {
               </IconButton>
 
               <IconButton
-              onClick={handleOpenNotifications}
+                onClick={handleOpenNotifications}
                 sx={{
                   color: '#0d1f44',
                   fontSize: '2rem',
@@ -425,7 +460,7 @@ export default function Profile() {
           <Grid container spacing={3} px={3} py={2}>
             {filteredAds.map((ad) => (
 
-              <Grid item size={{ xs: 12, md: 12 }} key={ad.id}>
+              <Grid item size={{ xs: 12, md: 12 }} key={ad.uuid}>
                 <Card sx={{ display: 'flex', borderRadius: 3, boxShadow: 3, position: 'relative' }}>
                   {/* Edit/Delete Actions */}
                   <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 2, display: 'flex', gap: 1 }}>
@@ -433,7 +468,7 @@ export default function Profile() {
                       <MdEdit />
                     </IconButton>
 
-                    <IconButton onClick={() => openDeleteModal(ad.id)} sx={{ color: '#ef4444' }}>
+                    <IconButton onClick={() => openDeleteModal(ad.uuid)} sx={{ color: '#ef4444' }}>
                       <MdDelete />
                     </IconButton>
                   </Box>
@@ -441,7 +476,7 @@ export default function Profile() {
                   {/* Image section with add button */}
                   <Box sx={{ minWidth: 250, position: 'relative' }}>
                     <img
-                      src={ad.img}
+                      src={ad.image_url}
                       alt={ad.title}
                       style={{ width: '250px', height: '100%', objectFit: 'cover' }}
                     />
@@ -459,7 +494,7 @@ export default function Profile() {
                       type="file"
                       inputRef={adPickerRef}
                       sx={{ display: 'none' }}
-                      onChange={(e) => handleAdPicChange(ad.id, e)}
+                      onChange={(e) => handleAdPicChange(ad.uuid, e)}
                     />
 
                   </Box>
@@ -475,12 +510,12 @@ export default function Profile() {
 
                     {/* Title & Description */}
                     <Typography variant="h6" fontWeight="bold" mt={1}>{ad.title}</Typography>
-                    <Typography variant="body2" mt={0.5}>{ad.desc}</Typography>
+                    <Typography variant="body2" mt={0.5}>{ad.description}</Typography>
 
                     {/* Action Buttons + Phone + Details */}
                     <Stack direction="row" justifyContent="space-between" mt={2}>
                       <Stack direction="row" spacing={2}>
-                        <IconButton onClick={() => toggleLike(ad.id)}>
+                        <IconButton onClick={() => toggleLike(ad.uuid)}>
                           {ad.isLiked ? (
                             <MdFavorite style={{ color: '#e63946' }} />
                           ) : (
@@ -488,7 +523,7 @@ export default function Profile() {
                           )}
                         </IconButton>
 
-                        <IconButton onClick={() => toggleBookmark(ad.id)}>
+                        <IconButton onClick={() => toggleBookmark(ad.uuid)}>
                           {ad.isBookmarked ? (
                             <MdBookmark style={{ color: '#457b9d' }} />
                           ) : (
@@ -496,7 +531,7 @@ export default function Profile() {
                           )}
                         </IconButton>
 
-                        <IconButton onClick={() => openComment(ad.id)}>
+                        <IconButton onClick={() => openComment(ad.uuid)}>
                           <MdComment />
                         </IconButton>
                       </Stack>
@@ -574,7 +609,7 @@ export default function Profile() {
           <div className="comment-modal" onClick={e => e.stopPropagation()}>
             <h3>{replyTo == null ? 'Add Comment' : `Reply to Comment #${replyTo}`}</h3>
             <ul className="comment-list">
-              {ads.find(ad => ad.id === activeCommentAdId)?.comments.map(c => (
+              {ads.find(ad => ad.uuid === activeCommentAdId)?.comments.map(c => (
                 <li key={c.id}>
                   <div>
                     {c.text}
@@ -650,7 +685,7 @@ export default function Profile() {
             Close
           </Button>
         </Box>
-     </Modal>
+      </Modal>
 
       <Footer />
     </>
