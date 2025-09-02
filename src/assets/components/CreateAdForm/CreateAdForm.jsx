@@ -76,7 +76,7 @@ export default function CreateAdForm() {
         price: 300000,
         category_name: section,
         imageFiles,
-        videoFile
+        videoFile:"......"
       }
     });
   };
@@ -88,16 +88,15 @@ export default function CreateAdForm() {
       formData.append('title', title || '');
       formData.append('description', description || '');
       formData.append('price', 0);
-      formData.append('category_name', section); // ⬅️ إرسال القسم المختار
-
+      formData.append('category_name', section); 
       if (imageFiles.length > 0) {
         formData.append('images', imageFiles[0]);
       }
-      if (videoFile) {
-        formData.append('video_path', videoFile);
-      }
+     
+        formData.append('video_path', ".....");
+      
 
-      const response = await api.post('/api/storeAd', formData, {
+      const response = await api.post('/api/storeAds', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

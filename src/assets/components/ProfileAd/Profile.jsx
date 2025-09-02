@@ -21,6 +21,9 @@ import {
   DialogContent,
   DialogActions,
   Modal,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { MdAdd, MdEdit, MdGroup, MdSave, MdCalendarToday, MdSearch, MdNotifications, MdFavorite, MdFavoriteBorder, MdBookmark, MdBookmarkBorder, MdComment, MdDelete, MdPhone, MdReply } from 'react-icons/md';
 
@@ -266,7 +269,7 @@ export default function Profile() {
     const res = await api.get('/api/getNotifications');
     console.log(res)
     // إذا الـ backend بيرجع { status: 'success', data: [...] }
-    setNotifications(res.data?.data || []);
+    setNotifications(res.data.data || []);
 
     setOpenNotifModal(true);
   } catch (err) {
@@ -630,7 +633,7 @@ export default function Profile() {
               {notifications.map((notif, index) => (
                 <ListItem key={index} divider>
                   <ListItemText
-                    primary={notif.title || 'No title'}
+                    primary={notif.data.title || 'No title'}
                     secondary={notif.message || ''}
                   />
                 </ListItem>

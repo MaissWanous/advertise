@@ -144,29 +144,45 @@ export default function TopAds() {
     setCommentText('');
   };
 
-  const postComment = () => {
-    const text = commentText.trim();
-    if (!text) return;
+const postComment = async () => {
+  const text = commentText.trim();
+  if (!text) return;
 
-    setAds(prevAds =>
-      prevAds.map(ad => {
-        if (ad.uuid !== activeCommentAdId) return ad;
+  const newCommentId = nextCommentId.current++; // ✅ توليد ID فريد
 
-        const newCommentId = nextCommentId.current++;
-        const updatedComments = replyTo == null
-          ? [...ad.comments, { uuid: newCommentId, comment: text, replies: [] }]
-          : ad.comments.map(c =>
+  try {
+    await api.post(`/api/createComment/${activeCommentAdId}`, {
+      comment: text
+    });
+  } catch (error) {
+    console.error('❌ Failed to post comment:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Comment Failed',
+      text: 'Could not post your comment. Please try again.',
+    });
+  }
+
+  setAds(prevAds =>
+    prevAds.map(ad => {
+      if (ad.uuid !== activeCommentAdId) return ad;
+
+      const updatedComments = replyTo == null
+        ? [...ad.comments, { uuid: newCommentId, comment: text, replies: [] }]
+        : ad.comments.map(c =>
             c.uuid === replyTo
               ? { ...c, replies: [...c.replies, { uuid: newCommentId, comment: text }] }
               : c
           );
 
-        return { ...ad, comments: updatedComments };
-      })
-    );
+      return { ...ad, comments: updatedComments };
+    })
+  );
 
-    closeComment();
-  };
+  closeComment();
+};
+
+
 
   const deleteComment = (cid, parentId = null) => {
     setAds(prevAds =>

@@ -1,27 +1,43 @@
-
-
 import React from 'react';
 import './Navbar.css';
+import { useAuth } from '../../../context/context.jsx';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../api/index.jsx';
 
-const Navbar = () => (
-  <nav className="navbar">
-    <div className="navbar-container">
-      <div className="logo">postly</div>
-      <div className='d-flex align-items-center'>
+const Navbar = () => {
+  const { removeToken } = useAuth();
+  const navigate = useNavigate();
 
-        <ul className="nav-links">
+  const handleLogout = async () => {
+    try {
+      await api.post('/api/logout');
 
-          <li><a href="/Home">home</a></li>
+      removeToken(); // حذف التوكن من السياق
+      navigate('/signinsignUp'); // إعادة التوجيه
+      console.log("log out")
+    } catch (error) {
+      console.error('❌ Logout failed:', error);
+      // ممكن تضيف Swal.fire هنا لو حابب تعرض رسالة خطأ
+    }
+  };
 
-          <li><a href="/Profile">profile</a></li>
-          <li><a href="/about">about</a></li>
-        </ul>
-        <div className="btn-container">
-          <a href="/SignOut" className="btn-active">SIGN OUT</a>
+  return (
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="logo">postly</div>
+        <div className='d-flex align-items-center'>
+          <ul className="nav-links">
+            <li><a href="/Home">home</a></li>
+            <li><a href="/Profile">profile</a></li>
+            <li><a href="/about">about</a></li>
+          </ul>
+          <div className="btn-container">
+            <button onClick={handleLogout} className="btn-active">SIGN OUT</button>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
-);
+    </nav>
+  );
+};
 
 export default Navbar;

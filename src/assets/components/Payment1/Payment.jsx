@@ -4,6 +4,7 @@ import './Payment.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import api from '../../../api';
+import Loading from '../../loading/loading';
 
 export default function Payment() {
   const [method, setMethod] = useState('');
@@ -12,6 +13,7 @@ export default function Payment() {
   const [otp, setOtp] = useState('');
   const [smsSent, setSmsSent] = useState(false);
   const [showOtpFields, setShowOtpFields] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ حالة التحميل
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,16 +35,16 @@ export default function Payment() {
 
   const handleCreatePayment = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ بدء التحميل
     try {
       const response = await api.post('/api/paymentCreate', {
-        method: method,
+        method,
         phone: parseInt(phone),
         amount: 300000
       });
 
       console.log('✅ Payment Create Response:', response.data);
-
-      setTransactionId(response.data.transaction_id);
+      setTransactionId(response.data.data.transaction_id);
 
       Swal.fire({
         icon: 'success',
@@ -53,7 +55,6 @@ export default function Payment() {
       });
 
       setShowOtpFields(true);
-
     } catch (err) {
       console.error('Submission error:', err);
       Swal.fire({
@@ -63,16 +64,17 @@ export default function Payment() {
         confirmButtonText: 'Close',
         confirmButtonColor: '#d33'
       });
+    } finally {
+      setLoading(false); // ✅ إنهاء التحميل
     }
   };
 
   const handleConfirmPayment = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ بدء التحميل
     try {
-      // تأكيد الدفع
       await api.post(`/api/paymentConfirm/${transactionId}`, { otp });
 
-      // رفع الإعلان بعد الدفع
       if (storedAd) {
         const formData = new FormData();
         formData.append('title', storedAd.title || '');
@@ -88,7 +90,7 @@ export default function Payment() {
           formData.append('video_path', storedAd.videoFile);
         }
 
-        const res = await api.post('/api/storeAd', formData, {
+        const res = await api.post('/api/storeAds', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 
@@ -104,7 +106,6 @@ export default function Payment() {
       }).then(() => {
         navigate('/home');
       });
-
     } catch (err) {
       console.error('Confirmation error:', err);
       Swal.fire({
@@ -114,6 +115,8 @@ export default function Payment() {
         confirmButtonText: 'Close',
         confirmButtonColor: '#d33'
       });
+    } finally {
+      setLoading(false); // ✅ إنهاء التحميل
     }
   };
 
@@ -140,7 +143,9 @@ export default function Payment() {
           </button>
         </div>
 
-        {method && (
+        {loading && <Loading />} {/* ✅ عرض التحميل */}
+
+        {method && !loading && (
           <form
             className="pay-form"
             onSubmit={showOtpFields ? handleConfirmPayment : handleCreatePayment}

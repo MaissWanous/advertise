@@ -18,6 +18,7 @@ import Verification from './assets/components/Verification/Verification';
 import Saved from './assets/components/Saved/Saved';
 import Section from './assets/components/Section/Section';
 import LogIn from './assets/components/LogIn/LogIn';
+import AdminLogin from './assets/components/AdminLogin/AdminLogin';
 import Subscription from './assets/components/Subscription/Subscription';
 import Detials from './assets/components/DetialsAds/Detials';
 import DashboardAdmain from './assets/components/DashboardAdmain/DashboardAdmain';
@@ -38,7 +39,7 @@ export default function App() {
         <Route path="/CreateAccount" element={<CreateAccount />} />
         <Route path="/verification" element={<Verification />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
-
+        <Route path='/AdminLogin'element={<AdminLogin/>}/>
         {/* Authenticated User Routes  */}
         <Route element={<ProtectedRoute/>}>
         <Route path="/Home" element={<Home />} />
