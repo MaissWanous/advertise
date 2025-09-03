@@ -32,9 +32,18 @@ export default function Section() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`/api/ads/${category}`);
-        if (response.data?.length > 0) {
-          setAds(response.data);
+        
+      const res = await api.get('/api/advertisements');
+      const data = res.data.data || [];
+ data.forEach(e => {
+          e.userName = "user name"
+          e.userAvatar = av5;
+          e.phone = "123-456-7890"
+        });
+      const filtered = data.filter(ad => ad.category_name?.toLowerCase() === category?.toLowerCase());
+      console.log(data,filtered)
+      if (filtered.length> 0) {
+          setAds(filtered);
         } else {
           throw new Error("No ads returned");
         }
@@ -45,20 +54,20 @@ export default function Section() {
             id: 1,
             userName: 'Ahmad naeem',
             userAvatar: av5,
-            img: routerImg,
+            image_url: routerImg,
             title: 'Wireless Router and Switch',
             desc:
               'Dual-band 802.11ac Wi-Fi router with four Gigabit Ethernet ports. Supports MU-MIMO technology.',
             phone: '123-456-7890',
             isFollowed: true,
             isBookmarked: false,
-            isLiked: false
+            likes_count: false
           },
           {
             id: 2,
             userName: 'Sami masri',
             userAvatar: av6,
-            img: routerImg2,
+            image_url: routerImg2,
             title:
               'Smart Robot Vacuum—Effortless Cleaning!',
             desc:
@@ -66,7 +75,7 @@ export default function Section() {
             phone: '123-456-7890',
             isFollowed: false,
             isBookmarked: false,
-            isLiked: false
+            likes_count: false
           }
         ]);
       } finally {
@@ -110,16 +119,43 @@ export default function Section() {
     await api.post(`/api/ads/${id}/bookmark`);
   };
 
-  const handleLike = async (id) => {
-    setAds(ads.map(a => a.id === id ? { ...a, isLiked: !a.isLiked } : a));
-    await api.post(`/api/ads/${id}/like`);
-  };
+ const handleLike = async (uuid) => {
+  // تحديث محلي فوري
+  setAds(prevAds =>
+    prevAds.map(ad =>
+      ad.uuid === uuid
+        ? { ...ad, likes_count: !ad.likes_count }
+        : ad
+    )
+  );
+
+  try {
+    // تحديد القيمة الجديدة بناءً على الحالة الحالية
+    const ad = ads.find(a => a.uuid === uuid);
+    const newLikedState = !ad.likes_count;
+
+    // إرسال الطلب للباك
+    const res = await api.post(`/api/reactToAd/${uuid}`, { liked: newLikedState });
+    console.log("✅ Like response:", res.data);
+  } catch (error) {
+    console.error("❌ Error liking ad:", error);
+
+    // في حال فشل الطلب، نرجع الحالة القديمة
+    setAds(prevAds =>
+      prevAds.map(ad =>
+        ad.uuid === uuid
+          ? { ...ad, likes_count: !ad.likes_count }
+          : ad
+      )
+    );
+  }
+};
 
   const postComment = async () => {
     try {
       setLoading(true)
 
-      await api.post(`/api/ads/${activeCommentId}/comment`, { comment: draftComment });
+      await api.post(`/api/createComment/${activeCommentId}`, { comment: draftComment });
     } catch (error) {
       console.log("error while comment:", error)
     } finally {
@@ -139,7 +175,7 @@ export default function Section() {
         <h1 className="fav-header">{category.toUpperCase()} ADS SECTION</h1>
         <div className="fav-cards">
           {ads.map(ad => (
-            <div key={ad.id} className="fav-card">
+            <div key={ad.uuid} className="fav-card">
               <div className="fav-user-block">
                 <img src={ad.userAvatar} alt={ad.userName} className="fav-avatar" />
                 <span className="fav-username">{ad.userName}</span>
@@ -149,12 +185,12 @@ export default function Section() {
                 className={
                   ad.isFollowed ? 'fav-tag fav-tag--active' : 'fav-tag fav-tag--inactive'
                 }
-                onClick={() => handleFollow(ad.id)}
+                onClick={() => handleFollow(ad.uuid)}
               >
                 {ad.isFollowed ? 'Following' : 'Follow'}
               </div>
 
-              <img src={ad.img} alt={ad.title} className="fav-image" />
+              <img src={ad.image_url} alt={ad.title} className="fav-image" />
               <div className="fav-details">
                 <h2 className="fav-title">{ad.title}</h2>
                 <div className="fav-stars">
@@ -167,21 +203,21 @@ export default function Section() {
                 <p className="fav-desc">{ad.desc}</p>
                 <div className="fav-footer">
                   <div className="fav-actions">
-                    <button className="fav-btn" onClick={() => handleBookmark(ad.id)}>
+                    <button className="fav-btn" onClick={() => handleBookmark(ad.uuid)}>
                       {ad.isBookmarked ? (
                         <MdBookmark className="fav-icon fav-icon--filled" />
                       ) : (
                         <MdBookmarkBorder className="fav-icon fav-icon--outline" />
                       )}
                     </button>
-                    <button className="fav-btn" onClick={() => handleLike(ad.id)}>
-                      {ad.isLiked ? (
+                    <button className="fav-btn" onClick={() => handleLike(ad.uuid)}>
+                      {ad.likes_count ? (
                         <MdFavorite className="fav-icon fav-icon--filled" />
                       ) : (
                         <MdFavoriteBorder className="fav-icon fav-icon--outline" />
                       )}
                     </button>
-                    <button className="fav-btn" onClick={() => openComment(ad.id)}>
+                    <button className="fav-btn" onClick={() => openComment(ad.uuid)}>
                       <MdComment className="fav-icon fav-icon--outline" />
                     </button>
                     <button className="fav-btn" onClick={handleReport}>

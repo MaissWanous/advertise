@@ -32,6 +32,7 @@ import profileImg from "./image/profileImg.jpg";
 import im1 from "./image/im1.jpg";
 import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
+import Swal from "sweetalert2";
 
 let nextCommentId = 1;
 
@@ -43,7 +44,7 @@ export default function Profile() {
   const [editingName, setEditingName] = useState(false);
   const nameRef = useRef();
   const profilePickerRef = useRef();
-  const adPickerRef = useRef();
+  const adPickerRefs = useRef({});
 
   const [imageProfile, setImageProfile] = useState(profileImg)
 
@@ -63,6 +64,7 @@ export default function Profile() {
       isLiked: false,
       isBookmarked: false,
       comments: [],
+      category_name: ""
     },
   ]
   const [ads, setAds] = useState([
@@ -81,7 +83,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/api/advertisements');
+        const response = await api.get('/api/myAds');
         const serverData = response.data.data;
         serverData.forEach(e => {
           e.userName = "user name"
@@ -132,6 +134,9 @@ export default function Profile() {
     }
   };
 
+  const handleOpenFilePicker = (adId) => {
+    adPickerRefs.current[adId].click();
+  };
   const handleAdPicChange = (adId, e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -139,10 +144,13 @@ export default function Profile() {
     const imageUrl = URL.createObjectURL(file);
     setAds(prev =>
       prev.map(ad =>
-        ad.uuid === adId ? { ...ad, img: imageUrl } : ad
+        ad.uuid === adId
+          ? { ...ad, image_url: imageUrl, imageFile: file } // نخزن الملف
+          : ad
       )
     );
   };
+
 
 
   // Toolbar actions
@@ -182,40 +190,64 @@ export default function Profile() {
   };
 
   const closeEditModal = () => setShowEditModal(false);
-const handleEditSave = async () => {
-  const updatedAd = {
-    uuid: editingAdId,
-    title: editTitle.trim(),
-    description: editDesc.trim()
+  const handleEditSave = async () => {
+    const updatedAd = ads.find(ad => ad.uuid === editingAdId);
+    if (!updatedAd) {
+      console.error("Ad not found");
+      return;
+    }
+
+    console.log(" Updated Ad:", updatedAd);
+
+    // تحديث الحالة محلياً
+    setAds(prev =>
+      prev.map(ad =>
+        ad.uuid === editingAdId ? { ...ad, ...updatedAd } : ad
+      )
+    );
+
+    try {
+      // إنشاء FormData
+      const formData = new FormData();
+      formData.append("title", updatedAd.title);
+      formData.append("description", updatedAd.description);
+      formData.append("category_name", updatedAd.category_name);
+      formData.append("video_path", updatedAd.video_path || "");
+      formData.append("price", updatedAd.price ?? 0);
+
+      if (updatedAd.imageFile) {
+        formData.append("images", updatedAd.imageFile);
+      } else {
+        // إذا ما في ملف جديد، ممكن ترسل الرابط أو تتركه فاضي حسب الباك
+        formData.append("images", updatedAd.image_url);
+      }
+
+      const res = await api.post(
+        `/api/updateAd/${updatedAd.uuid}`,
+        formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }
+
+      );
+
+      console.log(" Update Response:", res.data);
+
+      Swal.fire({
+        icon: "success",
+        title: "Ad Updated",
+        text: "Your ad has been successfully updated."
+      });
+    } catch (error) {
+      console.error(" Failed to update ad:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: error.response?.data?.message || "Something went wrong. Please try again."
+      });
+    } finally {
+      closeEditModal();
+    }
   };
-
-  setAds(prev =>
-    prev.map(ad =>
-      ad.uuid === editingAdId ? { ...ad, ...updatedAd } : ad
-    )
-  );
-  try {
-    const res=await api.post('/api/updateAd', updatedAd);
-    console.log(res)
-
-    // تحديث الحالة محلياً بعد نجاح التعديل
-
-    Swal.fire({
-      icon: 'success',
-      title: 'Ad Updated',
-      text: 'Your ad has been successfully updated.'
-    });
-  } catch (error) {
-    console.error('❌ Failed to update ad:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Update Failed',
-      text: error.response?.data?.message || 'Something went wrong. Please try again.'
-    });
-  } finally {
-    closeEditModal();
-  }
-};
 
 
 
@@ -229,16 +261,24 @@ const handleEditSave = async () => {
   const handleDeleteConfirm = async () => {
     // immediate local removal
     setAds(prev => prev.filter(ad => ad.uuid !== deletingAdId));
+    try {
 
-    // optional: send delete request to your backend
-    // try {
-    //   await api.delete(`/ads/${deletingAdId}`);
-    // } catch(err) {
-    //   console.error('Failed to delete on server:', err);
-    //   // optionally: rollback local deletion or show error toast
-    // }
-
-    // cleanup modal state
+      console.log("delete ad")
+      await api.post(`/api/deleteAd/${deletingAdId}`);
+      console.log(deletingAdId)
+      Swal.fire({
+        icon: 'success',
+        title: 'delete ad ',
+        text: 'Your ad has been successfully deleted.',
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'delete Failed',
+        text: error,
+      });
+      console.error("❌ Failed to delete ad:", error);
+    }
     setDeletingAdId(null);
     setShowDeleteModal(false);
   }
@@ -480,22 +520,18 @@ const handleEditSave = async () => {
                       alt={ad.title}
                       style={{ width: '250px', height: '100%', objectFit: 'cover' }}
                     />
-                    <IconButton
-                      sx={{
-                        position: 'absolute', bottom: 8,
-                        right: 8,
-                        bgcolor: 'white',
-                        boxShadow: 1,
-                      }}
-                      onClick={() => adPickerRef.current.click()}>
-                      <MdAdd />
-                    </IconButton>
                     <Input
                       type="file"
-                      inputRef={adPickerRef}
+                      inputRef={(el) => (adPickerRefs.current[ad.uuid] = el)}
                       sx={{ display: 'none' }}
                       onChange={(e) => handleAdPicChange(ad.uuid, e)}
                     />
+
+                    <IconButton
+                      onClick={() => handleOpenFilePicker(ad.uuid)}
+                    >
+                      <MdAdd />
+                    </IconButton>
 
                   </Box>
 

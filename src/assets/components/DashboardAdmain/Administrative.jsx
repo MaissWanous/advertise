@@ -178,7 +178,7 @@ export default function Adminstrative() {
         try {
             setLoading(true)
             console.log("delete ad")
-            await api.delete(`/api/admin/deleteAd/${selectedAdToDelete}`);
+            await api.post(`/api/admin/deleteAd/${selectedAdToDelete}`);
             console.log(selectedAdToDelete)
             setAds(prev => prev.filter(ad => ad.uuid !== selectedAdToDelete));
             Swal.fire({

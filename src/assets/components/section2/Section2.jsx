@@ -41,10 +41,37 @@ export default function TopAds() {
     await api.post(`/api/ads/${uuid}/bookmark`);
   };
 
-  const handleLike = async (uuid) => {
-    setAds(ads.map(a => a.uuid === uuid ? { ...a, isLiked: !a.isLiked } : a));
-    await api.post(`api/createReaction/${uuid}`);
-  };
+ const handleLike = async (uuid) => {
+  // تحديث محلي فوري
+  setAds(prevAds =>
+    prevAds.map(ad =>
+      ad.uuid === uuid
+        ? { ...ad, likes_count: !ad.likes_count }
+        : ad
+    )
+  );
+
+  try {
+    // تحديد القيمة الجديدة بناءً على الحالة الحالية
+    const ad = ads.find(a => a.uuid === uuid);
+    const newLikedState = !ad.likes_count;
+
+    // إرسال الطلب للباك
+    const res = await api.post(`/api/reactToAd/${uuid}`, { liked: newLikedState });
+    console.log("✅ Like response:", res.data);
+  } catch (error) {
+    console.error("❌ Error liking ad:", error);
+
+    // في حال فشل الطلب، نرجع الحالة القديمة
+    setAds(prevAds =>
+      prevAds.map(ad =>
+        ad.uuid === uuid
+          ? { ...ad, likes_count: !ad.likes_count }
+          : ad
+      )
+    );
+  }
+};
   const fallback = [
     {
       uuid: 1,
@@ -96,7 +123,7 @@ export default function TopAds() {
     },
   ].map((ad) => ({
     ...ad,
-    isLiked: false,
+    likes_count: false,
     isBookmarked: false,
     isReported: false,
     comments: [],
@@ -250,7 +277,7 @@ const postComment = async () => {
             <div className="top-card__footer">
               <div className="top-card__actions">
                 <button onClick={() => handleLike(ad.uuid)} className="top-card__action-btn">
-                  {ad.isLiked ? <MdFavorite /> : <MdFavoriteBorder />}
+                  {ad.likes_count ? <MdFavorite /> : <MdFavoriteBorder />}
                 </button>
                 <button onClick={() => openComment(ad.uuid)} className="top-card__action-btn">
                   <MdChatBubbleOutline />
