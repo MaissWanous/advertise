@@ -6,7 +6,7 @@ import {
 } from 'react-icons/fa';
 import './CreateAccount.css';
 import bgImage from './bgImage.jpg';
-import { Link, useNavigate } from 'react-router-dom';
+import { data, Link, useNavigate } from 'react-router-dom';
 import api from '../../../api';
 import Loading from '../../loading/loading';
 
@@ -19,7 +19,7 @@ export default function CreateAccount() {
   const [confirmPwd, setConfirmPwd] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+   const { saveToken } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async e => {
@@ -37,8 +37,9 @@ export default function CreateAccount() {
         password: password,
         account_type: userType
       });
+      saveToken(data.data.token)
       console.log(res);
-      navigate("/Home");
+       navigate("/Home");
     } catch (err) {
       setError(err.message);
     } finally {
