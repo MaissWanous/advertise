@@ -38,7 +38,7 @@ export default function TopAds() {
 
   const handleBookmark = async (uuid) => {
     setAds(ads.map(a => a.uuid === uuid ? { ...a, isBookmarked: !a.isBookmarked } : a));
-    await api.post(`/api/ads/${uuid}/bookmark`);
+    await api.post(`/api/AddFavorite${uuid}`);
   };
 
  const handleLike = async (uuid) => {

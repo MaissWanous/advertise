@@ -115,8 +115,8 @@ export default function Section() {
   };
 
   const handleBookmark = async (id) => {
-    setAds(ads.map(a => a.id === id ? { ...a, isBookmarked: !a.isBookmarked } : a));
-    await api.post(`/api/ads/${id}/bookmark`);
+    setAds(ads.map(a => a.uuid === id ? { ...a, isBookmarked: !a.isBookmarked } : a));
+    await api.post(`/api/AddFavorite${id}`);
   };
 
  const handleLike = async (uuid) => {

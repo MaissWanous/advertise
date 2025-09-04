@@ -5,44 +5,62 @@ import headphonesImg from './image/headphones.jpg';
 import smartwatchImg from './image/im2.jpg';
 import Navbar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
+import api from '../../../api';
+import Loading from '../../loading/loading.jsx'; // إذا عندك مكون تحميل
 
 export default function Saved() {
   const [ads, setAds] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // البيانات الافتراضية
+  const fallbackAds = [
+    {
+      uuid: 1,
+      image_url: headphonesImg,
+      title: 'Noise-Cancelling Headphones',
+      description: 'Experience immersive sound with our top-rated noise-cancelling headphones.',
+      saved: true
+    },
+    {
+      uuid: 2,
+      image_url: smartwatchImg,
+      title: 'Smartwatch with Heart Rate Monitor',
+      description: 'Track your health and fitness with advanced heart rate monitoring.',
+      saved: true
+    }
+  ];
 
   useEffect(() => {
-    fetch('/api/saved-ads')
-      .then(res => res.json())
-      .then(data => setAds(data.slice(0, 2)))
-      .catch(() => {
-        setAds([
-          {
-            id: 1,
-            img: headphonesImg,
-            title: 'Noise-Cancelling Headphones',
-            desc: 'Experience immersive sound with our top-rated noise-cancelling headphones.',
-            saved: true
-          },
-          {
-            id: 2,
-            img: smartwatchImg,
-            title: 'Smartwatch with Heart Rate Monitor',
-            desc: 'Track your health and fitness with advanced heart rate monitoring.',
-            saved: true
-          }
-        ]);
-      });
+    const fetchFavorites = async () => {
+      try {
+        const res = await api.get('/api/favorites');
+        const data = res.data.data || res.data || [];
+        setAds(data);
+      } catch (error) {
+        console.error(' Error fetching favorites:', error);
+        setAds(fallbackAds); // إذا صار خطأ، نعرض البيانات الافتراضية
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
   }, []);
 
-  const toggleSave = id => {
-    setAds(ads.map(ad =>
-      ad.id === id ? { ...ad, saved: !ad.saved } : ad
-    ));
-    // TODO: persist change via API
+  const toggleSave = async (uuid) => {
+      setAds(prev =>
+        prev.map(ad =>
+          ad.uuid === uuid ? { ...ad, saved: !ad.saved } : ad
+        )
+      );
+    
   };
+
+  if (loading) return <Loading />;
 
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <div className="zx-page">
         <header className="zx-header">
           <h1>Saved Ads</h1>
@@ -50,15 +68,15 @@ export default function Saved() {
 
         <ul className="zx-list">
           {ads.map(ad => (
-            <li key={ad.id} className="zx-item">
-              <img src={ad.img} alt={ad.title} className="zx-img" />
+            <li key={ad.uuid} className="zx-item">
+              <img src={ad.image_url} alt={ad.title} className="zx-image_url" />
               <div className="zx-content">
                 <h2 className="zx-title">{ad.title}</h2>
-                <p className="zx-text">{ad.desc}</p>
+                <p className="zx-text">{ad.description}</p>
               </div>
               <button
                 className="zx-btn"
-                onClick={() => toggleSave(ad.id)}
+                onClick={() => toggleSave(ad.uuid)}
               >
                 {ad.saved
                   ? <MdBookmark className="zx-icon zx-icon--on" />
@@ -69,7 +87,7 @@ export default function Saved() {
           ))}
         </ul>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

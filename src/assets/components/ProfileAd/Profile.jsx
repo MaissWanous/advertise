@@ -33,6 +33,7 @@ import im1 from "./image/im1.jpg";
 import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
 import Swal from "sweetalert2";
+import Loading from "../../loading/loading.jsx"; // مكون التحميل
 
 let nextCommentId = 1;
 
@@ -80,6 +81,9 @@ export default function Profile() {
       comments: [],
     },
   ]);
+
+  const [loading, setLoading] = useState(true); // حالة التحميل
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -99,7 +103,7 @@ export default function Profile() {
         console.error(' Error fetching data:', error);
         setAds(fallback);
       } finally {
-
+        setLoading(false); // إيقاف التحميل بعد الجلب
       }
     };
 
@@ -151,8 +155,6 @@ export default function Profile() {
     );
   };
 
-
-
   // Toolbar actions
   const toggleSearchBar = () => setShowSearch(prev => !prev);
   const filteredAds = query.trim()
@@ -161,7 +163,6 @@ export default function Profile() {
     )
     : ads;
   const goNewAd = () => navigate("/new-ad");
-
 
   // Ad actions
   const toggleLike = (id) => {
@@ -207,7 +208,6 @@ export default function Profile() {
     );
 
     try {
-      // إنشاء FormData
       const formData = new FormData();
       formData.append("title", updatedAd.title);
       formData.append("description", updatedAd.description);
@@ -218,7 +218,6 @@ export default function Profile() {
       if (updatedAd.imageFile) {
         formData.append("images", updatedAd.imageFile);
       } else {
-        // إذا ما في ملف جديد، ممكن ترسل الرابط أو تتركه فاضي حسب الباك
         formData.append("images", updatedAd.image_url);
       }
 
@@ -227,7 +226,6 @@ export default function Profile() {
         formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       }
-
       );
 
       console.log(" Update Response:", res.data);
@@ -249,8 +247,6 @@ export default function Profile() {
     }
   };
 
-
-
   // Delete Modal
   const closeDeleteModal = () => setShowDeleteModal(false);
   const openDeleteModal = (adId) => {
@@ -259,10 +255,8 @@ export default function Profile() {
   };
 
   const handleDeleteConfirm = async () => {
-    // immediate local removal
     setAds(prev => prev.filter(ad => ad.uuid !== deletingAdId));
     try {
-
       console.log("delete ad")
       await api.post(`/api/deleteAd/${deletingAdId}`);
       console.log(deletingAdId)
@@ -282,6 +276,7 @@ export default function Profile() {
     setDeletingAdId(null);
     setShowDeleteModal(false);
   }
+
   // Comments
   const openComment = (adId, commentId = null) => {
     setActiveCommentAdId(adId);
@@ -357,7 +352,9 @@ export default function Profile() {
     setOpenNotifModal(false);
   };
 
-
+  if (loading) {
+    return <Loading />
+  }
   return (
     <>
       <Navbar />
