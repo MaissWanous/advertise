@@ -9,6 +9,7 @@ import bgImage from './bgImage.jpg';
 import { data, Link, useNavigate } from 'react-router-dom';
 import api from '../../../api';
 import Loading from '../../loading/loading';
+import { useAuth } from '../../../context/context.jsx';
 
 export default function CreateAccount() {
   const [name, setName] = useState('');
