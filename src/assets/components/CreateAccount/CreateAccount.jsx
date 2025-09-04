@@ -38,7 +38,7 @@ export default function CreateAccount() {
         password: password,
         account_type: userType
       });
-      saveToken(data.data.token)
+      saveToken(res.data.data.token)
       console.log(res);
        navigate("/Home");
     } catch (err) {
