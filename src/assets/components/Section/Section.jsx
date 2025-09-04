@@ -36,7 +36,7 @@ export default function Section() {
       const res = await api.get('/api/advertisements');
       const data = res.data.data || [];
  data.forEach(e => {
-          e.userName = "user name"
+          e.name = "user name"
           e.userAvatar = av5;
           e.phone = "123-456-7890"
         });
@@ -52,7 +52,7 @@ export default function Section() {
         setAds([
           {
             id: 1,
-            userName: 'Ahmad naeem',
+            name: 'Ahmad naeem',
             userAvatar: av5,
             image_url: routerImg,
             title: 'Wireless Router and Switch',
@@ -65,7 +65,7 @@ export default function Section() {
           },
           {
             id: 2,
-            userName: 'Sami masri',
+            name: 'Sami masri',
             userAvatar: av6,
             image_url: routerImg2,
             title:
@@ -116,7 +116,7 @@ export default function Section() {
 
   const handleBookmark = async (id) => {
     setAds(ads.map(a => a.uuid === id ? { ...a, isBookmarked: !a.isBookmarked } : a));
-    await api.post(`/api/AddFavorite${id}`);
+    await api.post(`/api/AddFavorite/${id}`);
   };
 
  const handleLike = async (uuid) => {
@@ -177,8 +177,8 @@ export default function Section() {
           {ads.map(ad => (
             <div key={ad.uuid} className="fav-card">
               <div className="fav-user-block">
-                <img src={ad.userAvatar} alt={ad.userName} className="fav-avatar" />
-                <span className="fav-username">{ad.userName}</span>
+                <img src={ad.userAvatar} alt={ad.user.name} className="fav-avatar" />
+                <span className="fav-username">{ad.user.name}</span>
               </div>
 
               <div

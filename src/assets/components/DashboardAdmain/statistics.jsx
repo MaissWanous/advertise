@@ -46,8 +46,8 @@ export default function Statistics() {
         { day: 'Dec', value: 4900 }
       ]);
       setStats({
-        viewers: data.visitors_count || "2.3k",
-        advertisers: data.ads_count || "1.2k",
+        viewers: data.visitors_count || "15",
+        advertisers: data.ads_count || "7",
         mostPopular: data.most_popular_ad.title || 'N/A',
         activeSection: data.most_active_category.category_name || 'N/A'
       });

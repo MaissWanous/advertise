@@ -27,42 +27,49 @@ import Swal from "sweetalert2";
 
 export default function TopAds() {
   const [ads, setAds] = useState([]);
-  const [activeCommentAdId, setActiveCommentAdId] = useState(null); // الإعلان اللي مفتوح تعليقاته
+  const [activeCommentAdId, setActiveCommentAdId] = useState(null);
   const [commentText, setCommentText] = useState("");
 
 
   const handleFollow = async (uuid) => {
-    setAds(ads.map(a => a.uuid === uuid ? { ...a, isFollowed: !a.isFollowed } : a));
-    const res = await api.post(`/api/ads/${uuid}/follow`);
+
+    const ad = ads.find(a => a.uuid === uuid);
+    if (!ad) return;
+
+
+    setAds(prev =>
+      prev.map(a =>
+        a.uuid === uuid ? { ...a, isFollowed: !a.isFollowed } : a
+      )
+    );
+
+    try {
+
+      const endpoint = ad.isFollowed
+        ? `/api/unfollow/${uuid}`
+        : `/api/follow/${uuid}`;
+
+      const res = await api.post(endpoint);
+      console.log(" Follow/Unfollow response:", res.data);
+    } catch (error) {
+      console.error(" Error in follow/unfollow:", error);
+
+      setAds(prev =>
+        prev.map(a =>
+          a.uuid === uuid ? { ...a, isFollowed: ad.isFollowed } : a
+        )
+      );
+    }
   };
+
 
   const handleBookmark = async (uuid) => {
     setAds(ads.map(a => a.uuid === uuid ? { ...a, isBookmarked: !a.isBookmarked } : a));
-    await api.post(`/api/AddFavorite${uuid}`);
+    await api.post(`/api/AddFavorite/${uuid}`);
   };
 
- const handleLike = async (uuid) => {
-  // تحديث محلي فوري
-  setAds(prevAds =>
-    prevAds.map(ad =>
-      ad.uuid === uuid
-        ? { ...ad, likes_count: !ad.likes_count }
-        : ad
-    )
-  );
-
-  try {
-    // تحديد القيمة الجديدة بناءً على الحالة الحالية
-    const ad = ads.find(a => a.uuid === uuid);
-    const newLikedState = !ad.likes_count;
-
-    // إرسال الطلب للباك
-    const res = await api.post(`/api/reactToAd/${uuid}`, { liked: newLikedState });
-    console.log("✅ Like response:", res.data);
-  } catch (error) {
-    console.error("❌ Error liking ad:", error);
-
-    // في حال فشل الطلب، نرجع الحالة القديمة
+  const handleLike = async (uuid) => {
+    // تحديث محلي فوري
     setAds(prevAds =>
       prevAds.map(ad =>
         ad.uuid === uuid
@@ -70,12 +77,32 @@ export default function TopAds() {
           : ad
       )
     );
-  }
-};
+
+    try {
+      // تحديد القيمة الجديدة بناءً على الحالة الحالية
+      const ad = ads.find(a => a.uuid === uuid);
+      const newLikedState = !ad.likes_count;
+
+      // إرسال الطلب للباك
+      const res = await api.post(`/api/reactToAd/${uuid}`, { liked: newLikedState });
+      console.log("✅ Like response:", res.data);
+    } catch (error) {
+      console.error("❌ Error liking ad:", error);
+
+      // في حال فشل الطلب، نرجع الحالة القديمة
+      setAds(prevAds =>
+        prevAds.map(ad =>
+          ad.uuid === uuid
+            ? { ...ad, likes_count: !ad.likes_count }
+            : ad
+        )
+      );
+    }
+  };
   const fallback = [
     {
       uuid: 1,
-      userName: "Rami Ali",
+      name: "Rami Ali",
       userAvatar: av5,
       category_name: "TECHNOLOGY",
       title: "Wireless Router and Switch",
@@ -87,7 +114,7 @@ export default function TopAds() {
     },
     {
       uuid: 2,
-      userName: "Tamir Hasan",
+      name: "Tamir Hasan",
       userAvatar: av6,
       category_name: "EDUCATION",
       title: " Master React in 30 Days ",
@@ -99,7 +126,7 @@ export default function TopAds() {
     },
     {
       uuid: 3,
-      userName: "Ramiz Fadi",
+      name: "Ramiz Fadi",
       userAvatar: av7,
       category_name: "FEATURED",
       title: "Ultra-Slim Laptop Pro",
@@ -111,7 +138,7 @@ export default function TopAds() {
     },
     {
       uuid: 4,
-      userName: "Mazin Yasi",
+      name: "Mazin Yasi",
       userAvatar: av8,
       category_name: "Restaurant",
       title: " Cozy Italian Restaurant ",
@@ -134,7 +161,6 @@ export default function TopAds() {
         const response = await api.get('/api/advertisements');
         const serverData = response.data.data;
         serverData.forEach(e => {
-          e.userName = "user name"
           e.userAvatar = av5;
           e.phone = "123-456-7890"
         });
@@ -156,7 +182,7 @@ export default function TopAds() {
   }, []);
 
   const [replyTo, setReplyTo] = useState(null);
-  
+
   const nextCommentId = useRef(1);
 
   const openComment = (adId, commentId = null) => {
@@ -171,43 +197,43 @@ export default function TopAds() {
     setCommentText('');
   };
 
-const postComment = async () => {
-  const text = commentText.trim();
-  if (!text) return;
+  const postComment = async () => {
+    const text = commentText.trim();
+    if (!text) return;
 
-  const newCommentId = nextCommentId.current++; // ✅ توليد ID فريد
+    const newCommentId = nextCommentId.current++; // ✅ توليد ID فريد
 
-  try {
-    await api.post(`/api/createComment/${activeCommentAdId}`, {
-      comment: text
-    });
-  } catch (error) {
-    console.error('❌ Failed to post comment:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Comment Failed',
-      text: 'Could not post your comment. Please try again.',
-    });
-  }
+    try {
+      await api.post(`/api/createComment/${activeCommentAdId}`, {
+        comment: text
+      });
+    } catch (error) {
+      console.error('❌ Failed to post comment:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Comment Failed',
+        text: 'Could not post your comment. Please try again.',
+      });
+    }
 
-  setAds(prevAds =>
-    prevAds.map(ad => {
-      if (ad.uuid !== activeCommentAdId) return ad;
+    setAds(prevAds =>
+      prevAds.map(ad => {
+        if (ad.uuid !== activeCommentAdId) return ad;
 
-      const updatedComments = replyTo == null
-        ? [...ad.comments, { uuid: newCommentId, comment: text, replies: [] }]
-        : ad.comments.map(c =>
+        const updatedComments = replyTo == null
+          ? [...ad.comments, { uuid: newCommentId, comment: text, replies: [] }]
+          : ad.comments.map(c =>
             c.uuid === replyTo
               ? { ...c, replies: [...c.replies, { uuid: newCommentId, comment: text }] }
               : c
           );
 
-      return { ...ad, comments: updatedComments };
-    })
-  );
+        return { ...ad, comments: updatedComments };
+      })
+    );
 
-  closeComment();
-};
+    closeComment();
+  };
 
 
 
@@ -243,13 +269,13 @@ const postComment = async () => {
             {/* HEADER */}
             <div className="top-card__header">
               <div className="top-card__userinfo">
-                <img src={ad.userAvatar} alt={ad.userName} className="top-card__avatar" />
+                <img src={ad.userAvatar} alt={ad.user.name} className="top-card__avatar" />
                 <span className="top-card__badge">{ad.category_name}</span>
-                <span className="top-card__username">{ad.userName}</span>
+                <span className="top-card__username">{ad.user.name}</span>
               </div>
               <button
                 className={ad.isFollowed ? "top-cardfollow-btn following" : "top-cardfollow-btn"}
-                onClick={() => handleFollow(ad.uuid)}
+                onClick={() => handleFollow(ad.user.uuid)}
               >
                 {ad.isFollowed ? "Following" : "Follow"}
               </button>

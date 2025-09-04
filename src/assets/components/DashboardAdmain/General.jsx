@@ -28,8 +28,8 @@ export default function General() {
     const [currentValue, setCurrentValue] = useState('');
     const [info, setInfo] = useState({
         name: 'postly',
-        logo: 'kk',
-        description: 'kk',
+        logo: '',
+        description: 'Our platform connects buyers and sellers, offering a wide range of advertising opportunities. We aim to empower individuals and businesses to reach their target audience effectively',
         contact: '092345678',
     });
 
@@ -68,15 +68,15 @@ export default function General() {
 
                 setInfo({
                     name: data.name || 'postly',
-                    logo: data.logo || 'kk',
-                    description: data.description || 'kk',
+                    logo: data.logo || '',
+                    description: data.description || 'Our platform connects buyers and sellers, offering a wide range of advertising opportunities. We aim to empower individuals and businesses to reach their target audience effectively',
                     contact: data.contact || 'kk',
                 });
             } catch (err) {
                 setInfo({
                     name: 'postly',
-                    logo: 'kk',
-                    description: 'kk',
+                    logo: '',
+                    description: 'Our platform connects buyers and sellers, offering a wide range of advertising opportunities. We aim to empower individuals and businesses to reach their target audience effectively',
                     contact: '092345678',
                 });
                 console.error('Error fetching general info:', err);

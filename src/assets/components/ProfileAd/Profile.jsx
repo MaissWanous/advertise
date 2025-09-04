@@ -580,6 +580,7 @@ export default function Profile() {
                         <Button
                           component={Link}
                           to={`/Detials`}
+                       state={{ uuid: ad.uuid }}
                           variant="outlined"
                           sx={{ textTransform: 'none' }}
                         >

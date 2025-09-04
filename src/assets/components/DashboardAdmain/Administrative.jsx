@@ -80,7 +80,7 @@ export default function Adminstrative() {
     const submitAddAdmin = async () => {
         try {
             setLoading(true)
-            await api.post('/api/registerِAdmin', { email: adminEmail, password: adminPassword });
+            await api.post('/api/registerAdmin', {name:"Admin", email: adminEmail, password: adminPassword });
             console.log('✅ Admin added!');
             closeAddAdminModal();
         } catch (error) {
@@ -143,8 +143,10 @@ export default function Adminstrative() {
     const handleSubmit = async () => {
         try {
             setLoading(true)
-            const res=    await api.post('api/admin/storeCategory', { name: currentValue, title: "...", image: "" });
-           console.log(res)
+            if (modalContent === "section") {
+                let res = await api.post('api/admin/storeCategory', { name: currentValue, title: "...", image: "" });
+                console.log(res)
+            }
             setCurrentValue("")
             Swal.fire('Success', `Your data has been updated successfully!`, 'success');
 
