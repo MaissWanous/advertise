@@ -296,7 +296,7 @@ export default function TopAds() {
 
             {/* IMAGE */}
             <div className="top-card__image">
-              <img src={ad.image_url.replace("http://", "https://")} alt={ad.title} />
+              <img src={ad.image_url} alt={ad.title} />
             </div>
 
             {/* ACTIONS */}
