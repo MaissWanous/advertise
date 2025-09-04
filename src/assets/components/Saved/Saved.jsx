@@ -48,12 +48,12 @@ export default function Saved() {
   }, []);
 
   const toggleSave = async (uuid) => {
-      setAds(prev =>
-        prev.map(ad =>
-          ad.uuid === uuid ? { ...ad, saved: !ad.saved } : ad
-        )
-      );
-    
+    setAds(prev =>
+      prev.map(ad =>
+        ad.uuid === uuid ? { ...ad, saved: !ad.saved } : ad
+      )
+    );
+
   };
 
   if (loading) return <Loading />;
@@ -66,26 +66,30 @@ export default function Saved() {
           <h1>Saved Ads</h1>
         </header>
 
-        <ul className="zx-list">
-          {ads.map(ad => (
-            <li key={ad.uuid} className="zx-item">
-              <img src={ad.image_url} alt={ad.title} className="zx-image_url" />
-              <div className="zx-content">
-                <h2 className="zx-title">{ad.title}</h2>
-                <p className="zx-text">{ad.description}</p>
-              </div>
-              <button
-                className="zx-btn"
-                onClick={() => toggleSave(ad.uuid)}
-              >
-                {ad.saved
-                  ? <MdBookmark className="zx-icon zx-icon--on" />
-                  : <MdBookmarkBorder className="zx-icon zx-icon--off" />
-                }
-              </button>
-            </li>
-          ))}
-        </ul>
+        {ads.length === 0 ? (
+          <p style={{ textAlign: 'center', marginTop: '2rem' }}>No saved ads found.</p>
+        ) : (
+          <ul className="zx-list">
+            {ads.map(ad => (
+              <li key={ad.uuid} className="zx-item">
+                <img src={ad.image_url} alt={ad.title} className="zx-img" />
+                <div className="zx-content">
+                  <h2 className="zx-title">{ad.title}</h2>
+                  <p className="zx-text">{ad.description}</p>
+                </div>
+                <button
+                  className="zx-btn"
+                  onClick={() => toggleSave(ad.uuid)}
+                >
+                  {ad.saved
+                    ? <MdBookmark className="zx-icon zx-icon--on" />
+                    : <MdBookmarkBorder className="zx-icon zx-icon--off" />
+                  }
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <Footer />
     </>
