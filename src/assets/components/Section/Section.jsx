@@ -111,7 +111,7 @@ export default function Section() {
   const closeComment = () => setActiveCommentId(null);
   const handleFollow = async (id) => {
     setAds(ads.map(a => a.id === id ? { ...a, isFollowed: !a.isFollowed } : a));
-    const res = await api.post(`/api/ads/${id}/follow`);
+    const res = await api.post(`/api/follow/${id}`);
   };
 
   const handleBookmark = async (id) => {
@@ -155,12 +155,12 @@ export default function Section() {
     try {
       setLoading(true)
 
-      await api.post(`/api/createComment/${activeCommentId}`, { comment: draftComment });
-    } catch (error) {
+    const res=  await api.post(`/api/createComment/${activeCommentId}`, { comment: draftComment });
+  console.log(res) 
+  } catch (error) {
       console.log("error while comment:", error)
     } finally {
       setLoading(false)
-       Swal.fire('Error', `Comment has not been sent`, 'error');
       closeComment();
     }
   };
@@ -177,15 +177,15 @@ export default function Section() {
           {ads.map(ad => (
             <div key={ad.uuid} className="fav-card">
               <div className="fav-user-block">
-                <img src={ad.userAvatar} alt={ad.user.name} className="fav-avatar" />
-                <span className="fav-username">{ad.user.name}</span>
+                <img src={ad?.userAvatar} alt={ad?.user.name||ad.name} className="fav-avatar" />
+                <span className="fav-username">{ad?.user.name||ad.name}</span>
               </div>
 
               <div
                 className={
                   ad.isFollowed ? 'fav-tag fav-tag--active' : 'fav-tag fav-tag--inactive'
                 }
-                onClick={() => handleFollow(ad.uuid)}
+                onClick={() => handleFollow(ad?.user.uuid)}
               >
                 {ad.isFollowed ? 'Following' : 'Follow'}
               </div>

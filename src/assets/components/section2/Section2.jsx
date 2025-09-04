@@ -269,13 +269,13 @@ export default function TopAds() {
             {/* HEADER */}
             <div className="top-card__header">
               <div className="top-card__userinfo">
-                <img src={ad.userAvatar} alt={ad.user.name} className="top-card__avatar" />
+                <img src={ad.userAvatar} alt={ad?.user.name||ad.name} className="top-card__avatar" />
                 <span className="top-card__badge">{ad.category_name}</span>
-                <span className="top-card__username">{ad.user.name}</span>
+                <span className="top-card__username">{ad?.user.name||ad.name}</span>
               </div>
               <button
                 className={ad.isFollowed ? "top-cardfollow-btn following" : "top-cardfollow-btn"}
-                onClick={() => handleFollow(ad.user.uuid)}
+                onClick={() => handleFollow(ad?.user.uuid)}
               >
                 {ad.isFollowed ? "Following" : "Follow"}
               </button>
