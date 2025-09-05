@@ -38,14 +38,12 @@ const Verification = () => {
 
 
 
-  const handleSubmit = useCallback(async e => {
-    e.preventDefault();
-  for (let i = 0; i < code.length; i++) {
-    codeS += code[i];
-    
-  }
-    navigate('/resetPassword',{state:{email:Email,code:codeS}});
-  }, []);
+const handleSubmit = useCallback((e) => {
+  e.preventDefault();
+  const codeString = code.join(''); // يجمع الأرقام كسلسلة واحدة
+  navigate('/resetPassword', { state: { email: Email, code: codeString } });
+}, [code, Email, navigate]);
+
   if (loading) return <Loading/>;
 
   // إعادة إرسال الكود

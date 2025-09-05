@@ -102,7 +102,7 @@ export default function TopAds() {
   const fallback = [
     {
       uuid: 1,
-      name: "Rami Ali",
+      user:{name: "Rami Ali"},
       userAvatar: av5,
       category_name: "TECHNOLOGY",
       title: "Wireless Router and Switch",
@@ -114,7 +114,7 @@ export default function TopAds() {
     },
     {
       uuid: 2,
-      name: "Tamir Hasan",
+      user:{name: "Tamir Hasan"},
       userAvatar: av6,
       category_name: "EDUCATION",
       title: " Master React in 30 Days ",
@@ -126,11 +126,11 @@ export default function TopAds() {
     },
     {
       uuid: 3,
-      name: "Ramiz Fadi",
+      user:{name: "Ramiz Fadi"},
       userAvatar: av7,
       category_name: "FEATURED",
       title: "Ultra-Slim Laptop Pro",
-      rating: 5,
+      rating: 5 ,
       description:
         "An intensive hands-on course covering all React fundamentals, hooks, state management and beyond.",
       image_url: im3,
@@ -138,7 +138,7 @@ export default function TopAds() {
     },
     {
       uuid: 4,
-      name: "Mazin Yasi",
+      user :{name: "Mazin Yasi"},
       userAvatar: av8,
       category_name: "Restaurant",
       title: " Cozy Italian Restaurant ",
@@ -269,9 +269,9 @@ export default function TopAds() {
             {/* HEADER */}
             <div className="top-card__header">
               <div className="top-card__userinfo">
-                <img src={ad.userAvatar} alt={ad?.user.name||ad.name} className="top-card__avatar" />
+                <img src={ad.userAvatar} alt={ad?.user.name} className="top-card__avatar" />
                 <span className="top-card__badge">{ad.category_name}</span>
-                <span className="top-card__username">{ad?.user.name||ad.name}</span>
+                <span className="top-card__username">{ad?.user.name}</span>
               </div>
               <button
                 className={ad.isFollowed ? "top-cardfollow-btn following" : "top-cardfollow-btn"}

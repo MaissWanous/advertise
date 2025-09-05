@@ -52,7 +52,7 @@ export default function Section() {
         setAds([
           {
             id: 1,
-            name: 'Ahmad naeem',
+            user:{name: 'Ahmad naeem'},
             userAvatar: av5,
             image_url: routerImg,
             title: 'Wireless Router and Switch',
@@ -65,7 +65,7 @@ export default function Section() {
           },
           {
             id: 2,
-            name: 'Sami masri',
+            user:{name: 'Sami masri'},
             userAvatar: av6,
             image_url: routerImg2,
             title:

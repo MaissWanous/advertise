@@ -39,7 +39,7 @@ const ResetPassword = () => {
          email: email,
          code: code,
          password: newPassword,
-         password_confirmation: confirmPassword
+         password_confirmation:confirmPassword
       });
       console.log(response)
       // setEmail('');
