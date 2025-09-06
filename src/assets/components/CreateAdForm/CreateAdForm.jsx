@@ -111,7 +111,7 @@ export default function CreateAdForm() {
       Swal.fire({
         icon: 'error',
         title: 'Submission Failed',
-        text: err.response?.data?.message || 'Something went wrong. Please try again.',
+        text: err.response?.data?.data?.message || 'Something went wrong. Please try again.',
       });
     }
   };

@@ -102,7 +102,9 @@ export default function TopAds() {
   const fallback = [
     {
       uuid: 1,
-      user:{name: "Rami Ali"},
+      user:{name: "Rami Ali",
+        uuid:1
+      },
       userAvatar: av5,
       category_name: "TECHNOLOGY",
       title: "Wireless Router and Switch",
@@ -114,7 +116,9 @@ export default function TopAds() {
     },
     {
       uuid: 2,
-      user:{name: "Tamir Hasan"},
+      user:{name: "Tamir Hasan",
+        uuid:1
+      },
       userAvatar: av6,
       category_name: "EDUCATION",
       title: " Master React in 30 Days ",
@@ -126,7 +130,9 @@ export default function TopAds() {
     },
     {
       uuid: 3,
-      user:{name: "Ramiz Fadi"},
+      user:{name: "Ramiz Fadi",
+        uuid:1
+      },
       userAvatar: av7,
       category_name: "FEATURED",
       title: "Ultra-Slim Laptop Pro",
@@ -138,14 +144,16 @@ export default function TopAds() {
     },
     {
       uuid: 4,
-      user :{name: "Mazin Yasi"},
+      user :{name: "Mazin Yasi",
+        uuid:1
+      },
       userAvatar: av8,
       category_name: "Restaurant",
       title: " Cozy Italian Restaurant ",
       rating: 4,
       description:
         "High-performance ultrabook with long battery life and retina display.",
-      image_url: "https://ff0b357256ca.ngrok-free.app/storage/ads/uNiAsKJ28DYFqOmxHs0hBsxfDRB33sWKYmYorrel.png",
+      image_url:im4,
       phone: "444-987-6543",
     },
   ].map((ad) => ({
@@ -185,8 +193,9 @@ export default function TopAds() {
 
   const nextCommentId = useRef(1);
 
-  const openComment = (adId, commentId = null) => {
+  const openComment =async (adId, commentId = null) => {
     setActiveCommentAdId(adId);
+      await api.get(`/api/show/${id}`);
     setReplyTo(commentId);
     setCommentText('');
   };

@@ -20,33 +20,44 @@ export default function CreateAccount() {
   const [confirmPwd, setConfirmPwd] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-   const { saveToken } = useAuth();
+  const { saveToken } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    // تحقق من تطابق كلمة السر
     if (password !== confirmPwd) {
       setError("Passwords don't match");
       return;
     }
+
+    // تحقق من طول كلمة السر
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
     setLoading(true);
     setError(null);
+
     try {
-      const res = await api.post('/api/register', { 
+      const res = await api.post('/api/register', {
         name: name,
         email: Email,
         password: password,
         account_type: userType
       });
-      saveToken(res.data.data.token)
+      saveToken(res.data.data.token);
       console.log(res);
-       navigate("/Home");
+      navigate("/Home");
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
 
   if (loading) {
     return <Loading />
@@ -90,7 +101,7 @@ export default function CreateAccount() {
               />
             </div>
           </label>
-      
+
           {/* Password Field */}
           <label>
             Password
@@ -144,7 +155,7 @@ export default function CreateAccount() {
           </div>
 
           {error && <div className="error">{error}</div>}
-          
+
           <button type="submit" disabled={loading}>
             {loading ? 'Please wait…' : 'Create Account'}
           </button>

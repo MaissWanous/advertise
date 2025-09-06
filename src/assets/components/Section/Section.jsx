@@ -32,17 +32,17 @@ export default function Section() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
-      const res = await api.get('/api/advertisements');
-      const data = res.data.data || [];
- data.forEach(e => {
+
+        const res = await api.get('/api/advertisements');
+        const data = res.data.data || [];
+        data.forEach(e => {
           e.name = "user name"
           e.userAvatar = av5;
           e.phone = "123-456-7890"
         });
-      const filtered = data.filter(ad => ad.category_name?.toLowerCase() === category?.toLowerCase());
-      console.log(data,filtered)
-      if (filtered.length> 0) {
+        const filtered = data.filter(ad => ad.category_name?.toLowerCase() === category?.toLowerCase());
+        console.log(data, filtered)
+        if (filtered.length > 0) {
           setAds(filtered);
         } else {
           throw new Error("No ads returned");
@@ -52,7 +52,10 @@ export default function Section() {
         setAds([
           {
             id: 1,
-            user:{name: 'Ahmad naeem'},
+            user: {
+              name: 'Ahmad naeem'
+              , uuid: 1
+            },
             userAvatar: av5,
             image_url: routerImg,
             title: 'Wireless Router and Switch',
@@ -65,7 +68,12 @@ export default function Section() {
           },
           {
             id: 2,
-            user:{name: 'Sami masri'},
+            user: {
+              name: 'Sami masri'
+
+
+              , uuid: 1
+            },
             userAvatar: av6,
             image_url: routerImg2,
             title:
@@ -87,25 +95,26 @@ export default function Section() {
   }, [category]);
 
 
- const handleReport =async () => {
-  Swal.fire({
-    title: 'Do you want to report?',
-    text: 'Your report will be sent to the administration. Are you sure?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, report',
-    cancelButtonText: 'Cancel',
-  }).then(async(result) => {
-    if (result.isConfirmed) {
-    //  await api.post("/report${id}")
-      Swal.fire('Reported!', 'Thank you for letting us know.', 'success');
-    }
-  });
-};
+  const handleReport = async () => {
+    Swal.fire({
+      title: 'Do you want to report?',
+      text: 'Your report will be sent to the administration. Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, report',
+      cancelButtonText: 'Cancel',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        //  await api.post("/report${id}")
+        Swal.fire('Reported!', 'Thank you for letting us know.', 'success');
+      }
+    });
+  };
 
 
-  const openComment = id => {
+  const openComment = async (id) => {
     setActiveCommentId(id);
+    await api.get(`/api/show/${id}`);
     setDraftComment('');
   };
   const closeComment = () => setActiveCommentId(null);
@@ -119,28 +128,8 @@ export default function Section() {
     await api.post(`/api/AddFavorite/${id}`);
   };
 
- const handleLike = async (uuid) => {
-  // تحديث محلي فوري
-  setAds(prevAds =>
-    prevAds.map(ad =>
-      ad.uuid === uuid
-        ? { ...ad, likes_count: !ad.likes_count }
-        : ad
-    )
-  );
-
-  try {
-    // تحديد القيمة الجديدة بناءً على الحالة الحالية
-    const ad = ads.find(a => a.uuid === uuid);
-    const newLikedState = !ad.likes_count;
-
-    // إرسال الطلب للباك
-    const res = await api.post(`/api/reactToAd/${uuid}`, { liked: newLikedState });
-    console.log("✅ Like response:", res.data);
-  } catch (error) {
-    console.error("❌ Error liking ad:", error);
-
-    // في حال فشل الطلب، نرجع الحالة القديمة
+  const handleLike = async (uuid) => {
+    // تحديث محلي فوري
     setAds(prevAds =>
       prevAds.map(ad =>
         ad.uuid === uuid
@@ -148,16 +137,36 @@ export default function Section() {
           : ad
       )
     );
-  }
-};
+
+    try {
+      // تحديد القيمة الجديدة بناءً على الحالة الحالية
+      const ad = ads.find(a => a.uuid === uuid);
+      const newLikedState = !ad.likes_count;
+
+      // إرسال الطلب للباك
+      const res = await api.post(`/api/reactToAd/${uuid}`, { liked: newLikedState });
+      console.log("✅ Like response:", res.data);
+    } catch (error) {
+      console.error("❌ Error liking ad:", error);
+
+      // في حال فشل الطلب، نرجع الحالة القديمة
+      setAds(prevAds =>
+        prevAds.map(ad =>
+          ad.uuid === uuid
+            ? { ...ad, likes_count: !ad.likes_count }
+            : ad
+        )
+      );
+    }
+  };
 
   const postComment = async () => {
     try {
       setLoading(true)
 
-    const res=  await api.post(`/api/createComment/${activeCommentId}`, { comment: draftComment });
-  console.log(res) 
-  } catch (error) {
+      const res = await api.post(`/api/createComment/${activeCommentId}`, { comment: draftComment });
+      console.log(res)
+    } catch (error) {
       console.log("error while comment:", error)
     } finally {
       setLoading(false)
@@ -177,8 +186,8 @@ export default function Section() {
           {ads.map(ad => (
             <div key={ad.uuid} className="fav-card">
               <div className="fav-user-block">
-                <img src={ad?.userAvatar} alt={ad?.user.name||ad.name} className="fav-avatar" />
-                <span className="fav-username">{ad?.user.name||ad.name}</span>
+                <img src={ad?.userAvatar} alt={ad?.user.name || ad.name} className="fav-avatar" />
+                <span className="fav-username">{ad?.user.name || ad.name}</span>
               </div>
 
               <div
