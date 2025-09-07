@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     try {
       setLoading(true)
-       const response = await api.post('api/forgot-password', { email: email });
+       const response = await api.post('/api/send-reset-code', { email: email });
        console.log(response)
       setMessage(`Reset instruction have been sent to ${email}`);
       

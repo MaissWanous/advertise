@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import './ResetPassword.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../../loading/loading';
+import api from '../../../api';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -35,13 +36,15 @@ const ResetPassword = () => {
     }
     try {
       setLoading(true)
+      console.log(newPassword,code,email)
       const response = await api.post('/api/reset-password-code', {
          email: email,
          code: code,
-         password: newPassword,
-         password_confirmation:confirmPassword
+         new_password: newPassword,
+         new_password_confirmation:confirmPassword
       });
       console.log(response)
+      navigate("/Home")
       // setEmail('');
     } catch (err) {
       console.error(err);
@@ -86,11 +89,11 @@ if (loading) {
             />
           </div>
           {error && <p className="error-message">{error}</p>}
-          <Link to="/Home">
+         
             <button type="submit" className="btn-reset">
               Save
             </button>
-          </Link>
+        
         </form>
       </div>
     </div>

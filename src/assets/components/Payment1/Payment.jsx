@@ -111,7 +111,7 @@ export default function Payment() {
       Swal.fire({
         icon: 'error',
         title: 'Confirmation Failed',
-        text: err.response?.data?.message || 'Failed to confirm payment.',
+        text: err.response?.data?.error || 'Failed to confirm payment.',
         confirmButtonText: 'Close',
         confirmButtonColor: '#d33'
       });
