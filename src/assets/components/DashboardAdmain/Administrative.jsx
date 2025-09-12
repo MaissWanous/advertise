@@ -143,10 +143,9 @@ export default function Adminstrative() {
     const handleSubmit = async () => {
         try {
             setLoading(true)
-            if (modalContent === "section") {
+         
                 let res = await api.post('api/admin/storeCategory', { name: currentValue, title: "...", image: "" });
-                console.log(res)
-            }
+         
             setCurrentValue("")
             Swal.fire('Success', `Your data has been updated successfully!`, 'success');
 

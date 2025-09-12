@@ -44,7 +44,7 @@ const ResetPassword = () => {
          new_password_confirmation:confirmPassword
       });
       console.log(response)
-      navigate("/Home")
+      navigate("/LogIn")
       // setEmail('');
     } catch (err) {
       console.error(err);

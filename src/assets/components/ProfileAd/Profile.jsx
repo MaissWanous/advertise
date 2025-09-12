@@ -46,6 +46,8 @@ export default function Profile() {
   const nameRef = useRef();
   const profilePickerRef = useRef();
   const adPickerRefs = useRef({});
+  const videoPickerRefs = useRef({});
+
 
   const [imageProfile, setImageProfile] = useState(profileImg)
 
@@ -173,12 +175,13 @@ export default function Profile() {
     );
   };
 
-  const toggleBookmark = (id) => {
+  const toggleBookmark = async (id) => {
     setAds(prevAds =>
       prevAds.map(ad =>
         ad.uuid === id ? { ...ad, isBookmarked: !ad.isBookmarked } : ad
       )
     );
+    await api.post(`/api/AddFavorite/${id}`);
   };
 
   // Edit Modal
@@ -212,13 +215,13 @@ export default function Profile() {
       formData.append("title", updatedAd.title);
       formData.append("description", updatedAd.description);
       formData.append("category_name", updatedAd.category_name);
-      formData.append("video_path", updatedAd.video_path || "");
       formData.append("price", updatedAd.price ?? 0);
 
       if (updatedAd.imageFile) {
         formData.append("images", updatedAd.imageFile);
-      } else {
-        formData.append("images", updatedAd.image_url);
+      }
+      if (updatedAd.videoFile) {
+        formData.append("video_path", updatedAd.videoFile);
       }
 
       const res = await api.post(
@@ -245,6 +248,18 @@ export default function Profile() {
     } finally {
       closeEditModal();
     }
+  };
+  const handleAdVideoChange = (adId, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setAds(prev =>
+      prev.map(ad =>
+        ad.uuid === adId
+          ? { ...ad, videoFile: file } // نخزن الملف نفسه
+          : ad
+      )
+    );
   };
 
   // Delete Modal
@@ -289,10 +304,25 @@ export default function Profile() {
     setCommentText('');
   };
 
-  const postComment = () => {
+  const postComment = async () => {
     const text = commentText.trim();
     if (!text) return;
-
+    try {
+      const updatedComments = replyTo == null ? await api.post(`/api/createComment/${activeCommentAdId}`, {
+        comment: text
+      }) : await api.post(`/api/storeComment/${activeCommentAdId}`, {
+        comment: text,
+        parent_id: replyTo
+      })
+      console.log(updatedComments)
+    } catch (error) {
+      console.error('❌ Failed to post comment:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Comment Failed',
+        text: 'Could not post your comment. Please try again.',
+      });
+    }
     setAds(prevAds =>
       prevAds.map(ad => {
         if (ad.uuid !== activeCommentAdId) return ad;
@@ -490,46 +520,66 @@ export default function Profile() {
               sx={{ mb: 3 }}
             />
           )}
-
-
           <Typography variant="h4" mb={2}>My Ads</Typography>
 
           <Grid container spacing={3} px={3} py={2}>
             {filteredAds.map((ad) => (
-
-              <Grid item size={{ xs: 12, md: 12 }} key={ad.uuid}>
+              <Grid item xs={12} md={12} key={ad.uuid}>
                 <Card sx={{ display: 'flex', borderRadius: 3, boxShadow: 3, position: 'relative' }}>
                   {/* Edit/Delete Actions */}
                   <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 2, display: 'flex', gap: 1 }}>
                     <IconButton onClick={() => openEditModal(ad)} sx={{ color: '#0d1f44' }}>
                       <MdEdit />
                     </IconButton>
-
                     <IconButton onClick={() => openDeleteModal(ad.uuid)} sx={{ color: '#ef4444' }}>
                       <MdDelete />
                     </IconButton>
                   </Box>
 
-                  {/* Image section with add button */}
+                  {/* Media Section */}
                   <Box sx={{ minWidth: 250, position: 'relative' }}>
-                    <img
-                      src={ad.image_url}
-                      alt={ad.title}
-                      style={{ width: '250px', height: '100%', objectFit: 'cover' }}
-                    />
+                    {ad.videoFile ? (
+                      <video
+                        src={URL.createObjectURL(ad.videoFile)}
+                        controls
+                        style={{ width: '250px', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                    ) : ad.video_path ? (
+                      <video
+                        src={ad.video_path}
+                        controls
+                        style={{ width: '250px', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                    ) : (
+                      <img
+                        src={ad.image_url}
+                        alt={ad.title}
+                        style={{ width: '250px', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                    )}
+
+                    {/* Hidden Inputs */}
                     <Input
                       type="file"
                       inputRef={(el) => (adPickerRefs.current[ad.uuid] = el)}
                       sx={{ display: 'none' }}
                       onChange={(e) => handleAdPicChange(ad.uuid, e)}
                     />
+                    <Input
+                      type="file"
+                      accept="video/*"
+                      inputRef={(el) => (videoPickerRefs.current[ad.uuid] = el)}
+                      sx={{ display: 'none' }}
+                      onChange={(e) => handleAdVideoChange(ad.uuid, e)}
+                    />
 
-                    <IconButton
-                      onClick={() => handleOpenFilePicker(ad.uuid)}
-                    >
+                    {/* Action Buttons */}
+                    <IconButton onClick={() => videoPickerRefs.current[ad.uuid].click()}>
+                      <MdVideoLibrary />
+                    </IconButton>
+                    <IconButton onClick={() => handleOpenFilePicker(ad.uuid)}>
                       <MdAdd />
                     </IconButton>
-
                   </Box>
 
                   {/* Content Section */}
@@ -545,7 +595,7 @@ export default function Profile() {
                     <Typography variant="h6" fontWeight="bold" mt={1}>{ad.title}</Typography>
                     <Typography variant="body2" mt={0.5}>{ad.description}</Typography>
 
-                    {/* Action Buttons + Phone + Details */}
+                    {/* Actions & Contact */}
                     <Stack direction="row" justifyContent="space-between" mt={2}>
                       <Stack direction="row" spacing={2}>
                         <IconButton onClick={() => toggleLike(ad.uuid)}>
@@ -555,7 +605,6 @@ export default function Profile() {
                             <MdFavoriteBorder />
                           )}
                         </IconButton>
-
                         <IconButton onClick={() => toggleBookmark(ad.uuid)}>
                           {ad.isBookmarked ? (
                             <MdBookmark style={{ color: '#457b9d' }} />
@@ -563,7 +612,6 @@ export default function Profile() {
                             <MdBookmarkBorder />
                           )}
                         </IconButton>
-
                         <IconButton onClick={() => openComment(ad.uuid)}>
                           <MdComment />
                         </IconButton>
@@ -576,11 +624,10 @@ export default function Profile() {
                             {ad.phone}
                           </Typography>
                         </Stack>
-
                         <Button
                           component={Link}
-                          to={`/Detials`}
-                       state={{ uuid: ad.uuid }}
+                          to="/Detials"
+                          state={{ uuid: ad.uuid }}
                           variant="outlined"
                           sx={{ textTransform: 'none' }}
                         >
@@ -588,12 +635,12 @@ export default function Profile() {
                         </Button>
                       </Stack>
                     </Stack>
-
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
+
         </Grid>
       </Grid>
 
@@ -646,7 +693,7 @@ export default function Profile() {
               {ads.find(ad => ad.uuid === activeCommentAdId)?.comments.map(c => (
                 <li key={c.id}>
                   <div>
-                    {c.text}
+                    {c.comment}
                     <div className="comment-controls">
                       <MdReply className="ctrl-icon" onClick={() => openComment(activeCommentAdId, c.id)} />
                       <MdDelete className="ctrl-icon" onClick={() => deleteComment(c.id)} />
@@ -655,7 +702,7 @@ export default function Profile() {
                   <ul className="reply-list">
                     {c.replies.map(r => (
                       <li key={r.id}>
-                        {r.text}
+                        {r.comment}
                         <MdDelete className="ctrl-icon" onClick={() => deleteComment(r.id, c.id)} />
                       </li>
                     ))}

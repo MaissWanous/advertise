@@ -76,7 +76,7 @@ export default function CreateAdForm() {
         price: 300000,
         category_name: section,
         imageFiles,
-        videoFile:"......"
+        videoFile:videoFile
       }
     });
   };
@@ -93,7 +93,10 @@ export default function CreateAdForm() {
         formData.append('images', imageFiles[0]);
       }
      
-        formData.append('video_path', ".....");
+  if (videoFile) {
+  formData.append('video_path', videoFile);
+}
+
       
 
       const response = await api.post('/api/storeAds', formData, {

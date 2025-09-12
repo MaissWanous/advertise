@@ -102,8 +102,9 @@ export default function TopAds() {
   const fallback = [
     {
       uuid: 1,
-      user:{name: "Rami Ali",
-        uuid:1
+      user: {
+        name: "Rami Ali",
+        uuid: 1
       },
       userAvatar: av5,
       category_name: "TECHNOLOGY",
@@ -116,8 +117,9 @@ export default function TopAds() {
     },
     {
       uuid: 2,
-      user:{name: "Tamir Hasan",
-        uuid:1
+      user: {
+        name: "Tamir Hasan",
+        uuid: 1
       },
       userAvatar: av6,
       category_name: "EDUCATION",
@@ -130,13 +132,14 @@ export default function TopAds() {
     },
     {
       uuid: 3,
-      user:{name: "Ramiz Fadi",
-        uuid:1
+      user: {
+        name: "Ramiz Fadi",
+        uuid: 1
       },
       userAvatar: av7,
       category_name: "FEATURED",
       title: "Ultra-Slim Laptop Pro",
-      rating: 5 ,
+      rating: 5,
       description:
         "An intensive hands-on course covering all React fundamentals, hooks, state management and beyond.",
       image_url: im3,
@@ -144,8 +147,9 @@ export default function TopAds() {
     },
     {
       uuid: 4,
-      user :{name: "Mazin Yasi",
-        uuid:1
+      user: {
+        name: "Mazin Yasi",
+        uuid: 1
       },
       userAvatar: av8,
       category_name: "Restaurant",
@@ -153,7 +157,7 @@ export default function TopAds() {
       rating: 4,
       description:
         "High-performance ultrabook with long battery life and retina display.",
-      image_url:im4,
+      image_url: im4,
       phone: "444-987-6543",
     },
   ].map((ad) => ({
@@ -193,9 +197,9 @@ export default function TopAds() {
 
   const nextCommentId = useRef(1);
 
-  const openComment =async (adId, commentId = null) => {
+  const openComment = async (adId, commentId) => {
     setActiveCommentAdId(adId);
-      await api.get(`/api/show/${id}`);
+    await api.get(`/api/show/${adId}`);
     setReplyTo(commentId);
     setCommentText('');
   };
@@ -213,9 +217,13 @@ export default function TopAds() {
     const newCommentId = nextCommentId.current++; // ✅ توليد ID فريد
 
     try {
-      await api.post(`/api/createComment/${activeCommentAdId}`, {
+      const updatedComments = replyTo == null ? await api.post(`/api/createComment/${activeCommentAdId}`, {
         comment: text
-      });
+      }) : await api.post(`/api/storeComment/${activeCommentAdId}`, {
+        comment: text,
+        parent_id: replyTo
+      })
+      console.log(updatedComments)
     } catch (error) {
       console.error('❌ Failed to post comment:', error);
       Swal.fire({
@@ -252,10 +260,10 @@ export default function TopAds() {
         if (ad.uuid !== activeCommentAdId) return ad;
 
         const updatedComments = parentId == null
-          ? ad.comments.filter(c => c.uuid !== cid)
+          ? ad.comments.filter(c => c.id !== cid)
           : ad.comments.map(c =>
-            c.uuid === parentId
-              ? { ...c, replies: c.replies.filter(r => r.uuid !== cid) }
+            c.id === parentId
+              ? { ...c, replies: c.replies.filter(r => r.id !== cid) }
               : c
           );
 
@@ -304,9 +312,21 @@ export default function TopAds() {
             </div>
 
             {/* IMAGE */}
+            {/* IMAGE or VIDEO */}
             <div className="top-card__image">
-              <img src={ad.image_url} alt={ad.title} />
+              {ad.video_path ? (
+                <video
+                  src={ad.video_path}
+                  controls
+                  width="100%"
+                  height="100%"
+                  style={{ borderRadius: '3%', objectFit: 'cover' }}
+                />
+              ) : (
+                <img src={ad.image_url} alt={ad.title} />
+              )}
             </div>
+
 
             {/* ACTIONS */}
             <div className="top-card__footer">
@@ -350,7 +370,7 @@ export default function TopAds() {
                     <div className="comment-controls">
                       <MdReply
                         className="ctrl-icon"
-                        onClick={() => openComment(activeCommentAdId, c.uuid)}
+                        onClick={() => openComment(activeCommentAdId, c.id)}
                       />
                       <MdDelete
                         className="ctrl-icon"
