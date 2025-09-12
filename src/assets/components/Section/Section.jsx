@@ -199,7 +199,21 @@ export default function Section() {
                 {ad.isFollowed ? 'Following' : 'Follow'}
               </div>
 
-              <img src={ad.image_url} alt={ad.title} className="fav-image" />
+               
+                <div className="fav-image">
+              {ad.video_path ? (
+                <video
+                  src={ad.video_path}
+                  controls
+                  width="100%"
+                  height="100%"
+                  className="fav-image"
+                  style={{ borderRadius: '3%', objectFit: 'cover' }}
+                />
+              ) : (
+                <img src={ad.image_url} alt={ad.title}className="fav-image" />
+              )}
+            </div>
               <div className="fav-details">
                 <h2 className="fav-title">{ad.title}</h2>
                 <div className="fav-stars">

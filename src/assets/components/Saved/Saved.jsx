@@ -71,8 +71,23 @@ export default function Saved() {
         ) : (
           <ul className="zx-list">
             {ads.map(ad => (
+                
               <li key={ad.uuid} className="zx-item">
-                <img src={ad.image_url} alt={ad.title} className="zx-img" />
+                 <div  >
+              {ad.video_path ? (
+                <video
+                className="zx-img"
+                  src={ad.video_path}
+                  controls
+                  width="100%"
+                  height="100%"
+                  style={{ borderRadius: '3%', objectFit: 'cover' }}
+                />
+              ) : (
+                <img src={ad.image_url} alt={ad.title}
+                className="zx-img" />
+              )}
+            </div>
                 <div className="zx-content">
                   <h2 className="zx-title">{ad.title}</h2>
                   <p className="zx-text">{ad.description}</p>
