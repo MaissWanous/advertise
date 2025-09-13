@@ -197,12 +197,15 @@ export default function Profile() {
   const closeEditModal = () => setShowEditModal(false);
   const handleEditSave = async () => {
     const updatedAd = ads.find(ad => ad.uuid === editingAdId);
+updatedAd.title=editTitle;
+updatedAd.description=editDesc
     if (!updatedAd) {
       console.error("Ad not found");
       return;
     }
 
     console.log(" Updated Ad:", updatedAd);
+
 
     // تحديث الحالة محلياً
     setAds(prev =>
